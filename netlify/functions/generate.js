@@ -18,6 +18,26 @@ Strict requirements:
 Rough notes:
 ${notes}`,
 
+  discovery_call: (notes, tone) => `You are an executive assistant for a registered financial advisor. Convert the rough notes from a discovery call (a first meeting with a prospective client) into a polished, ${tone.toLowerCase()}-toned follow-up summary.
+
+Strict requirements:
+- Subject line at top, prefixed "Subject: " — keep it warm but professional
+- Open with thanks for the conversation; reference the date if mentioned
+- Recap discussion in clean sections:
+  GOALS & PRIORITIES — what the prospect said they want to accomplish
+  CURRENT SITUATION — family, work, accounts, existing advisors mentioned
+  CONCERNS RAISED — anything they flagged as keeping them up at night
+  WHAT WE DISCUSSED — the topics you covered, framed as exploration not advice
+- List clear next steps with owners ("I will..." / "You will...") and timelines
+- Reference any documents the prospect agreed to send (statements, tax returns, estate documents)
+- Close with a warm forward-looking line and your availability for follow-up
+- DO NOT make recommendations, claims about returns, or anything that could be construed as advice or solicitation
+- DO NOT assume the prospect has decided to engage your services; preserve their optionality
+- End with this exact disclosure on its own line: "This message is for informational purposes only and is not investment advice. No advisory relationship is established by this communication."
+
+Rough notes:
+${notes}`,
+
   crm_note: (notes, tone) => `You are organizing a financial advisor's CRM entry (Redtail / Wealthbox / Salesforce style). Convert the rough notes below into a structured meeting note.
 
 Format exactly as:
@@ -119,6 +139,34 @@ Tone: ${tone.toLowerCase()}. If the notes don't support a change, write "No chan
 
 Rough notes:
 ${notes}`,
+
+  task_list: (notes, tone) => `You are organizing post-meeting follow-up tasks for a financial advisor's practice. Convert the rough notes below into a clean, ${tone.toLowerCase()}-toned internal task list.
+
+Format exactly as:
+POST-MEETING TASK LIST — [Client name if mentioned, else "Client"]
+Meeting date: [if mentioned, else "Not specified"]
+
+FOR THE ADVISOR
+- [ ] [task] — due [date if mentioned, else "TBD"]
+
+FOR THE TEAM (Assistant / Paraplanner / Operations)
+- [ ] [task] — due [date if mentioned, else "TBD"] — owner: [if mentioned, else "TBD"]
+
+FOR THE CLIENT
+- [ ] [task] — requested by [date if mentioned, else "TBD"]
+
+DOCUMENTS TO REQUEST
+- [list, or "None"]
+
+ITEMS TO RESEARCH BEFORE NEXT TOUCH
+- [topics requiring follow-up research, or "None"]
+
+NEXT TOUCH POINT: [meeting type, date/timeframe, or "TBD"]
+
+Tone: ${tone.toLowerCase()}. Be operational and specific. If a task is implied but unclear, write it with [needs clarification]. Do not invent tasks not supported by the notes. This is an internal document — no client-facing language, no disclosures needed.
+
+Rough notes:
+${notes}`,
 };
 
 export default async (req) => {
@@ -130,9 +178,6 @@ export default async (req) => {
   }
 
   const apiKey = Netlify.env.get("ANTHROPIC_API_KEY");
-console.log("DEBUG_KEY_FIRST_20:", apiKey ? apiKey.substring(0, 20) + "..." : "MISSING");
-  console.log("DEBUG_KEY_LAST_4:", apiKey ? "..." + apiKey.substring(apiKey.length - 4) : "MISSING");
-  console.log("DEBUG_KEY_LENGTH:", apiKey ? apiKey.length : 0);
   if (!apiKey) {
     return new Response(JSON.stringify({ error: "Server is missing ANTHROPIC_API_KEY env var." }), {
       status: 500,
