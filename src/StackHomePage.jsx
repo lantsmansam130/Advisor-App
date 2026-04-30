@@ -47,6 +47,13 @@ const TOOLS = [
     href: "/notes",
   },
   {
+    id: "decoder",
+    name: "Document Decoder",
+    description: "Paste an annuity contract, insurance policy, or trust section. Get a plain-English breakdown — what it says, what to watch for, what to ask before signing.",
+    available: true,
+    href: "/decoder",
+  },
+  {
     id: "translator",
     name: "Plain-English Translator",
     description: "Paste investment jargon, get a client-readable version. For newsletters and tough explanations.",
@@ -57,13 +64,6 @@ const TOOLS = [
     name: "Prospect Pre-Meeting Brief",
     description: "A one-page brief on talking points and likely concerns before you sit down with a prospect.",
     available: false,
-  },
-{
-    id: "decoder",
-    name: "Document Decoder",
-    description: "Paste an annuity contract, insurance policy, or trust section. Get a plain-English breakdown — what it says, what to watch for, what to ask before signing.",
-    available: true,
-    href: "/decoder",
   },
   {
     id: "disclosure",
