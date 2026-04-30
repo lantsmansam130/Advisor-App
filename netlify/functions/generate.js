@@ -130,7 +130,8 @@ export default async (req) => {
   }
 
   const apiKey = Netlify.env.get("ANTHROPIC_API_KEY");
-  console.log("DEBUG_KEY_PREFIX:", apiKey ? apiKey.substring(0, 12) + "..." : "MISSING");
+console.log("DEBUG_KEY_FIRST_20:", apiKey ? apiKey.substring(0, 20) + "..." : "MISSING");
+  console.log("DEBUG_KEY_LAST_4:", apiKey ? "..." + apiKey.substring(apiKey.length - 4) : "MISSING");
   console.log("DEBUG_KEY_LENGTH:", apiKey ? apiKey.length : 0);
   if (!apiKey) {
     return new Response(JSON.stringify({ error: "Server is missing ANTHROPIC_API_KEY env var." }), {
