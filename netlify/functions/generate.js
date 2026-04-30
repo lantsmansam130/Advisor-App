@@ -167,6 +167,48 @@ Tone: ${tone.toLowerCase()}. Be operational and specific. If a task is implied b
 
 Rough notes:
 ${notes}`,
+
+  document_decoder: (notes, tone) => {
+    // For document_decoder, "tone" is repurposed to carry "docType|readingLevel"
+    // e.g., "Annuity contract|General client"
+    const [docType, readingLevel] = (tone || "Other / Unknown|General client").split("|");
+    const isSophisticated = readingLevel && readingLevel.toLowerCase().includes("sophisticated");
+    const audienceGuidance = isSophisticated
+      ? "The output reader is a sophisticated client (e.g., a doctor, lawyer, or business owner) who can handle technical concepts but isn't a financial professional. Use precise terminology where it earns its place; don't oversimplify."
+      : "The output reader is a general client with no financial background. Use everyday language, short sentences, and define any term that isn't common knowledge.";
+
+    return `You are helping a registered financial advisor decode a section of a complex financial or legal document for a client conversation. The document type is: ${docType}. Convert the document section below into a structured, plain-language breakdown.
+
+${audienceGuidance}
+
+Output exactly three labeled sections, in this order:
+
+A. WHAT THIS SECTION SAYS
+A plain-language paragraph (or two short paragraphs maximum) summarizing what the section actually says. Preserve all numbers, dates, percentages, named products, and named parties exactly as written in the source. If a term is defined elsewhere in the contract and you can see the definition in the excerpt, use it. If a term is referenced but not defined in the excerpt provided, do NOT guess what it means — flag it for the next section instead.
+
+B. WATCH FOR
+A bullet list of 2-5 things the advisor should pay attention to. These can include:
+- Time-bound restrictions (lock-up periods, surrender periods, vesting schedules)
+- Terms referenced but not defined in the excerpt
+- Language that is intentionally vague, ambiguous, or could mean different things
+- Common conditions or exceptions that aren't mentioned in this excerpt but typically exist (e.g., "death benefit waivers are common but not mentioned here — verify in the full document")
+- Anything in the section that could surprise a client
+
+These should be observations grounded in what the document says (or doesn't say) — never recommendations about what the client should do. Do not write "this is bad for the client" or "you should not sign this." Write what to verify and what's notable, not what to decide.
+
+C. QUESTIONS TO ASK THE ISSUER OR ATTORNEY
+A numbered list of 3-5 specific questions the advisor (or the client's attorney/CPA/insurance agent as appropriate) should ask before signing, taking action, or counseling the client. Questions should be answerable by the issuer or appropriate professional and should help fill in the gaps the excerpt doesn't cover.
+
+Hard rules:
+- This is NOT legal, tax, or insurance advice. Do not write anything that sounds like advice. The advisor will use this output to prepare for a conversation, not to replace consultation with the right professional.
+- Do not invent facts the document doesn't state. If something isn't in the excerpt, say so.
+- Do not soften, omit, or editorialize about anything the document says.
+- Do not predict the issuer's intent, the company's reliability, or the product's quality. Stick to what the words on the page say.
+- Preserve all required regulatory or disclosure language verbatim if it appears in the source. Do not paraphrase it.
+
+Document section to decode:
+${notes}`;
+  },
 };
 
 export default async (req) => {
@@ -211,9 +253,10 @@ export default async (req) => {
     });
   }
 
-  // Basic input length guard to prevent runaway API costs
-  if (notes.length > 8000) {
-    return new Response(JSON.stringify({ error: "Notes too long. Please keep under 8000 characters." }), {
+  // Length guard. Document decoder allows much longer text since legal/insurance docs are dense.
+  const lengthCap = outputType === "document_decoder" ? 15000 : 8000;
+  if (notes.length > lengthCap) {
+    return new Response(JSON.stringify({ error: `Text too long. Please keep under ${lengthCap.toLocaleString()} characters.` }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
     });
@@ -229,7 +272,7 @@ export default async (req) => {
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-5",
-        max_tokens: 2000,
+        max_tokens: outputType === "document_decoder" ? 3000 : 2000,
         messages: [{ role: "user", content: promptFn(notes, tone) }],
       }),
     });
