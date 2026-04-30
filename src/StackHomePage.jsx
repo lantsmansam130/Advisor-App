@@ -77,18 +77,6 @@ const TOOLS = [
     description: "A polished, personalized thank-you note for every referral, in 30 seconds.",
     available: false,
   },
-  {
-    id: "process",
-    name: "Process Documentation Writer",
-    description: "Describe a process in fragments, get a polished SOP your team can actually follow.",
-    available: false,
-  },
-  {
-    id: "adv",
-    name: "ADV / Form CRS Helper",
-    description: "A starter-draft assistant for annual ADV and Form CRS section updates.",
-    available: false,
-  },
 ];
 
 const availableCount = TOOLS.filter((t) => t.available).length;
@@ -129,7 +117,7 @@ export default function StackHomePage() {
             The AI toolkit, <span className="italic text-emerald-800">built for the way advisors actually work</span>.
           </h1>
           <p className="text-xl text-slate-700 leading-relaxed max-w-2xl mb-7" style={{ fontFamily: "Georgia, serif" }}>
-            Eight focused tools that take the friction out of the paperwork, prep work, and back-office writing that fills your day. Every output is yours to review before it goes anywhere.
+            Six focused tools that take the friction out of the paperwork, prep work, and back-office writing that fills your day. Every output is yours to review before it goes anywhere.
           </p>
           <div className="text-xs uppercase tracking-[0.2em] text-slate-500 pt-5 border-t border-slate-300 max-w-2xl" style={{ fontFamily: "system-ui" }}>
             Drafts only · Always advisor-reviewed · Never a recommendation
@@ -143,7 +131,7 @@ export default function StackHomePage() {
               <div>
                 <div className="text-xs uppercase tracking-[0.22em] text-slate-500 mb-2" style={{ fontFamily: "system-ui" }}>The stack</div>
                 <h2 className="text-3xl text-slate-900 leading-tight" style={{ fontFamily: "Georgia, serif", fontWeight: 400 }}>
-                  Eight tools. One discipline.
+                  Six tools. One discipline.
                 </h2>
               </div>
               <div className="text-xs uppercase tracking-[0.18em] text-slate-500" style={{ fontFamily: "system-ui" }}>
