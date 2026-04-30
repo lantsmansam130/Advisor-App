@@ -21,9 +21,14 @@ Netlify auto-deploys every push to `main` (~60s). There is no staging branch —
 
 ## Architecture
 
-**One serverless backend, many tools.** The entire backend is a single Netlify function at `netlify/functions/generate.js`. Every tool's frontend POSTs to `/.netlify/functions/generate` with `{ notes, tone, outputType }`. The function dispatches on `outputType` into a `PROMPTS` object (one entry per tool/output type), then calls Anthropic's API. **To add a new tool's behavior, add a new key to `PROMPTS` — do not create a new function file.**
+**One serverless backend, two request shapes.** The entire backend is a single Netlify function at `netlify/functions/generate.js`. It handles two distinct flows:
 
-The function caps inputs differently per tool (`document_decoder` gets 15000 chars / 3000 max output tokens; everything else 8000 / 2000) and uses model `claude-sonnet-4-5`.
+1. **Multi-turn streaming chat** (`outputType: "advisor_chat"`) — used by AdvisorNotes. Body is `{ outputType, messages: [{role, content}, ...] }`. The function builds a request to `claude-sonnet-4-6` with a large pre-baked system prompt (`ADVISOR_SYSTEM_PROMPT`, prompt-cached via `cache_control`), enables `stream: true`, and pipes Anthropic's SSE response straight through to the client. The frontend parses `content_block_delta` events and streams the text into a chat bubble.
+2. **One-shot draft generation** (every other `outputType`) — used by Document Decoder and the legacy form-based prompts. Body is `{ notes, tone, outputType }`. The function dispatches into the `PROMPTS` object (one entry per output type), calls Anthropic non-streaming, returns `{ text }`.
+
+**To add a new one-shot tool, add a new key to `PROMPTS`.** To add a new chat behavior or system prompt, fork on `outputType` near the top of the handler — don't create a new function file. Keep `ADVISOR_SYSTEM_PROMPT` stable so its cache prefix stays valid; if you change it, the first request after deploy pays the full input cost again.
+
+The function caps inputs per tool (`document_decoder` gets 15000 chars / 3000 max output tokens; chat caps each message at 16000 chars and trims to the last 30 turns; legacy one-shot tools cap at 8000 / 2000). One-shot tools currently use `claude-sonnet-4-5`; chat uses `claude-sonnet-4-6`.
 
 **Routing is client-side, in `src/App.jsx`.** Four routes today:
 
@@ -31,8 +36,10 @@ The function caps inputs differently per tool (`document_decoder` gets 15000 cha
 |---|---|---|
 | `/` | `StackHomePage` (suite home) | `src/StackHomePage.jsx` |
 | `/notes` | `LandingPage` (AdvisorNotes marketing) | `src/LandingPage.jsx` |
-| `/app` | `ToolPage` (the AdvisorNotes tool) | `src/App.jsx` |
+| `/app` | `AdvisorChatPage` (the AdvisorNotes chat) | `src/AdvisorChatPage.jsx` |
 | `/decoder` | `DecoderPage` | `src/DecoderPage.jsx` |
+
+**`AdvisorChatPage` is a full chat UI:** left sidebar with new-chat button, curated example prompts, and recent-chat history (persisted to localStorage at key `advisornotes.chats.v1`, capped at 50 chats); main pane with empty-state example-prompt cards or the streaming message thread; composer with auto-grow textarea (Enter sends, Shift+Enter newline). The SSE parser is in the same file (`streamChatResponse`) — it reads `content_block_delta` text deltas and ignores other event types.
 
 When a planned tool ships, it gets its own route + page component. The suite homepage's `TOOLS` array (top of `StackHomePage.jsx`) drives the grid — flip `available: true` and add `href` to surface a tool there.
 
