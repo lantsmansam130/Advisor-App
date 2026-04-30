@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Mail, FileText, BarChart3, Compass, ArrowUpRight } from "lucide-react";
+import { useAuth } from "./contexts/AuthContext.jsx";
 
 function useFadeIn() {
   const ref = useRef(null);
@@ -70,10 +71,11 @@ export function AnimatedBackground() {
 }
 
 export function StackNav({ tool }) {
+  const { user } = useAuth();
   return (
     <nav className="sticky top-4 z-50 mx-4 mt-4">
       <div
-        className="max-w-6xl mx-auto px-4 py-2.5 flex justify-between items-center"
+        className="max-w-6xl mx-auto px-4 py-2.5 flex justify-between items-center gap-3"
         style={{
           background: "rgba(15,14,12,0.92)",
           backdropFilter: "blur(20px)",
@@ -83,29 +85,55 @@ export function StackNav({ tool }) {
           boxShadow: "0 10px 30px -12px rgba(15,14,12,0.25)",
         }}
       >
-        <Link to="/" className="flex items-center gap-2.5 no-underline pl-1">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: palette.cream }}>
+        <Link to="/" className="flex items-center gap-2.5 no-underline pl-1 min-w-0">
+          <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: palette.cream }}>
             <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.ink, fontSize: "17px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
           </div>
-          <span style={{ fontFamily: "'Instrument Serif', serif", color: palette.cream, fontSize: "20px", letterSpacing: "-0.01em", lineHeight: 1 }}>
+          <span className="flex-shrink-0" style={{ fontFamily: "'Instrument Serif', serif", color: palette.cream, fontSize: "20px", letterSpacing: "-0.01em", lineHeight: 1 }}>
             Advisor<span style={{ fontStyle: "italic" }}>Stack</span>
           </span>
           {tool && (
             <>
-              <span className="opacity-30 mx-1" style={{ fontFamily: "'Instrument Serif', serif", fontSize: "18px", color: palette.cream }}>/</span>
-              <span style={{ fontFamily: "Inter", fontSize: "13px", color: "rgba(250,246,238,0.7)" }}>{tool}</span>
+              <span className="opacity-30 mx-1 flex-shrink-0" style={{ fontFamily: "'Instrument Serif', serif", fontSize: "18px", color: palette.cream }}>/</span>
+              <span className="truncate" style={{ fontFamily: "Inter", fontSize: "13px", color: "rgba(250,246,238,0.7)" }}>{tool}</span>
             </>
           )}
         </Link>
-        {tool ? (
-          <Link to="/" className="inline-flex items-center gap-2 px-4 py-2 no-underline" style={{ color: "rgba(250,246,238,0.85)", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}>
-            ← All tools
-          </Link>
-        ) : (
-          <Link to="/notes" className="inline-flex items-center gap-2 px-5 py-2.5 no-underline" style={{ background: palette.cream, color: palette.ink, borderRadius: "999px", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}>
-            Get started <span style={{ marginLeft: 2 }}>→</span>
-          </Link>
-        )}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {tool && (
+            <Link to="/" className="hidden sm:inline-flex items-center gap-2 px-3 py-2 no-underline" style={{ color: "rgba(250,246,238,0.7)", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}>
+              ← All tools
+            </Link>
+          )}
+          {user ? (
+            <Link
+              to="/dashboard"
+              className="inline-flex items-center gap-2 px-5 py-2.5 no-underline"
+              style={{ background: palette.cream, color: palette.ink, borderRadius: "999px", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}
+            >
+              Dashboard <span style={{ marginLeft: 2 }}>→</span>
+            </Link>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="px-3 py-2 no-underline"
+                style={{ color: "rgba(250,246,238,0.85)", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}
+              >
+                Sign in
+              </Link>
+              {!tool && (
+                <Link
+                  to="/notes"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 no-underline"
+                  style={{ background: palette.cream, color: palette.ink, borderRadius: "999px", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}
+                >
+                  Get started <span style={{ marginLeft: 2 }}>→</span>
+                </Link>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );
