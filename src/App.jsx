@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { Copy, Check, Sparkles, Mail, ClipboardList, ShieldCheck, FileSignature, Loader2, AlertTriangle, ArrowLeft, Compass, ListChecks } from "lucide-react";
+import StackHomePage from "./StackHomePage.jsx";
 import LandingPage from "./LandingPage.jsx";
 
 const OUTPUT_TYPES = [
@@ -62,7 +63,6 @@ function ToolPage() {
     <div className="min-h-screen bg-slate-50 text-slate-900" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
       <div className="h-0.5 bg-emerald-800" />
 
-      {/* MINI TOP BAR with back link */}
       <nav className="border-b border-slate-200 bg-slate-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2.5 no-underline">
@@ -71,12 +71,19 @@ function ToolPage() {
               <text x="14" y="20" fontFamily="Georgia, serif" fontSize="18" fontStyle="italic" fill="#f8fafc" textAnchor="middle">A</text>
             </svg>
             <div className="text-xl text-slate-900" style={{ fontFamily: "Georgia, serif" }}>
-              Advisor<span className="italic text-emerald-800">Notes</span>
+              Advisor<span className="italic text-emerald-800">Stack</span>
             </div>
+            <span className="text-slate-400 mx-2" style={{ fontFamily: "Georgia, serif" }}>/</span>
+            <div className="text-base text-slate-700" style={{ fontFamily: "Georgia, serif" }}>AdvisorNotes</div>
           </Link>
-          <Link to="/" className="flex items-center gap-1.5 text-slate-600 hover:text-emerald-800 transition-colors no-underline" style={{ fontFamily: "system-ui", fontSize: "12px", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to overview
-          </Link>
+          <div className="flex gap-5 items-center">
+            <Link to="/notes" className="flex items-center gap-1.5 text-slate-600 hover:text-emerald-800 transition-colors no-underline" style={{ fontFamily: "system-ui", fontSize: "12px", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+              About this tool
+            </Link>
+            <Link to="/" className="flex items-center gap-1.5 text-slate-600 hover:text-emerald-800 transition-colors no-underline" style={{ fontFamily: "system-ui", fontSize: "12px", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+              <ArrowLeft className="w-3.5 h-3.5" /> All tools
+            </Link>
+          </div>
         </div>
       </nav>
 
@@ -202,7 +209,7 @@ function ToolPage() {
         </div>
 
         <footer className="mt-16 pt-8 border-t border-slate-300 text-xs uppercase tracking-[0.2em] text-slate-500 flex justify-between flex-wrap gap-3" style={{ fontFamily: "system-ui" }}>
-          <span>AdvisorNotes — Prototype</span>
+          <span>Advisor Stack — Prototype</span>
           <span>Not a substitute for compliance review · Not investment advice</span>
         </footer>
       </div>
@@ -214,7 +221,8 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<StackHomePage />} />
+        <Route path="/notes" element={<LandingPage />} />
         <Route path="/app" element={<ToolPage />} />
       </Routes>
     </BrowserRouter>
