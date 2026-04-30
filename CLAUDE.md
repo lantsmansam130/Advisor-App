@@ -76,6 +76,15 @@ When adding a new page, import `StackNav`, `FloatingMark`, `palette`, and the he
 
 **Document upload (DecoderPage):** Uses `pdfjs-dist` for in-browser PDF text extraction (no backend cost, no server processing). The lib + worker are dynamically imported so the 1MB+ chunk only loads when a user actually drops a file. Plain `.txt` / `.md` files use `file.text()`. Scanned PDFs without a text layer aren't supported (no OCR yet) — the UI tells the user to paste instead.
 
+**Artifact rendering (chat + decoder output):** Shared component `src/MarkdownArtifact.jsx` renders model output as styled markdown (using `react-markdown` + `remark-gfm`) with custom components that match the design system — Instrument Serif headings, real checkboxes for GFM task lists (`- [ ]`), forest-green inline code, etc. Two render modes:
+
+- `<MarkdownArtifact content={text} streaming={bool} />` — adds an artifact-card wrapper with a header chrome (label, optional Subject row, Copy / Save / Compose buttons) and detects "email" output (`**Subject:** ...` lead line) to render a Gmail-style card with the subject pulled into a real header row. Used for assistant messages in chat. Pass `streaming={true}` while content is still arriving — actions hide and a blinking cursor renders below the body.
+- `<MarkdownContent content={text} />` — bare markdown rendering, no chrome. Used inside the decoder's per-section cards.
+
+**Decoder sectioning:** The `document_decoder` prompt emits exactly `## A. ...`, `## B. ...`, `## C. ...` markdown headers. `parseDecoderOutput()` in `DecoderPage.jsx` regex-splits on these and renders three separate cards (one per section, each with its own icon and label). If parsing fails (model deviates), it falls back to a single `<MarkdownContent>` card.
+
+**Chat prompt + markdown contract:** `ADVISOR_SYSTEM_PROMPT` instructs the model to lead emails with `**Subject:** <text>` (so the artifact card can extract it), use `## ` headers for multi-section drafts, GFM task-list syntax for to-dos, ALL CAPS field labels only for CRM-note format. Changing these conventions in the prompt requires updating the corresponding parse/detect logic in `MarkdownArtifact.jsx` (`detectOutputType`) and `DecoderPage.jsx` (`parseDecoderOutput`).
+
 ## Compliance posture (shapes prompts and copy)
 
 Every tool follows four guardrails baked into both the UI and the `PROMPTS`:

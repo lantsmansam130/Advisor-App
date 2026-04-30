@@ -1,6 +1,135 @@
-import { useState, useRef, useEffect } from "react";
-import { Copy, Check, Loader2, AlertTriangle, Upload, FileText, X } from "lucide-react";
+import { useState, useRef, useEffect, useMemo } from "react";
+import { Copy, Check, Loader2, AlertTriangle, Upload, FileText, X, Eye, HelpCircle, FileText as FileTextIcon } from "lucide-react";
 import { StackNav, FloatingMark, SectionLabel, EditorialHeading, palette } from "./StackHomePage.jsx";
+import { MarkdownContent } from "./MarkdownArtifact.jsx";
+
+// Parse the decoder output (sections A/B/C as defined in the document_decoder prompt)
+// into structured pieces. Falls back to a single "Decoded section" if the model deviates.
+function parseDecoderOutput(text) {
+  if (!text) return null;
+  // Match either "A. WHAT THIS SECTION SAYS" (legacy) or "## A. ..." (markdown)
+  const re = /(?:^|\n)#{0,3}\s*([ABC])\.\s+([^\n]+)\n([\s\S]*?)(?=(?:\n#{0,3}\s*[ABC]\.\s)|$)/g;
+  const sections = [];
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    sections.push({ key: m[1], heading: m[2].trim(), body: m[3].trim() });
+  }
+  if (sections.length < 2) return null;
+  return sections;
+}
+
+const SECTION_META = {
+  A: { icon: FileTextIcon, label: "What this section says" },
+  B: { icon: Eye, label: "Watch for" },
+  C: { icon: HelpCircle, label: "Questions to ask" },
+};
+
+function DecodedOutput({ output, loading, onCopyAll, copied }) {
+  const sections = useMemo(() => parseDecoderOutput(output), [output]);
+
+  // Empty state
+  if (!output && !loading) {
+    return (
+      <div
+        className="flex items-center justify-center text-center px-8 py-20"
+        style={{
+          background: palette.paper,
+          border: `1px dashed ${palette.borderMid}`,
+          borderRadius: "20px",
+          fontFamily: "'Instrument Serif', serif",
+          fontStyle: "italic",
+          color: palette.dust,
+          fontSize: "18px",
+          minHeight: "20rem",
+        }}
+      >
+        Your decoded breakdown will appear here. Always verify against the full document before any client conversation.
+      </div>
+    );
+  }
+
+  // Loading
+  if (loading && !output) {
+    return (
+      <div
+        className="flex items-center justify-center"
+        style={{ background: palette.paper, border: `1px solid ${palette.borderSubtle}`, borderRadius: "20px", color: palette.ash, minHeight: "20rem" }}
+      >
+        <Loader2 className="w-6 h-6 animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Top-level header chrome */}
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <span className="text-[11px] uppercase" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.18em", color: palette.ash }}>
+          Decoded — for advisor review
+        </span>
+        <button
+          onClick={onCopyAll}
+          className="text-[11px] uppercase flex items-center gap-1.5"
+          style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: palette.forest }}
+        >
+          {copied ? (<><Check className="w-3.5 h-3.5" /> Copied</>) : (<><Copy className="w-3.5 h-3.5" /> Copy all</>)}
+        </button>
+      </div>
+
+      {sections ? (
+        sections.map(({ key, heading, body }) => {
+          const meta = SECTION_META[key] || { icon: FileTextIcon, label: heading };
+          const Icon = meta.icon;
+          return (
+            <div
+              key={key}
+              style={{
+                background: palette.paper,
+                border: `1px solid ${palette.borderSubtle}`,
+                borderRadius: "20px",
+                overflow: "hidden",
+                boxShadow: "0 1px 2px rgba(15,14,12,0.04), 0 8px 24px -16px rgba(15,14,12,0.12)",
+              }}
+            >
+              <div
+                className="flex items-center gap-3 px-5 py-3.5"
+                style={{ background: palette.cream, borderBottom: `1px solid ${palette.borderSubtle}` }}
+              >
+                <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "rgba(31,58,46,0.06)" }}>
+                  <Icon className="w-4 h-4" style={{ color: palette.forest }} strokeWidth={1.6} />
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.18em", color: palette.ash }}>
+                    Section {key}
+                  </div>
+                  <div className="text-[16px]" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, letterSpacing: "-0.005em" }}>
+                    {meta.label}
+                  </div>
+                </div>
+              </div>
+              <div className="px-5 py-4">
+                <MarkdownContent content={body} />
+              </div>
+            </div>
+          );
+        })
+      ) : (
+        // Fallback: render the whole output as one card if parsing failed
+        <div
+          style={{
+            background: palette.paper,
+            border: `1px solid ${palette.borderSubtle}`,
+            borderRadius: "20px",
+            padding: "24px",
+            boxShadow: "0 1px 2px rgba(15,14,12,0.04), 0 8px 24px -16px rgba(15,14,12,0.12)",
+          }}
+        >
+          <MarkdownContent content={output} />
+        </div>
+      )}
+    </div>
+  );
+}
 
 const DOC_TYPES = [
   "Annuity contract",
@@ -330,39 +459,7 @@ export default function DecoderPage() {
         </button>
         {error && <p className="mb-6 text-sm" style={{ color: "#B5483B", fontFamily: "Inter" }}>{error}</p>}
 
-        <div style={{ background: palette.paper, border: `1px solid ${palette.borderSubtle}`, borderRadius: "20px", boxShadow: "0 1px 2px rgba(15,14,12,0.04), 0 8px 24px -16px rgba(15,14,12,0.12)" }}>
-          <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: `1px solid ${palette.borderSubtle}` }}>
-            <span className="text-[11px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: palette.ash }}>
-              Decoded — for advisor review
-            </span>
-            {output && (
-              <button
-                onClick={copyOutput}
-                className="text-[11px] uppercase flex items-center gap-1.5"
-                style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: palette.forest }}
-              >
-                {copied ? (<><Check className="w-3.5 h-3.5" /> Copied</>) : (<><Copy className="w-3.5 h-3.5" /> Copy all</>)}
-              </button>
-            )}
-          </div>
-          <div className="min-h-[24rem] p-6">
-            {!output && !loading && (
-              <div className="h-full min-h-[20rem] flex items-center justify-center text-center px-8" style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.dust, fontSize: "18px" }}>
-                Your decoded breakdown will appear here. Always verify against the full document before any client conversation.
-              </div>
-            )}
-            {loading && (
-              <div className="h-full min-h-[20rem] flex items-center justify-center" style={{ color: palette.ash }}>
-                <Loader2 className="w-6 h-6 animate-spin" />
-              </div>
-            )}
-            {output && (
-              <pre className="whitespace-pre-wrap text-[15px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ink }}>
-                {output}
-              </pre>
-            )}
-          </div>
-        </div>
+        <DecodedOutput output={output} loading={loading} onCopyAll={copyOutput} copied={copied} />
 
         <footer className="mt-16 pt-8 flex justify-between flex-wrap gap-3 text-[11px]" style={{ fontFamily: "Inter", letterSpacing: "0.18em", textTransform: "uppercase", color: palette.dust, borderTop: `1px solid ${palette.borderSubtle}` }}>
           <span>Advisor Stack — Prototype</span>

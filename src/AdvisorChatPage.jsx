@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
-  Send, Plus, Trash2, Copy, Check, Loader2, AlertTriangle, MessageSquare,
+  Send, Plus, Trash2, Loader2, AlertTriangle, MessageSquare,
   Mail, ClipboardList, ShieldCheck, FileSignature, ListChecks, Compass,
-  HelpCircle, BookOpen, ScrollText, Sparkles, MessageCircleMore,
+  HelpCircle, BookOpen, ScrollText, MessageCircleMore,
 } from "lucide-react";
-import { palette, FloatingMark } from "./StackHomePage.jsx";
+import { palette } from "./StackHomePage.jsx";
+import { MarkdownArtifact } from "./MarkdownArtifact.jsx";
 
 const STORAGE_KEY = "advisornotes.chats.v1";
 const MAX_CHATS = 50;
@@ -182,59 +183,50 @@ async function streamChatResponse(messages, { onText, onDone, onError, signal })
 // ---------- Components ----------
 
 function MessageBubble({ role, content, streaming }) {
-  const [copied, setCopied] = useState(false);
-  const copy = async () => {
-    await navigator.clipboard.writeText(content);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  };
-
   const isUser = role === "user";
 
-  return (
-    <div className={`group w-full flex ${isUser ? "justify-end" : "justify-start"} mb-5`}>
-      <div className={`max-w-[78%] ${isUser ? "" : "w-full"}`}>
-        {!isUser && (
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: palette.ink }}>
-              <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.cream, fontSize: "13px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
-            </div>
-            <span className="text-[11px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.16em", color: palette.ash }}>
-              AdvisorNotes
-            </span>
-            {streaming && (
-              <span className="text-[11px]" style={{ fontFamily: "Inter", color: palette.dust, fontStyle: "italic" }}>
-                drafting…
-              </span>
-            )}
+  // User messages stay as plain bubbles. Assistant output renders as a markdown artifact card
+  // (with type-aware chrome for emails + Copy/Save/Compose actions).
+  if (!isUser) {
+    return (
+      <div className="group w-full mb-6">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: palette.ink }}>
+            <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.cream, fontSize: "13px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
           </div>
-        )}
+          <span className="text-[11px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.16em", color: palette.ash }}>
+            AdvisorNotes
+          </span>
+          {streaming && (
+            <span className="text-[11px]" style={{ fontFamily: "Inter", color: palette.dust, fontStyle: "italic" }}>
+              drafting…
+            </span>
+          )}
+        </div>
+        {content || streaming ? (
+          <MarkdownArtifact content={content} streaming={streaming} />
+        ) : null}
+      </div>
+    );
+  }
+
+  return (
+    <div className="group w-full flex justify-end mb-5">
+      <div className="max-w-[78%]">
         <div
-          className={`text-[15px] leading-relaxed ${isUser ? "px-4 py-3" : ""}`}
+          className="text-[15px] leading-relaxed px-4 py-3"
           style={{
             fontFamily: "Inter",
             color: palette.ink,
-            background: isUser ? palette.paper : "transparent",
-            border: isUser ? `1px solid ${palette.borderSubtle}` : "none",
-            borderRadius: isUser ? "16px" : "0",
+            background: palette.paper,
+            border: `1px solid ${palette.borderSubtle}`,
+            borderRadius: "16px",
             whiteSpace: "pre-wrap",
             wordBreak: "break-word",
           }}
         >
-          {content || (streaming ? "" : "")}
-          {streaming && !isUser && (
-            <span style={{ display: "inline-block", width: "8px", height: "16px", marginLeft: "2px", background: palette.ink, opacity: 0.6, verticalAlign: "text-bottom", animation: "blink 1s step-end infinite" }} />
-          )}
+          {content}
         </div>
-        {!isUser && content && !streaming && (
-          <button
-            onClick={copy}
-            className="mt-2 inline-flex items-center gap-1.5 text-[11px] uppercase opacity-0 group-hover:opacity-100 transition-opacity"
-            style={{ fontFamily: "Inter", letterSpacing: "0.16em", color: palette.ash }}
-          >
-            {copied ? (<><Check className="w-3.5 h-3.5" /> Copied</>) : (<><Copy className="w-3.5 h-3.5" /> Copy</>)}
-          </button>
-        )}
       </div>
     </div>
   );
