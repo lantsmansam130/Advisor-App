@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import { Copy, Check, Sparkles, Mail, ClipboardList, ShieldCheck, FileSignature, Loader2, AlertTriangle, ArrowLeft } from "lucide-react";
+import { Copy, Check, Sparkles, Mail, ClipboardList, ShieldCheck, FileSignature, Loader2, AlertTriangle, ArrowLeft, Compass, ListChecks } from "lucide-react";
 import LandingPage from "./LandingPage.jsx";
 
 const OUTPUT_TYPES = [
   { id: "client_recap", label: "Client Meeting Recap", icon: Mail, description: "Compliant follow-up email summarizing the meeting" },
+  { id: "discovery_call", label: "Discovery Call Summary", icon: Compass, description: "Warm, professional follow-up after a first prospect meeting" },
   { id: "crm_note", label: "CRM Meeting Note", icon: ClipboardList, description: "Structured note for Redtail, Wealthbox, or Salesforce" },
   { id: "compliance_log", label: "Compliance Memo", icon: ShieldCheck, description: "Suitability rationale & audit-ready record" },
   { id: "ips_update", label: "IPS Change Summary", icon: FileSignature, description: "Investment Policy Statement updates from the discussion" },
+  { id: "task_list", label: "Internal Task List", icon: ListChecks, description: "Post-meeting tasks organized by owner for your team" },
 ];
 
 const TONES = ["Formal", "Warm", "Concise"];
@@ -186,35 +188,4 @@ function ToolPage() {
                 </div>
               )}
               {loading && (
-                <div className="h-full flex items-center justify-center text-slate-500">
-                  <Loader2 className="w-6 h-6 animate-spin" />
-                </div>
-              )}
-              {output && (
-                <pre className="whitespace-pre-wrap text-slate-800 text-[15px] leading-relaxed" style={{ fontFamily: "Georgia, serif" }}>
-                  {output}
-                </pre>
-              )}
-            </div>
-          </section>
-        </div>
-
-        <footer className="mt-16 pt-8 border-t border-slate-300 text-xs uppercase tracking-[0.2em] text-slate-500 flex justify-between flex-wrap gap-3" style={{ fontFamily: "system-ui" }}>
-          <span>AdvisorNotes — Prototype</span>
-          <span>Not a substitute for compliance review · Not investment advice</span>
-        </footer>
-      </div>
-    </div>
-  );
-}
-
-export default function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/app" element={<ToolPage />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
+                <div className="h-full flex items-center justify-center text-
