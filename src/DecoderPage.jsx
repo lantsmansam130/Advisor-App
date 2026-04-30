@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Copy, Check, Loader2, AlertTriangle, ArrowLeft } from "lucide-react";
+import { Copy, Check, Loader2, AlertTriangle } from "lucide-react";
+import { StackNav, FloatingMark, SectionLabel, EditorialHeading } from "./StackHomePage.jsx";
 
 const DOC_TYPES = [
   "Annuity contract",
@@ -13,6 +13,22 @@ const DOC_TYPES = [
 const READING_LEVELS = ["General client", "Sophisticated client"];
 
 const MAX_CHARS = 15000;
+
+const inputStyle = {
+  background: "rgba(255,255,255,0.03)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  borderRadius: "14px",
+  color: "#fff",
+};
+
+const optionBase = {
+  fontFamily: "Inter",
+  fontSize: "13px",
+  borderRadius: "999px",
+  padding: "10px 18px",
+  transition: "all 0.2s",
+  cursor: "pointer",
+};
 
 export default function DecoderPage() {
   const [docType, setDocType] = useState(DOC_TYPES[0]);
@@ -63,63 +79,42 @@ export default function DecoderPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
-      <div className="h-0.5 bg-emerald-800" />
+    <div className="min-h-screen" style={{ background: "#000", color: "#fff" }}>
+      <StackNav tool="Document Decoder" />
 
-      <nav className="border-b border-slate-200 bg-slate-50">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-2.5 no-underline">
-            <svg width="22" height="22" viewBox="0 0 28 28" className="flex-shrink-0">
-              <rect x="0" y="0" width="28" height="28" rx="2" fill="#065f46"/>
-              <text x="14" y="20" fontFamily="Georgia, serif" fontSize="18" fontStyle="italic" fill="#f8fafc" textAnchor="middle">A</text>
-            </svg>
-            <div className="text-xl text-slate-900" style={{ fontFamily: "Georgia, serif" }}>
-              Advisor<span className="italic text-emerald-800">Stack</span>
-            </div>
-            <span className="text-slate-400 mx-2" style={{ fontFamily: "Georgia, serif" }}>/</span>
-            <div className="text-base text-slate-700" style={{ fontFamily: "Georgia, serif" }}>Document Decoder</div>
-          </Link>
-          <Link to="/" className="flex items-center gap-1.5 text-slate-600 hover:text-emerald-800 transition-colors no-underline" style={{ fontFamily: "system-ui", fontSize: "12px", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-            <ArrowLeft className="w-3.5 h-3.5" /> All tools
-          </Link>
-        </div>
-      </nav>
+      <main className="max-w-5xl mx-auto px-6 pt-12 pb-16">
 
-      <div className="max-w-6xl mx-auto px-6 py-10">
-
-        <div className="mb-8">
-          <h1 className="text-4xl text-slate-900 leading-tight mb-3" style={{ fontFamily: "Georgia, serif", fontWeight: 400 }}>
-            Document Decoder
-          </h1>
-          <p className="text-lg text-slate-600 max-w-3xl leading-relaxed" style={{ fontFamily: "Georgia, serif" }}>
-            Paste a section of an annuity contract, insurance policy, trust document, or benefits package. Get a plain-English breakdown — what it says, what to watch for, and what to ask before signing.
+        <div className="mb-12 text-center">
+          <SectionLabel>Document Decoder</SectionLabel>
+          <EditorialHeading italic="Decode" rest="the fine print." size="lg" className="mb-5 max-w-3xl mx-auto" />
+          <p className="max-w-2xl mx-auto text-lg" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.65)", lineHeight: 1.55 }}>
+            Paste a section of an annuity contract, insurance policy, trust document, or benefits package. Get a plain-English breakdown — what it says, what to watch for, what to ask before signing.
           </p>
         </div>
 
-        <div className="mb-8 p-4 bg-amber-50 border border-amber-300 flex gap-3 items-start">
-          <AlertTriangle className="w-5 h-5 text-amber-700 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-amber-900 leading-relaxed" style={{ fontFamily: "system-ui" }}>
-            <strong>Compliance reminder:</strong> Explanations are starting drafts, not legal, tax, or insurance advice. Verify with the document issuer, the client's attorney, or the appropriate professional before any client conversation or recommendation.
+        <div className="mb-8 p-5 flex gap-3 items-start" style={{ background: "rgba(252,211,77,0.08)", border: "1px solid rgba(252,211,77,0.25)", borderRadius: "16px" }}>
+          <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#fbbf24" }} />
+          <p className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(254,243,199,0.95)" }}>
+            <strong style={{ fontWeight: 600 }}>Compliance reminder:</strong> Explanations are starting drafts, not legal, tax, or insurance advice. Verify with the document issuer, the client's attorney, or the appropriate professional before any client conversation or recommendation.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6 mb-6">
+        <div className="grid lg:grid-cols-2 gap-5 mb-6">
           <div>
-            <span className="text-xs uppercase tracking-[0.2em] text-slate-500 block mb-3" style={{ fontFamily: "system-ui" }}>
-              01 — Document type
-            </span>
-            <div className="grid grid-cols-2 gap-2">
-              {DOC_TYPES.map((d, i) => {
+            <SectionLabel>01 — Document type</SectionLabel>
+            <div className="flex flex-wrap gap-2">
+              {DOC_TYPES.map((d) => {
                 const active = docType === d;
-                const fullWidth = i === DOC_TYPES.length - 1;
                 return (
                   <button
                     key={d}
                     onClick={() => setDocType(d)}
-                    className={`p-2.5 border text-sm transition-all text-left ${
-                      active ? "border-emerald-800 bg-emerald-50 text-emerald-800" : "border-slate-300 bg-white text-slate-700 hover:border-slate-500"
-                    } ${fullWidth ? "col-span-2" : ""}`}
-                    style={{ fontFamily: "system-ui" }}
+                    style={{
+                      ...optionBase,
+                      background: active ? "#fff" : "rgba(255,255,255,0.04)",
+                      color: active ? "#000" : "rgba(255,255,255,0.85)",
+                      border: `1px solid ${active ? "#fff" : "rgba(255,255,255,0.12)"}`,
+                    }}
                   >
                     {d}
                   </button>
@@ -129,68 +124,71 @@ export default function DecoderPage() {
           </div>
 
           <div>
-            <span className="text-xs uppercase tracking-[0.2em] text-slate-500 block mb-3" style={{ fontFamily: "system-ui" }}>
-              02 — Reading level for output
-            </span>
-            <div className="flex gap-2">
-              {READING_LEVELS.map((r) => (
-                <button
-                  key={r}
-                  onClick={() => setReadingLevel(r)}
-                  className={`px-4 py-2.5 border text-sm transition-all ${
-                    readingLevel === r ? "border-slate-900 bg-slate-900 text-slate-50" : "border-slate-300 bg-white text-slate-700 hover:border-slate-500"
-                  }`}
-                  style={{ fontFamily: "system-ui" }}
-                >
-                  {r}
-                </button>
-              ))}
+            <SectionLabel>02 — Reading level</SectionLabel>
+            <div className="flex flex-wrap gap-2">
+              {READING_LEVELS.map((r) => {
+                const active = readingLevel === r;
+                return (
+                  <button
+                    key={r}
+                    onClick={() => setReadingLevel(r)}
+                    style={{
+                      ...optionBase,
+                      background: active ? "#fff" : "rgba(255,255,255,0.04)",
+                      color: active ? "#000" : "rgba(255,255,255,0.85)",
+                      border: `1px solid ${active ? "#fff" : "rgba(255,255,255,0.12)"}`,
+                    }}
+                  >
+                    {r}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
 
         <div className="mb-6">
-          <div className="flex justify-between items-center mb-3">
-            <span className="text-xs uppercase tracking-[0.2em] text-slate-500" style={{ fontFamily: "system-ui" }}>
-              03 — Paste the document section
-            </span>
-            <span className={`text-xs ${source.length > MAX_CHARS ? "text-red-700" : "text-slate-500"}`} style={{ fontFamily: "system-ui" }}>
-              {source.length.toLocaleString()} / {MAX_CHARS.toLocaleString()} characters
+          <div className="flex justify-between items-end mb-3">
+            <SectionLabel>03 — Paste the document section</SectionLabel>
+            <span className="text-[11px]" style={{ fontFamily: "Inter", color: source.length > MAX_CHARS ? "#f87171" : "rgba(255,255,255,0.45)", letterSpacing: "0.1em" }}>
+              {source.length.toLocaleString()} / {MAX_CHARS.toLocaleString()}
             </span>
           </div>
           <textarea
             value={source}
             onChange={(e) => setSource(e.target.value)}
-            placeholder='"Section 4.3 — Surrender Charges. The Owner may surrender this Contract for its Cash Surrender Value at any time prior to the Annuity Date. Surrender Charges shall apply during the Surrender Charge Period as set forth in Schedule A..."'
-            className="w-full h-64 p-4 bg-white border border-slate-300 rounded-sm text-slate-800 text-sm leading-relaxed focus:outline-none focus:border-emerald-700 transition-colors resize-none"
-            style={{ fontFamily: "Georgia, serif" }}
+            placeholder='"Section 4.3 — Surrender Charges. The Owner may surrender this Contract for its Cash Surrender Value at any time prior to the Annuity Date..."'
+            className="w-full h-64 p-5 text-[14px] leading-relaxed focus:outline-none resize-none"
+            style={{ ...inputStyle, fontFamily: "Inter" }}
+            onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"; }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
           />
         </div>
 
         <button
           onClick={decode}
           disabled={loading || source.length > MAX_CHARS}
-          className="w-full py-4 bg-slate-900 text-slate-50 hover:bg-emerald-800 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 mb-8"
-          style={{ fontFamily: "system-ui", letterSpacing: "0.1em", textTransform: "uppercase", fontSize: "13px" }}
+          className="w-full py-4 mb-8 flex items-center justify-center gap-2 disabled:opacity-50"
+          style={{ background: "#fff", color: "#000", borderRadius: "999px", fontFamily: "Inter", fontWeight: 500, fontSize: "12px", letterSpacing: "0.14em", textTransform: "uppercase", border: "1px solid #fff", cursor: loading ? "wait" : "pointer" }}
         >
           {loading ? (
-            <><Loader2 className="w-4 h-4 animate-spin" /> Decoding document...</>
+            <><Loader2 className="w-4 h-4 animate-spin" /> Decoding document…</>
           ) : (
-            <>Decode document →</>
+            <>Decode document <span>→</span></>
           )}
         </button>
-        {error && <p className="mb-6 text-sm text-red-700">{error}</p>}
+        {error && <p className="mb-6 text-sm" style={{ color: "#f87171", fontFamily: "Inter" }}>{error}</p>}
 
-        <div className="bg-white border border-slate-300 rounded-sm">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-            <span className="text-xs uppercase tracking-[0.2em] text-slate-500" style={{ fontFamily: "system-ui" }}>
+        <div style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "20px" }}>
+          <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+            <span className="text-[11px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: "rgba(255,255,255,0.5)" }}>
               Decoded — for advisor review
             </span>
             {output && (
               <button
                 onClick={copyOutput}
-                className="text-xs uppercase tracking-[0.2em] text-slate-600 hover:text-emerald-800 flex items-center gap-1.5 transition-colors"
-                style={{ fontFamily: "system-ui" }}
+                className="text-[11px] uppercase flex items-center gap-1.5"
+                style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: "rgba(255,255,255,0.7)" }}
               >
                 {copied ? (<><Check className="w-3.5 h-3.5" /> Copied</>) : (<><Copy className="w-3.5 h-3.5" /> Copy all</>)}
               </button>
@@ -198,28 +196,30 @@ export default function DecoderPage() {
           </div>
           <div className="min-h-[24rem] p-6">
             {!output && !loading && (
-              <div className="h-full min-h-[20rem] flex items-center justify-center text-slate-400 italic text-center px-8">
+              <div className="h-full min-h-[20rem] flex items-center justify-center text-center px-8" style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: "rgba(255,255,255,0.35)", fontSize: "18px" }}>
                 Your decoded breakdown will appear here. Always verify against the full document before any client conversation.
               </div>
             )}
             {loading && (
-              <div className="h-full min-h-[20rem] flex items-center justify-center text-slate-500">
+              <div className="h-full min-h-[20rem] flex items-center justify-center" style={{ color: "rgba(255,255,255,0.5)" }}>
                 <Loader2 className="w-6 h-6 animate-spin" />
               </div>
             )}
             {output && (
-              <pre className="whitespace-pre-wrap text-slate-800 text-[15px] leading-relaxed" style={{ fontFamily: "Georgia, serif" }}>
+              <pre className="whitespace-pre-wrap text-[15px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.9)" }}>
                 {output}
               </pre>
             )}
           </div>
         </div>
 
-        <footer className="mt-16 pt-8 border-t border-slate-300 text-xs uppercase tracking-[0.2em] text-slate-500 flex justify-between flex-wrap gap-3" style={{ fontFamily: "system-ui" }}>
+        <footer className="mt-16 pt-8 flex justify-between flex-wrap gap-3 text-[11px]" style={{ fontFamily: "Inter", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
           <span>Advisor Stack — Prototype</span>
           <span>Not a substitute for compliance review · Not investment advice</span>
         </footer>
-      </div>
+      </main>
+
+      <FloatingMark />
     </div>
   );
 }

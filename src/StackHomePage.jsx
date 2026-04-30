@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Mail, FileText, BarChart3, Compass, ShieldAlert, Heart, FileCog, FilePen } from "lucide-react";
+import { Mail, FileText, BarChart3, Compass, ShieldAlert, Heart, FileCog, FilePen, ArrowUpRight } from "lucide-react";
 
 function useFadeIn() {
   const ref = useRef(null);
@@ -18,16 +18,6 @@ function useFadeIn() {
   return [ref, visible];
 }
 
-function useScrollY() {
-  const [y, setY] = useState(0);
-  useEffect(() => {
-    const onScroll = () => setY(window.scrollY);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-  return y;
-}
-
 function FadeSection({ children, className = "", style = {}, id }) {
   const [ref, visible] = useFadeIn();
   return (
@@ -38,8 +28,8 @@ function FadeSection({ children, className = "", style = {}, id }) {
       style={{
         ...style,
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0) scale(1)" : "translateY(40px) scale(0.97)",
-        transition: "opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)",
+        transform: visible ? "translateY(0)" : "translateY(24px)",
+        transition: "opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1)",
       }}
     >
       {children}
@@ -61,306 +51,325 @@ const TOOLS = [
 const availableCount = TOOLS.filter((t) => t.available).length;
 const comingSoonCount = TOOLS.length - availableCount;
 
+// Kept for backwards-compat with existing imports; renders nothing.
 export function AnimatedBackground() {
-  const canvasRef = useRef(null);
-  const scrollY = useScrollY();
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    let raf;
-    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
-    resize();
-    window.addEventListener("resize", resize);
-    const N = 60;
-    const parts = Array.from({ length: N }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.25,
-      vy: (Math.random() - 0.5) * 0.25,
-      r: Math.random() * 1.6 + 0.4,
-    }));
-    const tick = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      parts.forEach((p) => {
-        p.x += p.vx; p.y += p.vy;
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(30, 27, 75, 0.35)";
-        ctx.fill();
-      });
-      for (let i = 0; i < parts.length; i++) {
-        for (let j = i + 1; j < parts.length; j++) {
-          const dx = parts[i].x - parts[j].x;
-          const dy = parts[i].y - parts[j].y;
-          const d = Math.sqrt(dx * dx + dy * dy);
-          if (d < 110) {
-            ctx.beginPath();
-            ctx.moveTo(parts[i].x, parts[i].y);
-            ctx.lineTo(parts[j].x, parts[j].y);
-            ctx.strokeStyle = `rgba(30, 27, 75, ${0.18 * (1 - d / 110)})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        }
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    tick();
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
-  }, []);
-
-  return (
-    <>
-      <div className="fixed inset-0 pointer-events-none z-0" style={{ background: "linear-gradient(135deg, #d4e4ff 0%, #e8d4f5 35%, #ffd4e8 65%, #d4f0e0 100%)" }} />
-      <div className="fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: "linear-gradient(rgba(30,27,75,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(30,27,75,0.06) 1px, transparent 1px)", backgroundSize: "48px 48px", backgroundPosition: `0 ${scrollY * 0.3}px` }} />
-      <div className="fixed pointer-events-none z-0" style={{ top: "10%", left: "-5%", width: "32rem", height: "32rem", background: "rgba(110, 231, 183, 0.45)", borderRadius: "50%", filter: "blur(60px)", transform: `translate(${scrollY * 0.1}px, ${scrollY * -0.2}px)` }} />
-      <div className="fixed pointer-events-none z-0" style={{ top: "30%", right: "-8%", width: "28rem", height: "28rem", background: "rgba(165, 180, 252, 0.55)", borderRadius: "50%", filter: "blur(60px)", transform: `translate(${scrollY * -0.15}px, ${scrollY * 0.1}px)` }} />
-      <div className="fixed pointer-events-none z-0" style={{ bottom: "10%", left: "30%", width: "30rem", height: "30rem", background: "rgba(252, 165, 165, 0.4)", borderRadius: "50%", filter: "blur(60px)", transform: `translate(${scrollY * 0.2}px, ${scrollY * -0.1}px)` }} />
-      <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" />
-    </>
-  );
+  return null;
 }
 
 export function StackNav({ tool }) {
   return (
-    <nav className="mx-6 mt-6">
-      <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center" style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.7)", borderRadius: "16px", boxShadow: "0 8px 32px rgba(31,38,135,0.08)" }}>
-        <Link to="/" className="flex items-center gap-2.5 no-underline">
-          <div className="w-7 h-7 rounded-md flex items-center justify-center" style={{ background: "rgba(30,27,75,0.95)", boxShadow: "0 2px 10px rgba(30,27,75,0.35)" }}>
-            <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", color: "#fff", fontSize: "16px" }}>A</span>
+    <nav className="sticky top-4 z-50 mx-4 mt-4">
+      <div
+        className="max-w-6xl mx-auto px-4 py-2.5 flex justify-between items-center"
+        style={{
+          background: "rgba(15,15,17,0.72)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          border: "1px solid rgba(255,255,255,0.07)",
+          borderRadius: "999px",
+        }}
+      >
+        <Link to="/" className="flex items-center gap-2.5 no-underline pl-1">
+          <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "#fff" }}>
+            <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: "#000", fontSize: "17px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
           </div>
-          <div className="text-xl" style={{ fontFamily: "Georgia, serif", color: "#0a0f1f" }}>
-            Advisor<span className="italic" style={{ color: "#1e1b4b" }}>Stack</span>
-          </div>
+          <span style={{ fontFamily: "'Instrument Serif', serif", color: "#fff", fontSize: "20px", letterSpacing: "-0.01em", lineHeight: 1 }}>
+            Advisor<span style={{ fontStyle: "italic" }}>Stack</span>
+          </span>
           {tool && (
             <>
-              <span style={{ color: "#94a3b8", margin: "0 6px", fontFamily: "Georgia, serif" }}>/</span>
-              <span style={{ fontFamily: "Georgia, serif", color: "#1f2937", fontSize: "15px" }}>{tool}</span>
+              <span className="opacity-30 mx-1" style={{ fontFamily: "'Instrument Serif', serif", fontSize: "18px" }}>/</span>
+              <span style={{ fontFamily: "Inter", fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>{tool}</span>
             </>
           )}
         </Link>
-        <div className="flex gap-7 items-center" style={{ fontFamily: "system-ui", fontSize: "13px", color: "#1f2937" }}>
-          {tool ? (
-            <Link to="/" className="hover:opacity-70 no-underline" style={{ color: "#1f2937" }}>← All tools</Link>
-          ) : (
-            <>
-              <a href="#tools" className="hover:opacity-70 no-underline" style={{ color: "#1f2937" }}>Tools</a>
-              <a href="#compliance" className="hover:opacity-70 no-underline" style={{ color: "#1f2937" }}>Compliance</a>
-            </>
-          )}
-        </div>
+        {tool ? (
+          <Link to="/" className="inline-flex items-center gap-2 px-4 py-2 no-underline" style={{ color: "rgba(255,255,255,0.85)", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}>
+            ← All tools
+          </Link>
+        ) : (
+          <Link to="/notes" className="inline-flex items-center gap-2 px-5 py-2.5 no-underline" style={{ background: "#fff", color: "#000", borderRadius: "999px", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}>
+            Get started <span style={{ marginLeft: 2 }}>→</span>
+          </Link>
+        )}
       </div>
     </nav>
   );
 }
 
+export function FloatingMark() {
+  return (
+    <Link
+      to="/"
+      className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full flex items-center justify-center no-underline"
+      style={{ background: "#000", border: "1px solid rgba(255,255,255,0.18)", boxShadow: "0 8px 24px rgba(0,0,0,0.4)" }}
+    >
+      <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: "#fff", fontSize: "24px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
+    </Link>
+  );
+}
+
+export function PillCTA({ to, children, dark = false, small = false }) {
+  const base = {
+    fontFamily: "Inter",
+    fontWeight: 500,
+    fontSize: small ? "11px" : "12px",
+    letterSpacing: "0.14em",
+    textTransform: "uppercase",
+    borderRadius: "999px",
+    transition: "transform 0.2s, box-shadow 0.2s",
+  };
+  const style = dark
+    ? { ...base, background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.25)" }
+    : { ...base, background: "#fff", color: "#000", border: "1px solid #fff" };
+  return (
+    <Link
+      to={to}
+      className={`inline-flex items-center gap-2 no-underline ${small ? "px-5 py-2.5" : "px-7 py-3.5"}`}
+      style={style}
+    >
+      {children} <span>→</span>
+    </Link>
+  );
+}
+
+export function SectionLabel({ children }) {
+  return (
+    <div
+      className="text-[11px] uppercase mb-4"
+      style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.22em", color: "rgba(255,255,255,0.5)" }}
+    >
+      {children}
+    </div>
+  );
+}
+
+export function EditorialHeading({ italic, rest, size = "lg", className = "" }) {
+  const sizes = {
+    xl: "text-5xl md:text-7xl",
+    lg: "text-4xl md:text-6xl",
+    md: "text-3xl md:text-5xl",
+    sm: "text-2xl md:text-4xl",
+  };
+  return (
+    <h2
+      className={`${sizes[size]} ${className}`}
+      style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", color: "#fff" }}
+    >
+      <span style={{ fontStyle: "italic" }}>{italic}</span> {rest}
+    </h2>
+  );
+}
+
+export const darkCard = {
+  background: "rgba(255,255,255,0.025)",
+  border: "1px solid rgba(255,255,255,0.07)",
+  borderRadius: "20px",
+};
+
+export const indigoBlock = {
+  background: "linear-gradient(180deg, #0f0a3d 0%, #2e1faa 45%, #5b4fe5 100%)",
+  borderRadius: "28px",
+};
+
+export const skyBadge = {
+  background: "rgba(186,230,253,0.95)",
+  color: "#0c4a6e",
+  fontFamily: "Inter",
+  fontWeight: 500,
+  fontSize: "11px",
+  letterSpacing: "0.18em",
+  textTransform: "uppercase",
+  borderRadius: "999px",
+  padding: "8px 18px",
+  display: "inline-block",
+};
+
 export default function StackHomePage() {
   return (
-    <div className="min-h-screen relative" style={{ fontFamily: "Georgia, 'Times New Roman', serif", color: "#0a0f1f" }}>
-      <AnimatedBackground />
+    <div className="min-h-screen" style={{ background: "#000", color: "#fff" }}>
+      <StackNav />
 
-      <div className="relative z-10">
-        <StackNav />
+      <main className="max-w-6xl mx-auto px-6">
 
-        <div className="max-w-6xl mx-auto px-6">
+        {/* HERO */}
+        <FadeSection className="pt-24 md:pt-32 pb-20 text-center">
+          <div className="mb-7 flex justify-center">
+            <span style={skyBadge}>Compliance-first AI for advisors</span>
+          </div>
+          <EditorialHeading italic="Less" rest={<>paperwork.<br/><span style={{ fontStyle: "italic" }}>More</span> advising.</>} size="xl" className="mb-6 max-w-4xl mx-auto" />
+          <p className="max-w-xl mx-auto mb-10 text-lg" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.65)", lineHeight: 1.55 }}>
+            A growing suite of focused AI tools that handle the writing, prep, and follow-up that fill an advisor's day — drafted in the time it takes to review them.
+          </p>
+          <div className="flex gap-3 items-center justify-center flex-wrap">
+            <PillCTA to="/notes">Try AdvisorNotes</PillCTA>
+            <PillCTA to="/decoder" dark>Decode a document</PillCTA>
+          </div>
+          <div className="mt-12 flex justify-center gap-8 flex-wrap text-[11px]" style={{ fontFamily: "Inter", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)" }}>
+            <span>Drafts only</span>
+            <span>Always advisor-reviewed</span>
+            <span>Never a recommendation</span>
+          </div>
+        </FadeSection>
 
-          <FadeSection className="pt-20 pb-14">
-            <div className="text-xs uppercase tracking-[0.22em] mb-5" style={{ fontFamily: "system-ui", color: "#1e1b4b" }}>
-              A growing suite of compliance-first AI tools
+        {/* TOOLS GRID */}
+        <FadeSection id="tools" className="py-16">
+          <div className="flex justify-between items-end mb-10 flex-wrap gap-4">
+            <div>
+              <SectionLabel>The stack</SectionLabel>
+              <EditorialHeading italic="Eight" rest="tools. One discipline." size="md" />
             </div>
-            <h1 className="text-5xl md:text-6xl leading-tight mb-6 max-w-4xl" style={{ fontFamily: "Georgia, serif", fontWeight: 400, letterSpacing: "-0.02em", color: "#0a0f1f" }}>
-              The AI toolkit, <span className="italic" style={{ color: "#1e1b4b" }}>built for the way advisors actually work</span>.
-            </h1>
-            <p className="text-xl leading-relaxed max-w-2xl mb-7" style={{ fontFamily: "Georgia, serif", color: "#1f2937" }}>
-              A growing set of focused tools that take the friction out of the paperwork, prep work, and back-office writing that fills your day. Every output is yours to review before it goes anywhere.
-            </p>
-            <div className="text-xs uppercase tracking-[0.2em] pt-5 max-w-2xl" style={{ fontFamily: "system-ui", color: "#1e1b4b", borderTop: "1px solid rgba(30,27,75,0.2)" }}>
-              Drafts only · Always advisor-reviewed · Never a recommendation
+            <div className="text-[11px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: "rgba(255,255,255,0.5)" }}>
+              {availableCount} available · {comingSoonCount} coming soon
             </div>
-          </FadeSection>
+          </div>
 
-          <FadeSection id="tools" className="py-14">
-            <div className="flex justify-between items-baseline mb-7 flex-wrap gap-3">
-              <div>
-                <div className="text-xs uppercase tracking-[0.22em] mb-2" style={{ fontFamily: "system-ui", color: "#1e1b4b" }}>The stack</div>
-                <h2 className="text-3xl leading-tight" style={{ fontFamily: "Georgia, serif", fontWeight: 400, color: "#0a0f1f" }}>
-                  Eight tools. One discipline.
-                </h2>
-              </div>
-              <div className="text-xs uppercase tracking-[0.18em]" style={{ fontFamily: "system-ui", color: "#1e1b4b" }}>
-                {availableCount} available · {comingSoonCount} coming soon
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-5">
-              {TOOLS.map((tool) => {
-                const Icon = tool.icon;
-                if (tool.available) {
-                  return (
-                    <Link key={tool.id} to={tool.href} className="block no-underline group" style={{
-                      background: "rgba(255,255,255,0.55)",
-                      backdropFilter: "blur(20px)",
-                      WebkitBackdropFilter: "blur(20px)",
-                      border: "1px solid rgba(30,27,75,0.4)",
-                      borderRadius: "16px",
-                      padding: "22px",
-                      boxShadow: "0 8px 32px rgba(31,38,135,0.1)",
-                      transition: "transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)",
-                    }}
-                    onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-4px) scale(1.01)"; e.currentTarget.style.boxShadow = "0 16px 48px rgba(31,38,135,0.18)"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0) scale(1)"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(31,38,135,0.1)"; }}
-                    >
-                      <div className="flex items-center justify-between mb-3.5">
-                        <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: "rgba(30,27,75,0.12)" }}>
-                          <Icon className="w-4.5 h-4.5" style={{ color: "#1e1b4b" }} strokeWidth={1.8} />
-                        </div>
-                        <div className="text-xs uppercase tracking-[0.18em]" style={{ fontFamily: "system-ui", color: "#1e1b4b" }}>Available now →</div>
-                      </div>
-                      <div className="text-2xl mb-2" style={{ fontFamily: "Georgia, serif", color: "#0a0f1f" }}>
-                        {tool.name === "AdvisorNotes" ? <>Advisor<span className="italic" style={{ color: "#1e1b4b" }}>Notes</span></> : tool.name}
-                      </div>
-                      <div className="text-sm leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#1f2937" }}>{tool.description}</div>
-                    </Link>
-                  );
-                }
+          <div className="grid md:grid-cols-2 gap-4">
+            {TOOLS.map((tool) => {
+              const Icon = tool.icon;
+              if (tool.available) {
                 return (
-                  <div key={tool.id} style={{
-                    background: "rgba(255,255,255,0.32)",
-                    backdropFilter: "blur(16px)",
-                    WebkitBackdropFilter: "blur(16px)",
-                    border: "1px solid rgba(255,255,255,0.5)",
-                    borderRadius: "16px",
-                    padding: "22px",
-                    boxShadow: "0 8px 32px rgba(31,38,135,0.06)",
-                    opacity: 0.78,
-                  }}>
-                    <div className="flex items-center justify-between mb-3.5">
-                      <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: "rgba(71,85,105,0.12)" }}>
-                        <Icon className="w-4.5 h-4.5" style={{ color: "#475569" }} strokeWidth={1.8} />
+                  <Link
+                    key={tool.id}
+                    to={tool.href}
+                    className="block no-underline group"
+                    style={{ ...darkCard, padding: "26px", transition: "background 0.3s, transform 0.3s, border-color 0.3s" }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.025)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)"; e.currentTarget.style.transform = "translateY(0)"; }}
+                  >
+                    <div className="flex items-center justify-between mb-5">
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.06)" }}>
+                        <Icon className="w-4 h-4" style={{ color: "#fff" }} strokeWidth={1.6} />
                       </div>
-                      <div className="text-xs uppercase tracking-[0.18em]" style={{ fontFamily: "system-ui", color: "#475569" }}>
-                        {tool.status || "Coming soon"}
-                      </div>
+                      <ArrowUpRight className="w-4 h-4" style={{ color: "rgba(255,255,255,0.5)" }} strokeWidth={1.6} />
                     </div>
-                    <div className="text-2xl mb-2" style={{ fontFamily: "Georgia, serif", color: "#1e293b" }}>{tool.name}</div>
-                    <div className="text-sm leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#475569" }}>{tool.description}</div>
-                  </div>
+                    <div className="text-2xl mb-2" style={{ fontFamily: "'Instrument Serif', serif", color: "#fff", letterSpacing: "-0.01em" }}>
+                      {tool.name === "AdvisorNotes" ? <>Advisor<span style={{ fontStyle: "italic" }}>Notes</span></> : tool.name}
+                    </div>
+                    <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.6)" }}>{tool.description}</div>
+                  </Link>
                 );
-              })}
-            </div>
-          </FadeSection>
-
-          <FadeSection id="savings" className="py-14">
-            <div style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.7)", borderRadius: "16px", padding: "32px", boxShadow: "0 8px 32px rgba(31,38,135,0.08)" }}>
-              <div className="text-xs uppercase tracking-[0.22em] mb-3" style={{ fontFamily: "system-ui", color: "#1e1b4b" }}>What it gives back</div>
-              <h2 className="text-3xl leading-tight mb-7 max-w-2xl" style={{ fontFamily: "Georgia, serif", fontWeight: 400, color: "#0a0f1f" }}>
-                Hours back. Real money saved.
-              </h2>
-              <div className="grid md:grid-cols-3 gap-6 max-w-4xl mb-5">
-                <div>
-                  <div className="text-5xl mb-2 leading-none" style={{ fontFamily: "Georgia, serif", color: "#1e1b4b", fontVariantNumeric: "tabular-nums" }}>~5 hrs</div>
-                  <div className="text-sm leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#1f2937" }}>saved per week on post-meeting paperwork</div>
-                </div>
-                <div>
-                  <div className="text-5xl mb-2 leading-none" style={{ fontFamily: "Georgia, serif", color: "#1e1b4b", fontVariantNumeric: "tabular-nums" }}>~$15k</div>
-                  <div className="text-sm leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#1f2937" }}>in advisor time recaptured per year, per seat</div>
-                </div>
-                <div>
-                  <div className="text-5xl mb-2 leading-none" style={{ fontFamily: "Georgia, serif", color: "#1e1b4b", fontVariantNumeric: "tabular-nums" }}>$0</div>
-                  <div className="text-sm leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#1f2937" }}>extra spent on writing tools, transcription, or paraplanner overflow</div>
-                </div>
-              </div>
-              <div className="italic max-w-2xl" style={{ fontFamily: "Georgia, serif", color: "#475569", fontSize: "12px" }}>Estimates based on a 30-meeting/month practice at $200/hr advisor time. Your mileage will vary.</div>
-            </div>
-          </FadeSection>
-
-          <FadeSection id="trends" className="py-14">
-            <div style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.7)", borderRadius: "16px", padding: "32px", boxShadow: "0 8px 32px rgba(31,38,135,0.08)" }}>
-              <div className="text-xs uppercase tracking-[0.22em] mb-3" style={{ fontFamily: "system-ui", color: "#1e1b4b" }}>Where AI is going</div>
-              <h2 className="text-3xl leading-tight mb-7 max-w-2xl" style={{ fontFamily: "Georgia, serif", fontWeight: 400, color: "#0a0f1f" }}>
-                Four shifts reshaping the advisor's desk.
-              </h2>
-              <div className="grid md:grid-cols-2 gap-6">
-                {[
-                  ["01", "Note-taking is the first domino.", "Meeting recaps and CRM entries are where every practice starts."],
-                  ["02", "Compliance is the new differentiator.", "Generic AI tools won't survive an examiner's scrutiny."],
-                  ["03", "Human-in-the-loop is non-negotiable.", "AI assists. The advisor decides. Always."],
-                  ["04", "Your own data is the next frontier.", "The real value sits in your CRM, your meetings, your book."],
-                ].map(([num, title, body]) => (
-                  <div key={num} className="pt-4" style={{ borderTop: "1px solid rgba(30,27,75,0.18)" }}>
-                    <div className="text-2xl mb-2.5 leading-none" style={{ fontFamily: "Georgia, serif", color: "#1e1b4b", fontVariantNumeric: "tabular-nums" }}>{num}</div>
-                    <div className="text-base mb-1.5" style={{ fontFamily: "Georgia, serif", color: "#0a0f1f" }}>{title}</div>
-                    <div className="text-sm leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#1f2937" }}>{body}</div>
+              }
+              return (
+                <div key={tool.id} style={{ ...darkCard, padding: "26px", opacity: 0.55 }}>
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.04)" }}>
+                      <Icon className="w-4 h-4" style={{ color: "rgba(255,255,255,0.5)" }} strokeWidth={1.6} />
+                    </div>
+                    <span className="text-[10px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: "rgba(255,255,255,0.4)" }}>
+                      {tool.status || "Coming soon"}
+                    </span>
                   </div>
-                ))}
+                  <div className="text-2xl mb-2" style={{ fontFamily: "'Instrument Serif', serif", color: "rgba(255,255,255,0.85)", letterSpacing: "-0.01em" }}>{tool.name}</div>
+                  <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.45)" }}>{tool.description}</div>
+                </div>
+              );
+            })}
+          </div>
+        </FadeSection>
+
+        {/* INDIGO FEATURE BLOCK — SAVINGS */}
+        <FadeSection id="savings" className="py-16">
+          <div style={{ ...indigoBlock, padding: "56px 40px" }}>
+            <SectionLabel>What it gives back</SectionLabel>
+            <EditorialHeading italic="Hours" rest="back. Real money saved." size="md" className="mb-12 max-w-2xl" />
+            <div className="grid md:grid-cols-3 gap-8 max-w-4xl">
+              <div>
+                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: "#fff", fontVariantNumeric: "tabular-nums" }}>~5 hrs</div>
+                <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.75)" }}>saved per week on post-meeting paperwork</div>
+              </div>
+              <div>
+                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: "#fff", fontVariantNumeric: "tabular-nums" }}>~$15k</div>
+                <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.75)" }}>in advisor time recaptured per year, per seat</div>
+              </div>
+              <div>
+                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: "#fff", fontVariantNumeric: "tabular-nums" }}>$0</div>
+                <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.75)" }}>extra spent on writing tools, transcription, or paraplanner overflow</div>
               </div>
             </div>
-          </FadeSection>
-
-          <FadeSection id="stakes" className="py-14">
-            <div style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.7)", borderRadius: "16px", padding: "32px", boxShadow: "0 8px 32px rgba(31,38,135,0.08)" }}>
-              <div className="text-xs uppercase tracking-[0.22em] mb-3" style={{ fontFamily: "system-ui", color: "#1e1b4b" }}>Why we're built different</div>
-              <h2 className="text-3xl leading-tight mb-7 max-w-2xl" style={{ fontFamily: "Georgia, serif", fontWeight: 400, color: "#0a0f1f" }}>
-                A compliance disaster is not a feature update.
-              </h2>
-              <div className="grid md:grid-cols-2 gap-6 max-w-4xl">
-                {[
-                  ["Compliance-first prompts", "No fabrication. No recommendations. Disclosures preserved."],
-                  ["Drafts only, you sign off", "Nothing auto-sends. Your name stays on the work."],
-                  ["Built for 17a-4 / 4511", "Outputs flow into your books and records, not around them."],
-                  ["Honest about limits", "We're not your CCO. We don't pretend to be."],
-                ].map(([title, body]) => (
-                  <div key={title}>
-                    <div className="text-base mb-1.5" style={{ fontFamily: "Georgia, serif", color: "#0a0f1f" }}>{title}</div>
-                    <div className="text-sm leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#1f2937" }}>{body}</div>
-                  </div>
-                ))}
-              </div>
+            <div className="mt-10 max-w-2xl text-xs" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.5)", fontStyle: "italic" }}>
+              Estimates based on a 30-meeting/month practice at $200/hr advisor time. Your mileage will vary.
             </div>
-          </FadeSection>
+          </div>
+        </FadeSection>
 
-          <FadeSection id="compliance" className="py-14">
-            <div style={{
-              background: "rgba(254,251,243,0.55)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              border: "1px solid rgba(232,220,192,0.7)",
-              borderRadius: "16px",
-              padding: "32px",
-              boxShadow: "0 8px 32px rgba(31,38,135,0.08)",
-            }}>
-              <div className="text-xs uppercase tracking-[0.22em] mb-4" style={{ fontFamily: "system-ui", color: "#1e1b4b" }}>A shared discipline</div>
-              <h2 className="text-3xl leading-tight mb-7 max-w-2xl" style={{ fontFamily: "Georgia, serif", fontWeight: 400, color: "#0a0f1f" }}>
-                Every tool in the stack follows the same compliance posture.
-              </h2>
-              <div className="grid md:grid-cols-2 gap-9 max-w-5xl text-[15px] leading-relaxed" style={{ fontFamily: "Georgia, serif" }}>
-                {[
-                  ["Drafts only, never sends", "Nothing is auto-sent, auto-filed, or auto-shared. Every output requires your review before it leaves the page."],
-                  ["No fabrication of facts", "If your input doesn't say it, the output flags for follow-up. We don't invent details."],
-                  ["Disclosure language built in", "Client-facing tools ship with appropriate disclosures pre-loaded."],
-                  ["Subject to your firm's WSP", "All outputs are electronic communications under SEC 17a-4 and FINRA 4511. Run them through your supervisory process."],
-                ].map(([label, body]) => (
-                  <div key={label}>
-                    <div className="text-xs uppercase tracking-[0.15em] mb-2" style={{ fontFamily: "system-ui", color: "#1e1b4b" }}>{label}</div>
-                    <div style={{ color: "#1f2937" }}>{body}</div>
-                  </div>
-                ))}
+        {/* TRENDS */}
+        <FadeSection id="trends" className="py-16">
+          <div className="text-center mb-12">
+            <SectionLabel>Where AI is going</SectionLabel>
+            <EditorialHeading italic="Four" rest="shifts at the advisor's desk." size="md" className="max-w-3xl mx-auto" />
+          </div>
+          <div className="grid md:grid-cols-2 gap-4">
+            {[
+              ["01", "Note-taking is the first domino.", "Meeting recaps and CRM entries are where every practice starts."],
+              ["02", "Compliance is the new differentiator.", "Generic AI tools won't survive an examiner's scrutiny."],
+              ["03", "Human-in-the-loop is non-negotiable.", "AI assists. The advisor decides. Always."],
+              ["04", "Your own data is the next frontier.", "The real value sits in your CRM, your meetings, your book."],
+            ].map(([num, title, body]) => (
+              <div key={num} style={{ ...darkCard, padding: "28px" }}>
+                <div className="text-3xl mb-4 leading-none" style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: "rgba(255,255,255,0.55)", fontVariantNumeric: "tabular-nums" }}>{num}</div>
+                <div className="text-xl mb-2" style={{ fontFamily: "'Instrument Serif', serif", color: "#fff", letterSpacing: "-0.01em" }}>{title}</div>
+                <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.6)" }}>{body}</div>
               </div>
-            </div>
-          </FadeSection>
+            ))}
+          </div>
+        </FadeSection>
 
-          <footer className="py-8 text-xs uppercase tracking-[0.2em] flex justify-between flex-wrap gap-3" style={{ fontFamily: "system-ui", color: "#1e1b4b", borderTop: "1px solid rgba(30,27,75,0.15)" }}>
-            <span>Advisor Stack — Prototype</span>
-            <span>Not a substitute for compliance review · Not investment advice</span>
-          </footer>
-        </div>
-      </div>
+        {/* STAKES */}
+        <FadeSection id="stakes" className="py-16">
+          <div style={{ ...darkCard, padding: "48px 40px" }}>
+            <SectionLabel>Why we're built different</SectionLabel>
+            <EditorialHeading italic="Compliance" rest="is not a feature update." size="md" className="mb-10 max-w-2xl" />
+            <div className="grid md:grid-cols-2 gap-x-12 gap-y-8 max-w-4xl">
+              {[
+                ["Compliance-first prompts", "No fabrication. No recommendations. Disclosures preserved."],
+                ["Drafts only, you sign off", "Nothing auto-sends. Your name stays on the work."],
+                ["Built for 17a-4 / 4511", "Outputs flow into your books and records, not around them."],
+                ["Honest about limits", "We're not your CCO. We don't pretend to be."],
+              ].map(([title, body]) => (
+                <div key={title}>
+                  <div className="text-lg mb-1.5" style={{ fontFamily: "'Instrument Serif', serif", color: "#fff" }}>{title}</div>
+                  <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.6)" }}>{body}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </FadeSection>
+
+        {/* COMPLIANCE — INDIGO */}
+        <FadeSection id="compliance" className="py-16">
+          <div style={{ ...indigoBlock, padding: "56px 40px" }}>
+            <SectionLabel>A shared discipline</SectionLabel>
+            <EditorialHeading italic="One" rest="discipline. Every tool." size="md" className="mb-10 max-w-2xl" />
+            <div className="grid md:grid-cols-2 gap-x-12 gap-y-8 max-w-5xl">
+              {[
+                ["Drafts only, never sends", "Nothing is auto-sent, auto-filed, or auto-shared. Every output requires your review before it leaves the page."],
+                ["No fabrication of facts", "If your input doesn't say it, the output flags for follow-up. We don't invent details."],
+                ["Disclosure language built in", "Client-facing tools ship with appropriate disclosures pre-loaded."],
+                ["Subject to your firm's WSP", "All outputs are electronic communications under SEC 17a-4 and FINRA 4511. Run them through your supervisory process."],
+              ].map(([label, body]) => (
+                <div key={label}>
+                  <div className="text-[11px] uppercase mb-2" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: "rgba(255,255,255,0.7)" }}>{label}</div>
+                  <div className="text-[15px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.85)" }}>{body}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </FadeSection>
+
+        {/* CLOSING CTA */}
+        <FadeSection className="py-20 text-center">
+          <EditorialHeading italic="Ready" rest="to start drafting?" size="lg" className="mb-8" />
+          <PillCTA to="/notes">Try it now</PillCTA>
+        </FadeSection>
+
+        <footer className="py-10 flex justify-between flex-wrap gap-3 text-[11px]" style={{ fontFamily: "Inter", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+          <span>Advisor Stack — Prototype</span>
+          <span>Not a substitute for compliance review · Not investment advice</span>
+        </footer>
+      </main>
+
+      <FloatingMark />
     </div>
   );
 }
