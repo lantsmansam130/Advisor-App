@@ -256,6 +256,75 @@ export default function StackHomePage() {
             </div>
           </FadeSection>
 
+          <FadeSection id="savings" className="py-14">
+            <div style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.7)", borderRadius: "16px", padding: "32px", boxShadow: "0 8px 32px rgba(31,38,135,0.08)" }}>
+              <div className="text-xs uppercase tracking-[0.22em] mb-3" style={{ fontFamily: "system-ui", color: "#1e1b4b" }}>What it gives back</div>
+              <h2 className="text-3xl leading-tight mb-7 max-w-2xl" style={{ fontFamily: "Georgia, serif", fontWeight: 400, color: "#0a0f1f" }}>
+                Hours back. Real money saved.
+              </h2>
+              <div className="grid md:grid-cols-3 gap-6 max-w-4xl mb-5">
+                <div>
+                  <div className="text-5xl mb-2 leading-none" style={{ fontFamily: "Georgia, serif", color: "#1e1b4b", fontVariantNumeric: "tabular-nums" }}>~5 hrs</div>
+                  <div className="text-sm leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#1f2937" }}>saved per week on post-meeting paperwork</div>
+                </div>
+                <div>
+                  <div className="text-5xl mb-2 leading-none" style={{ fontFamily: "Georgia, serif", color: "#1e1b4b", fontVariantNumeric: "tabular-nums" }}>~$15k</div>
+                  <div className="text-sm leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#1f2937" }}>in advisor time recaptured per year, per seat</div>
+                </div>
+                <div>
+                  <div className="text-5xl mb-2 leading-none" style={{ fontFamily: "Georgia, serif", color: "#1e1b4b", fontVariantNumeric: "tabular-nums" }}>$0</div>
+                  <div className="text-sm leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#1f2937" }}>extra spent on writing tools, transcription, or paraplanner overflow</div>
+                </div>
+              </div>
+              <div className="italic max-w-2xl" style={{ fontFamily: "Georgia, serif", color: "#475569", fontSize: "12px" }}>Estimates based on a 30-meeting/month practice at $200/hr advisor time. Your mileage will vary.</div>
+            </div>
+          </FadeSection>
+
+          <FadeSection id="trends" className="py-14">
+            <div style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.7)", borderRadius: "16px", padding: "32px", boxShadow: "0 8px 32px rgba(31,38,135,0.08)" }}>
+              <div className="text-xs uppercase tracking-[0.22em] mb-3" style={{ fontFamily: "system-ui", color: "#1e1b4b" }}>Where AI is going</div>
+              <h2 className="text-3xl leading-tight mb-7 max-w-2xl" style={{ fontFamily: "Georgia, serif", fontWeight: 400, color: "#0a0f1f" }}>
+                Four shifts reshaping the advisor's desk.
+              </h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                {[
+                  ["01", "Note-taking is the first domino.", "Meeting recaps and CRM entries are where every practice starts."],
+                  ["02", "Compliance is the new differentiator.", "Generic AI tools won't survive an examiner's scrutiny."],
+                  ["03", "Human-in-the-loop is non-negotiable.", "AI assists. The advisor decides. Always."],
+                  ["04", "Your own data is the next frontier.", "The real value sits in your CRM, your meetings, your book."],
+                ].map(([num, title, body]) => (
+                  <div key={num} className="pt-4" style={{ borderTop: "1px solid rgba(30,27,75,0.18)" }}>
+                    <div className="text-2xl mb-2.5 leading-none" style={{ fontFamily: "Georgia, serif", color: "#1e1b4b", fontVariantNumeric: "tabular-nums" }}>{num}</div>
+                    <div className="text-base mb-1.5" style={{ fontFamily: "Georgia, serif", color: "#0a0f1f" }}>{title}</div>
+                    <div className="text-sm leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#1f2937" }}>{body}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </FadeSection>
+
+          <FadeSection id="stakes" className="py-14">
+            <div style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.7)", borderRadius: "16px", padding: "32px", boxShadow: "0 8px 32px rgba(31,38,135,0.08)" }}>
+              <div className="text-xs uppercase tracking-[0.22em] mb-3" style={{ fontFamily: "system-ui", color: "#1e1b4b" }}>Why we're built different</div>
+              <h2 className="text-3xl leading-tight mb-7 max-w-2xl" style={{ fontFamily: "Georgia, serif", fontWeight: 400, color: "#0a0f1f" }}>
+                A compliance disaster is not a feature update.
+              </h2>
+              <div className="grid md:grid-cols-2 gap-6 max-w-4xl">
+                {[
+                  ["Compliance-first prompts", "No fabrication. No recommendations. Disclosures preserved."],
+                  ["Drafts only, you sign off", "Nothing auto-sends. Your name stays on the work."],
+                  ["Built for 17a-4 / 4511", "Outputs flow into your books and records, not around them."],
+                  ["Honest about limits", "We're not your CCO. We don't pretend to be."],
+                ].map(([title, body]) => (
+                  <div key={title}>
+                    <div className="text-base mb-1.5" style={{ fontFamily: "Georgia, serif", color: "#0a0f1f" }}>{title}</div>
+                    <div className="text-sm leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#1f2937" }}>{body}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </FadeSection>
+
           <FadeSection id="compliance" className="py-14">
             <div style={{
               background: "rgba(254,251,243,0.55)",
