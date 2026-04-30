@@ -50,26 +50,31 @@ When a planned tool ships, it gets its own route + page component. The suite hom
 - `PillCTA` — filled dark pill (primary) or outlined ghost (`dark={true}`)
 - `EditorialHeading` — Instrument Serif italic + upright pair (`<EditorialHeading italic="Drafted" rest="in seconds." />`); accepts a `color` prop for inverted use on dark feature blocks
 - `SectionLabel` — tracked-out uppercase eyebrow
-- `palette` — single source of truth for all colors (`palette.cream`, `palette.ink`, `palette.forest`, etc.). Import this in any new page rather than hardcoding hex values.
-- `darkCard`, `indigoBlock`, `skyBadge` — style objects for the three card/section flavors. Names are legacy — see "Design system" below for what they actually look like now.
+- `palette` — single source of truth for all colors (`palette.cream`, `palette.ink`, `palette.charcoal`, `palette.forest`, etc.). Import this in any new page rather than hardcoding hex values.
+- `darkCard`, `inkBlock`, `indigoBlock`, `skyBadge` — style objects for the four card/section flavors. Names are legacy — see "Design system" below for what they actually look like now.
 
 `AnimatedBackground` is also exported but is a no-op stub (kept for backwards-compat with any leftover imports). Do not bring back the particle/gradient background.
 
 **Design system (warm editorial — financial advisory brand):**
 
-- Background: warm cream (`#F7F3EC`) everywhere — explicitly NOT pure black, NOT pure white
+- Background: warm off-white (`#FAF6EE`) — explicitly NOT pure black, NOT pure white, slightly less yellow than a classic cream
 - Cards: white (`#FFFFFF`) on cream, with subtle warm border (`rgba(15,14,12,0.06)`) and a faint shadow
-- Feature/contrast blocks: deep forest green gradient (`#16271F → #2D5142`), with cream-colored text inside — `indigoBlock` is the export name even though it's now green
+- Two distinct contrast moods, used as full-bleed feature blocks to break up the cream:
+  - `inkBlock` — warm charcoal (`#1A1815`, NOT pure black) with cream type, used once per page for a "darker chapter" mood
+  - `indigoBlock` — deep forest green gradient (`#16271F → #2D5142`) with cream type, used once per page as the deepest accent
 - Eyebrow badge: muted sage (`rgba(31,58,46,0.08)` on forest text) — `skyBadge` is the export name even though it's no longer sky blue
 - Display type: Instrument Serif (italic word + upright word pairing in headings)
 - Body type: Inter
 - Both fonts loaded via Google Fonts in `index.html` (do not bundle)
 - Primary CTA: filled ink-black rounded-full pill with cream text, all-caps tracked Inter, arrow → suffix
-- Section rhythm: cream → forest gradient → cream → white card → forest gradient → closing CTA on cream
+- Section rhythm aim: alternate cream sections with one **inkBlock** and one **indigoBlock** per page so the eye gets variation. Don't stack two contrast blocks back-to-back; let cream breathe between them.
+- The `/notes` page leads with a styled chat preview (rendered mock UI in a window-chrome frame) instead of plain centered text — show the product, don't just describe it.
 
 The palette is intentionally warm and editorial (think high-end financial advisory firm, not fintech dashboard). When extending, pull colors from the exported `palette` object — don't hand-pick hex values that drift from the system.
 
 When adding a new page, import `StackNav`, `FloatingMark`, `palette`, and the heading/CTA primitives from `StackHomePage.jsx` — don't reimplement them.
+
+**Document upload (DecoderPage):** Uses `pdfjs-dist` for in-browser PDF text extraction (no backend cost, no server processing). The lib + worker are dynamically imported so the 1MB+ chunk only loads when a user actually drops a file. Plain `.txt` / `.md` files use `file.text()`. Scanned PDFs without a text layer aren't supported (no OCR yet) — the UI tells the user to paste instead.
 
 ## Compliance posture (shapes prompts and copy)
 

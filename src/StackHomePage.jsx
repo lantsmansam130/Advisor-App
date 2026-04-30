@@ -49,17 +49,19 @@ const comingSoonCount = TOOLS.length - availableCount;
 
 // Palette
 export const palette = {
-  cream: "#F7F3EC",
+  cream: "#FAF6EE",
   paper: "#FFFFFF",
   sand: "#EDE6D7",
   ink: "#0F0E0C",
-  ash: "#5C564E",
-  dust: "#9B948A",
+  charcoal: "#1A1815",
+  ash: "#46423B",
+  dust: "#8A8579",
   forest: "#1F3A2E",
   sage: "#3D5A4A",
   amber: "#D4A574",
   borderSubtle: "rgba(15,14,12,0.06)",
   borderMid: "rgba(15,14,12,0.12)",
+  borderInk: "rgba(250,246,238,0.10)",
 };
 
 // Kept for backwards-compat with existing imports; renders nothing.
@@ -91,12 +93,12 @@ export function StackNav({ tool }) {
           {tool && (
             <>
               <span className="opacity-30 mx-1" style={{ fontFamily: "'Instrument Serif', serif", fontSize: "18px", color: palette.cream }}>/</span>
-              <span style={{ fontFamily: "Inter", fontSize: "13px", color: "rgba(247,243,236,0.7)" }}>{tool}</span>
+              <span style={{ fontFamily: "Inter", fontSize: "13px", color: "rgba(250,246,238,0.7)" }}>{tool}</span>
             </>
           )}
         </Link>
         {tool ? (
-          <Link to="/" className="inline-flex items-center gap-2 px-4 py-2 no-underline" style={{ color: "rgba(247,243,236,0.85)", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}>
+          <Link to="/" className="inline-flex items-center gap-2 px-4 py-2 no-underline" style={{ color: "rgba(250,246,238,0.85)", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}>
             ← All tools
           </Link>
         ) : (
@@ -182,7 +184,14 @@ export const darkCard = {
   boxShadow: "0 1px 2px rgba(15,14,12,0.04), 0 8px 24px -16px rgba(15,14,12,0.12)",
 };
 
-// Forest gradient feature block — replaces the indigo gradient
+// Deep ink section — warm charcoal (NOT pure black) for cream→ink rhythm
+export const inkBlock = {
+  background: palette.charcoal,
+  borderRadius: "28px",
+  color: palette.cream,
+};
+
+// Forest gradient feature block — used sparingly as the deepest accent
 export const indigoBlock = {
   background: "linear-gradient(180deg, #16271F 0%, #1F3A2E 45%, #2D5142 100%)",
   borderRadius: "28px",
@@ -286,28 +295,28 @@ export default function StackHomePage() {
           </div>
         </FadeSection>
 
-        {/* INDIGO FEATURE BLOCK — SAVINGS */}
+        {/* INK FEATURE BLOCK — SAVINGS (warm charcoal, contrasts the cream) */}
         <FadeSection id="savings" className="py-16">
-          <div style={{ ...indigoBlock, padding: "56px 40px", color: palette.cream }}>
-            <div className="text-[11px] uppercase mb-4" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.22em", color: "rgba(247,243,236,0.6)" }}>
+          <div style={{ ...inkBlock, padding: "56px 40px" }}>
+            <div className="text-[11px] uppercase mb-4" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.22em", color: "rgba(250,246,238,0.55)" }}>
               What it gives back
             </div>
             <EditorialHeading italic="Hours" rest="back. Real money saved." size="md" className="mb-12 max-w-2xl" color={palette.cream} />
             <div className="grid md:grid-cols-3 gap-8 max-w-4xl">
               <div>
                 <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: palette.cream, fontVariantNumeric: "tabular-nums" }}>~5 hrs</div>
-                <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(247,243,236,0.75)" }}>saved per week on post-meeting paperwork</div>
+                <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(250,246,238,0.65)" }}>saved per week on post-meeting paperwork</div>
               </div>
               <div>
                 <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: palette.cream, fontVariantNumeric: "tabular-nums" }}>~$15k</div>
-                <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(247,243,236,0.75)" }}>in advisor time recaptured per year, per seat</div>
+                <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(250,246,238,0.65)" }}>in advisor time recaptured per year, per seat</div>
               </div>
               <div>
                 <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: palette.cream, fontVariantNumeric: "tabular-nums" }}>$0</div>
-                <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(247,243,236,0.75)" }}>extra spent on writing tools, transcription, or paraplanner overflow</div>
+                <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(250,246,238,0.65)" }}>extra spent on writing tools, transcription, or paraplanner overflow</div>
               </div>
             </div>
-            <div className="mt-10 max-w-2xl text-xs" style={{ fontFamily: "Inter", color: "rgba(247,243,236,0.55)", fontStyle: "italic" }}>
+            <div className="mt-10 max-w-2xl text-xs" style={{ fontFamily: "Inter", color: "rgba(250,246,238,0.45)", fontStyle: "italic" }}>
               Estimates based on a 30-meeting/month practice at $200/hr advisor time. Your mileage will vary.
             </div>
           </div>
@@ -359,7 +368,7 @@ export default function StackHomePage() {
         {/* COMPLIANCE — FOREST */}
         <FadeSection id="compliance" className="py-16">
           <div style={{ ...indigoBlock, padding: "56px 40px", color: palette.cream }}>
-            <div className="text-[11px] uppercase mb-4" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.22em", color: "rgba(247,243,236,0.6)" }}>
+            <div className="text-[11px] uppercase mb-4" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.22em", color: "rgba(250,246,238,0.6)" }}>
               A shared discipline
             </div>
             <EditorialHeading italic="One" rest="discipline. Every tool." size="md" className="mb-10 max-w-2xl" color={palette.cream} />
@@ -371,8 +380,8 @@ export default function StackHomePage() {
                 ["Subject to your firm's WSP", "All outputs are electronic communications under SEC 17a-4 and FINRA 4511. Run them through your supervisory process."],
               ].map(([label, body]) => (
                 <div key={label}>
-                  <div className="text-[11px] uppercase mb-2" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: "rgba(247,243,236,0.7)" }}>{label}</div>
-                  <div className="text-[15px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(247,243,236,0.85)" }}>{body}</div>
+                  <div className="text-[11px] uppercase mb-2" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: "rgba(250,246,238,0.7)" }}>{label}</div>
+                  <div className="text-[15px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(250,246,238,0.85)" }}>{body}</div>
                 </div>
               ))}
             </div>
