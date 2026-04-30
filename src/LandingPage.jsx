@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
-// Reusable hook: fades a section in when it scrolls into view
 function useFadeIn() {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
@@ -18,7 +18,6 @@ function useFadeIn() {
   return [ref, visible];
 }
 
-// Reusable: count-up number when scrolled into view
 function CountUp({ target, suffix = "", duration = 1200 }) {
   const ref = useRef(null);
   const [val, setVal] = useState(0);
@@ -48,7 +47,6 @@ function CountUp({ target, suffix = "", duration = 1200 }) {
   return <span ref={ref}>{val}{suffix}</span>;
 }
 
-// Section wrapper that auto-applies fade-in
 function FadeSection({ children, className = "", style = {}, id }) {
   const [ref, visible] = useFadeIn();
   return (
@@ -68,7 +66,6 @@ function FadeSection({ children, className = "", style = {}, id }) {
   );
 }
 
-// Big slate-900 CTA — used in hero, mid-page, and closer
 function PrimaryCTA() {
   return (
     <Link
@@ -86,7 +83,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-slate-50 text-slate-900" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
       <div className="h-0.5 bg-emerald-800" />
 
-      {/* TOP NAV with CTA #1 */}
+      {/* TOP NAV — now shows AdvisorStack brand + back link */}
       <nav className="border-b border-slate-200 bg-slate-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2.5 no-underline">
@@ -95,13 +92,17 @@ export default function LandingPage() {
               <text x="14" y="20" fontFamily="Georgia, serif" fontSize="18" fontStyle="italic" fill="#f8fafc" textAnchor="middle">A</text>
             </svg>
             <div className="text-xl text-slate-900" style={{ fontFamily: "Georgia, serif" }}>
-              Advisor<span className="italic text-emerald-800">Notes</span>
+              Advisor<span className="italic text-emerald-800">Stack</span>
             </div>
+            <span className="text-slate-400 mx-2" style={{ fontFamily: "Georgia, serif" }}>/</span>
+            <div className="text-base text-slate-700" style={{ fontFamily: "Georgia, serif" }}>AdvisorNotes</div>
           </Link>
           <div className="flex gap-7 items-center" style={{ fontFamily: "system-ui", fontSize: "13px" }}>
             <a href="#how" className="text-slate-600 hover:text-slate-900 no-underline">How it works</a>
-            <a href="#compliance" className="text-slate-600 hover:text-slate-900 no-underline">Compliance</a>
             <a href="#faq" className="text-slate-600 hover:text-slate-900 no-underline">FAQ</a>
+            <Link to="/" className="flex items-center gap-1.5 text-slate-600 hover:text-emerald-800 transition-colors no-underline" style={{ fontSize: "12px", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+              <ArrowLeft className="w-3.5 h-3.5" /> All tools
+            </Link>
             <Link to="/app" className="px-4 py-2 bg-emerald-800 text-slate-50 hover:bg-emerald-900 transition-colors no-underline" style={{ fontSize: "12px", letterSpacing: "0.1em", textTransform: "uppercase" }}>
               Try the tool →
             </Link>
@@ -111,10 +112,10 @@ export default function LandingPage() {
 
       <div className="max-w-6xl mx-auto px-6">
 
-        {/* HERO with CTA #2 */}
+        {/* HERO */}
         <FadeSection className="pt-20 pb-16">
           <div className="text-xs uppercase tracking-[0.22em] text-emerald-800 mb-5" style={{ fontFamily: "system-ui" }}>
-            Compliance-first AI · Built for RIAs
+            Advisor Stack · The meeting notes tool
           </div>
           <h1 className="text-5xl md:text-6xl text-slate-900 leading-tight mb-6 max-w-4xl" style={{ fontFamily: "Georgia, serif", fontWeight: 400, letterSpacing: "-0.02em" }}>
             The post-meeting paperwork, <span className="italic text-emerald-800">drafted for you</span>.
@@ -167,7 +168,7 @@ export default function LandingPage() {
           </div>
         </FadeSection>
 
-        {/* WHAT IT DRAFTS — staggered cards */}
+        {/* WHAT IT DRAFTS */}
         <FadeSection className="py-14 border-t border-slate-200 bg-white -mx-6 px-6">
           <div className="max-w-6xl mx-auto">
             <div className="text-xs uppercase tracking-[0.22em] text-slate-500 mb-4" style={{ fontFamily: "system-ui" }}>What it drafts</div>
@@ -178,36 +179,13 @@ export default function LandingPage() {
           </div>
         </FadeSection>
 
-        {/* CTA #3 — mid-page */}
+        {/* CTA mid-page */}
         <div className="py-14 text-center border-t border-slate-200">
           <PrimaryCTA />
         </div>
 
-        {/* COMPLIANCE — cream parchment */}
-        <FadeSection id="compliance" className="py-14 -mx-6 px-6 border-t border-amber-200" style={{ background: "#fefbf3" }}>
-          <div className="max-w-6xl mx-auto">
-            <div className="text-xs uppercase tracking-[0.22em] text-emerald-800 mb-4" style={{ fontFamily: "system-ui" }}>Compliance posture</div>
-            <h2 className="text-3xl text-slate-900 leading-tight mb-7 max-w-2xl" style={{ fontFamily: "Georgia, serif", fontWeight: 400 }}>
-              We built this assuming the SEC will read every output.
-            </h2>
-            <div className="grid md:grid-cols-2 gap-9 max-w-5xl text-[15px] leading-relaxed" style={{ fontFamily: "Georgia, serif" }}>
-              {[
-                ["Drafts only, never sends", "Nothing is auto-sent, auto-filed, or auto-shared. Every output requires your review and your signature before it leaves the page."],
-                ["No fabrication of facts", "If your notes don't say it, the draft says \"needs follow-up.\" We don't invent allocation percentages, risk metrics, or client details."],
-                ["Disclosure language built in", "Client recap emails ship with the standard \"informational only, not investment advice\" disclosure pre-loaded. You can't forget it."],
-                ["Subject to your firm's WSP", "Outputs are electronic communications under SEC 17a-4 and FINRA 4511. Run them through your normal supervisory process."],
-              ].map(([label, body]) => (
-                <div key={label}>
-                  <div className="text-xs uppercase tracking-[0.15em] text-emerald-800 mb-2" style={{ fontFamily: "system-ui" }}>{label}</div>
-                  <div className="text-slate-700">{body}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </FadeSection>
-
-        {/* STATS — count-up. TODO: replace 45 and 60 with real measured values */}
-        <FadeSection className="py-16">
+        {/* STATS */}
+        <FadeSection className="py-16 border-t border-slate-200">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <div className="text-xs uppercase tracking-[0.22em] text-emerald-800 mb-3" style={{ fontFamily: "system-ui" }}>Why it's worth a minute</div>
             <h2 className="text-3xl text-slate-900 leading-tight" style={{ fontFamily: "Georgia, serif", fontWeight: 400 }}>
@@ -244,7 +222,7 @@ export default function LandingPage() {
           </div>
         </FadeSection>
 
-        {/* CTA #4 — final closer */}
+        {/* CTA closer */}
         <FadeSection className="py-16 text-center border-t border-slate-200">
           <h2 className="text-3xl text-slate-900 mb-6" style={{ fontFamily: "Georgia, serif", fontWeight: 400 }}>
             Ready to try it on your last meeting?
@@ -276,7 +254,7 @@ export default function LandingPage() {
         </FadeSection>
 
         <footer className="py-8 border-t border-slate-300 text-xs uppercase tracking-[0.2em] text-slate-500 flex justify-between flex-wrap gap-3" style={{ fontFamily: "system-ui" }}>
-          <span>AdvisorNotes — Prototype</span>
+          <span>Advisor Stack — Prototype</span>
           <span>Not a substitute for compliance review · Not investment advice</span>
         </footer>
       </div>
@@ -284,7 +262,6 @@ export default function LandingPage() {
   );
 }
 
-// Staggered grid for the six output cards
 function StaggeredGrid() {
   const ref = useRef(null);
   const [visibleCount, setVisibleCount] = useState(0);
