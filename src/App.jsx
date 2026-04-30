@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { Copy, Check, Sparkles, Mail, ClipboardList, ShieldCheck, FileSignature, Loader2, AlertTriangle, ArrowLeft, Compass, ListChecks } from "lucide-react";
 import StackHomePage from "./StackHomePage.jsx";
 import LandingPage from "./LandingPage.jsx";
+import DecoderPage from "./DecoderPage.jsx";
 
 const OUTPUT_TYPES = [
   { id: "client_recap", label: "Client Meeting Recap", icon: Mail, description: "Compliant follow-up email summarizing the meeting" },
@@ -224,6 +225,7 @@ export default function App() {
         <Route path="/" element={<StackHomePage />} />
         <Route path="/notes" element={<LandingPage />} />
         <Route path="/app" element={<ToolPage />} />
+        <Route path="/decoder" element={<DecoderPage />} />
       </Routes>
     </BrowserRouter>
   );
