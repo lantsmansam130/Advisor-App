@@ -157,3 +157,62 @@ export default function StackHomePage() {
                     key={tool.id}
                     to={tool.href}
                     className="bg-white border border-emerald-800 p-6 no-underline hover:bg-emerald-50 transition-colors block"
+                  >
+                    <div className="flex justify-between items-start mb-3.5">
+                      <div className="text-xs uppercase tracking-[0.18em] text-emerald-800" style={{ fontFamily: "system-ui" }}>Available now</div>
+                      <div className="text-xs uppercase tracking-[0.1em] text-emerald-800" style={{ fontFamily: "system-ui" }}>Open →</div>
+                    </div>
+                    <div className="text-2xl text-slate-900 mb-2" style={{ fontFamily: "Georgia, serif" }}>
+                      {tool.name === "AdvisorNotes" ? <>Advisor<span className="italic text-emerald-800">Notes</span></> : tool.name}
+                    </div>
+                    <div className="text-sm text-slate-600 leading-relaxed" style={{ fontFamily: "Georgia, serif" }}>{tool.description}</div>
+                  </Link>
+                ) : (
+                  <div
+                    key={tool.id}
+                    className="bg-slate-100 border border-slate-300 p-6"
+                    style={{ opacity: 0.6 }}
+                  >
+                    <div className="flex justify-between items-start mb-3.5">
+                      <div className="text-xs uppercase tracking-[0.18em] text-slate-500" style={{ fontFamily: "system-ui" }}>Coming soon</div>
+                    </div>
+                    <div className="text-2xl text-slate-700 mb-2" style={{ fontFamily: "Georgia, serif" }}>{tool.name}</div>
+                    <div className="text-sm text-slate-500 leading-relaxed" style={{ fontFamily: "Georgia, serif" }}>{tool.description}</div>
+                  </div>
+                )
+              ))}
+            </div>
+          </div>
+        </FadeSection>
+
+        {/* SUITE-WIDE COMPLIANCE POSTURE */}
+        <FadeSection id="compliance" className="py-14 -mx-6 px-6 border-t border-amber-200" style={{ background: "#fefbf3" }}>
+          <div className="max-w-6xl mx-auto">
+            <div className="text-xs uppercase tracking-[0.22em] text-emerald-800 mb-4" style={{ fontFamily: "system-ui" }}>A shared discipline</div>
+            <h2 className="text-3xl text-slate-900 leading-tight mb-7 max-w-2xl" style={{ fontFamily: "Georgia, serif", fontWeight: 400 }}>
+              Every tool in the stack follows the same compliance posture.
+            </h2>
+            <div className="grid md:grid-cols-2 gap-9 max-w-5xl text-[15px] leading-relaxed" style={{ fontFamily: "Georgia, serif" }}>
+              {[
+                ["Drafts only, never sends", "Nothing is auto-sent, auto-filed, or auto-shared. Every output requires your review before it leaves the page."],
+                ["No fabrication of facts", "If your input doesn't say it, the output flags it for follow-up. We don't invent details."],
+                ["Disclosure language built in", "Client-facing tools ship with appropriate disclosures pre-loaded. You can't forget them."],
+                ["Subject to your firm's WSP", "All outputs are electronic communications under SEC 17a-4 and FINRA 4511. Run them through your supervisory process."],
+              ].map(([label, body]) => (
+                <div key={label}>
+                  <div className="text-xs uppercase tracking-[0.15em] text-emerald-800 mb-2" style={{ fontFamily: "system-ui" }}>{label}</div>
+                  <div className="text-slate-700">{body}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </FadeSection>
+
+        <footer className="py-8 border-t border-slate-300 text-xs uppercase tracking-[0.2em] text-slate-500 flex justify-between flex-wrap gap-3" style={{ fontFamily: "system-ui" }}>
+          <span>Advisor Stack — Prototype</span>
+          <span>Not a substitute for compliance review · Not investment advice</span>
+        </footer>
+      </div>
+    </div>
+  );
+}
