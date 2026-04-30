@@ -237,4 +237,102 @@ export default function LandingPage() {
               <div className="text-6xl text-emerald-800 mb-3 leading-none" style={{ fontFamily: "Georgia, serif", fontVariantNumeric: "tabular-nums" }}>
                 <CountUp target={6} />
               </div>
-              <div className="text-sm text-slate-
+              <div className="text-sm text-slate-600 leading-relaxed max-w-[14rem] mx-auto" style={{ fontFamily: "Georgia, serif" }}>
+                output formats — from client recaps to internal task lists
+              </div>
+            </div>
+          </div>
+        </FadeSection>
+
+        {/* CTA #4 — final closer */}
+        <FadeSection className="py-16 text-center border-t border-slate-200">
+          <h2 className="text-3xl text-slate-900 mb-6" style={{ fontFamily: "Georgia, serif", fontWeight: 400 }}>
+            Ready to try it on your last meeting?
+          </h2>
+          <PrimaryCTA />
+        </FadeSection>
+
+        {/* FAQ */}
+        <FadeSection id="faq" className="py-14 border-t border-slate-200 bg-white -mx-6 px-6">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-xs uppercase tracking-[0.22em] text-slate-500 mb-4" style={{ fontFamily: "system-ui" }}>Questions you'll want answered</div>
+            <h2 className="text-3xl text-slate-900 leading-tight mb-9" style={{ fontFamily: "Georgia, serif", fontWeight: 400 }}>
+              Before you paste a real client's notes.
+            </h2>
+            <div className="flex flex-col gap-6 max-w-4xl">
+              {[
+                ["Where does my data go?", "Your notes are sent to Anthropic's Claude API to generate the draft, then discarded. We don't store them. We don't train on them. We don't see them."],
+                ["Is this approved by my firm's compliance department?", "No tool can answer that for you. Bring it to your CCO. We'll provide whatever vendor due diligence documentation you need."],
+                ["Does this satisfy SEC 17a-4 retention?", "Not by itself. AdvisorNotes generates drafts. Your firm's books-and-records system is where retention happens. Copy the output into your existing archived channel."],
+                ["Can I customize the disclosure language for my firm?", "Not yet — every client recap currently ships with a standard disclosure. Per-firm customization is on the roadmap."],
+              ].map(([q, a]) => (
+                <div key={q} className="border-t border-slate-300 pt-5">
+                  <div className="text-lg text-slate-900 mb-2" style={{ fontFamily: "Georgia, serif" }}>{q}</div>
+                  <div className="text-[15px] text-slate-600 leading-relaxed" style={{ fontFamily: "Georgia, serif" }}>{a}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </FadeSection>
+
+        <footer className="py-8 border-t border-slate-300 text-xs uppercase tracking-[0.2em] text-slate-500 flex justify-between flex-wrap gap-3" style={{ fontFamily: "system-ui" }}>
+          <span>AdvisorNotes — Prototype</span>
+          <span>Not a substitute for compliance review · Not investment advice</span>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+// Staggered grid for the six output cards
+function StaggeredGrid() {
+  const ref = useRef(null);
+  const [visibleCount, setVisibleCount] = useState(0);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting && visibleCount === 0) {
+            [0, 1, 2, 3, 4, 5].forEach((i) => setTimeout(() => setVisibleCount((c) => Math.max(c, i + 1)), i * 120));
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [visibleCount]);
+
+  const cards = [
+    ["Client Recap Email", "A follow-up your client actually reads.", "\"Robert, Linda — thank you for making time yesterday. As we discussed, I'll send a revised glide path reflecting the new 2027 retirement target by Friday...\"", "serif"],
+    ["Discovery Call Summary", "First-meeting recap that keeps the door open.", "\"Thank you for the conversation today. To recap what you shared — your priority is keeping the lake house in the family while simplifying the rest of the estate. I'll send the planning questionnaire by Monday...\"", "serif"],
+    ["CRM Meeting Note", "Structured for Redtail, Wealthbox, Salesforce.", "MEETING TYPE: Annual Review\nATTENDEES: Robert & Linda Chen\n\nLIFE EVENTS\n— Inheritance: $180k (Linda)\n— Retirement target moved to 2027", "mono"],
+    ["Suitability Memo", "Audit-ready rationale for the file.", "\"Client circumstances discussed: time horizon shortened by three years; risk tolerance reaffirmed as moderate; new liquidity need identified...\"", "serif"],
+    ["IPS Change Summary", "Updates to objectives, allocation, constraints.", "\"Proposed updates — Chen Family. Time horizon revised from 8 years to 5. Liquidity reserve increased to cover potential family LTC obligation...\"", "serif"],
+    ["Internal Task List", "Operational follow-ups, sorted by owner.", "FOR THE ADVISOR\n— [ ] Send revised glide path — due Fri\n\nFOR THE TEAM\n— [ ] Pull updated 529 balance — owner: Maria\n\nFOR THE CLIENT\n— [ ] Provide last year's tax return", "mono"],
+  ];
+
+  return (
+    <div ref={ref} className="grid md:grid-cols-2 gap-6">
+      {cards.map(([label, title, snippet, font], i) => (
+        <div
+          key={label}
+          className="bg-slate-50 border border-slate-300 p-6"
+          style={{
+            opacity: visibleCount > i ? 1 : 0,
+            transform: visibleCount > i ? "translateY(0)" : "translateY(20px)",
+            transition: "opacity 0.6s ease, transform 0.6s ease",
+          }}
+        >
+          <div className="text-xs uppercase tracking-[0.18em] text-emerald-800 mb-2" style={{ fontFamily: "system-ui" }}>{label}</div>
+          <div className="text-base text-slate-900 mb-3" style={{ fontFamily: "Georgia, serif" }}>{title}</div>
+          <div className="bg-white border-l-2 border-emerald-800 px-4 py-3 text-sm text-slate-600 leading-relaxed whitespace-pre-line" style={{ fontFamily: font === "mono" ? "'Courier New', monospace" : "Georgia, serif", fontStyle: font === "mono" ? "normal" : "italic", fontSize: font === "mono" ? "12px" : "13px" }}>
+            {snippet}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
