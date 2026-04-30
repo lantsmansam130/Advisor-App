@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Copy, Check, Sparkles, Mail, ClipboardList, ShieldCheck, FileSignature, Loader2, AlertTriangle } from "lucide-react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { Copy, Check, Sparkles, Mail, ClipboardList, ShieldCheck, FileSignature, Loader2, AlertTriangle, ArrowLeft } from "lucide-react";
+import LandingPage from "./LandingPage.jsx";
 
 const OUTPUT_TYPES = [
   { id: "client_recap", label: "Client Meeting Recap", icon: Mail, description: "Compliant follow-up email summarizing the meeting" },
@@ -10,7 +12,7 @@ const OUTPUT_TYPES = [
 
 const TONES = ["Formal", "Warm", "Concise"];
 
-export default function App() {
+function ToolPage() {
   const [notes, setNotes] = useState("");
   const [tone, setTone] = useState("Formal");
   const [outputType, setOutputType] = useState("client_recap");
@@ -56,22 +58,27 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
-      <div className="h-1 bg-gradient-to-r from-emerald-800 via-emerald-700 to-slate-800" />
+      <div className="h-0.5 bg-emerald-800" />
+
+      {/* MINI TOP BAR with back link */}
+      <nav className="border-b border-slate-200 bg-slate-50">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+          <Link to="/" className="flex items-center gap-2.5 no-underline">
+            <svg width="22" height="22" viewBox="0 0 28 28" className="flex-shrink-0">
+              <rect x="0" y="0" width="28" height="28" rx="2" fill="#065f46"/>
+              <text x="14" y="20" fontFamily="Georgia, serif" fontSize="18" fontStyle="italic" fill="#f8fafc" textAnchor="middle">A</text>
+            </svg>
+            <div className="text-xl text-slate-900" style={{ fontFamily: "Georgia, serif" }}>
+              Advisor<span className="italic text-emerald-800">Notes</span>
+            </div>
+          </Link>
+          <Link to="/" className="flex items-center gap-1.5 text-slate-600 hover:text-emerald-800 transition-colors no-underline" style={{ fontFamily: "system-ui", fontSize: "12px", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to overview
+          </Link>
+        </div>
+      </nav>
 
       <div className="max-w-6xl mx-auto px-6 py-10">
-        <header className="mb-10 border-b border-slate-300 pb-8">
-          <div className="flex items-baseline gap-3 mb-3 flex-wrap">
-            <h1 className="text-5xl tracking-tight" style={{ fontFamily: "Georgia, serif", fontWeight: 400 }}>
-              Advisor<span className="italic text-emerald-800">Notes</span>
-            </h1>
-            <span className="text-xs uppercase tracking-[0.2em] text-slate-500" style={{ fontFamily: "system-ui" }}>
-              for RIAs &amp; financial advisors
-            </span>
-          </div>
-          <p className="text-slate-600 text-lg max-w-3xl leading-relaxed">
-            Turn rough client-meeting notes into compliant follow-up emails, CRM entries, suitability memos, and IPS updates — in seconds.
-          </p>
-        </header>
 
         <div className="mb-10 p-4 bg-amber-50 border border-amber-300 flex gap-3 items-start">
           <AlertTriangle className="w-5 h-5 text-amber-700 flex-shrink-0 mt-0.5" />
@@ -198,5 +205,16 @@ export default function App() {
         </footer>
       </div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/app" element={<ToolPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
