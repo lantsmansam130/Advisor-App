@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Copy, Check, Loader2, AlertTriangle } from "lucide-react";
-import { StackNav, FloatingMark, SectionLabel, EditorialHeading } from "./StackHomePage.jsx";
+import { StackNav, FloatingMark, SectionLabel, EditorialHeading, palette } from "./StackHomePage.jsx";
 
 const DOC_TYPES = [
   "Annuity contract",
@@ -15,10 +15,10 @@ const READING_LEVELS = ["General client", "Sophisticated client"];
 const MAX_CHARS = 15000;
 
 const inputStyle = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.1)",
+  background: palette.paper,
+  border: `1px solid ${palette.borderMid}`,
   borderRadius: "14px",
-  color: "#fff",
+  color: palette.ink,
 };
 
 const optionBase = {
@@ -79,7 +79,7 @@ export default function DecoderPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#000", color: "#fff" }}>
+    <div className="min-h-screen" style={{ background: palette.cream, color: palette.ink }}>
       <StackNav tool="Document Decoder" />
 
       <main className="max-w-5xl mx-auto px-6 pt-12 pb-16">
@@ -87,14 +87,14 @@ export default function DecoderPage() {
         <div className="mb-12 text-center">
           <SectionLabel>Document Decoder</SectionLabel>
           <EditorialHeading italic="Decode" rest="the fine print." size="lg" className="mb-5 max-w-3xl mx-auto" />
-          <p className="max-w-2xl mx-auto text-lg" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.65)", lineHeight: 1.55 }}>
+          <p className="max-w-2xl mx-auto text-lg" style={{ fontFamily: "Inter", color: palette.ash, lineHeight: 1.55 }}>
             Paste a section of an annuity contract, insurance policy, trust document, or benefits package. Get a plain-English breakdown — what it says, what to watch for, what to ask before signing.
           </p>
         </div>
 
-        <div className="mb-8 p-5 flex gap-3 items-start" style={{ background: "rgba(252,211,77,0.08)", border: "1px solid rgba(252,211,77,0.25)", borderRadius: "16px" }}>
-          <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#fbbf24" }} />
-          <p className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(254,243,199,0.95)" }}>
+        <div className="mb-8 p-5 flex gap-3 items-start" style={{ background: "rgba(212,165,116,0.12)", border: "1px solid rgba(212,165,116,0.4)", borderRadius: "16px" }}>
+          <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#9F6F3D" }} />
+          <p className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: "#5C3F1E" }}>
             <strong style={{ fontWeight: 600 }}>Compliance reminder:</strong> Explanations are starting drafts, not legal, tax, or insurance advice. Verify with the document issuer, the client's attorney, or the appropriate professional before any client conversation or recommendation.
           </p>
         </div>
@@ -111,9 +111,9 @@ export default function DecoderPage() {
                     onClick={() => setDocType(d)}
                     style={{
                       ...optionBase,
-                      background: active ? "#fff" : "rgba(255,255,255,0.04)",
-                      color: active ? "#000" : "rgba(255,255,255,0.85)",
-                      border: `1px solid ${active ? "#fff" : "rgba(255,255,255,0.12)"}`,
+                      background: active ? palette.ink : palette.paper,
+                      color: active ? palette.cream : palette.ink,
+                      border: `1px solid ${active ? palette.ink : palette.borderMid}`,
                     }}
                   >
                     {d}
@@ -134,9 +134,9 @@ export default function DecoderPage() {
                     onClick={() => setReadingLevel(r)}
                     style={{
                       ...optionBase,
-                      background: active ? "#fff" : "rgba(255,255,255,0.04)",
-                      color: active ? "#000" : "rgba(255,255,255,0.85)",
-                      border: `1px solid ${active ? "#fff" : "rgba(255,255,255,0.12)"}`,
+                      background: active ? palette.ink : palette.paper,
+                      color: active ? palette.cream : palette.ink,
+                      border: `1px solid ${active ? palette.ink : palette.borderMid}`,
                     }}
                   >
                     {r}
@@ -150,7 +150,7 @@ export default function DecoderPage() {
         <div className="mb-6">
           <div className="flex justify-between items-end mb-3">
             <SectionLabel>03 — Paste the document section</SectionLabel>
-            <span className="text-[11px]" style={{ fontFamily: "Inter", color: source.length > MAX_CHARS ? "#f87171" : "rgba(255,255,255,0.45)", letterSpacing: "0.1em" }}>
+            <span className="text-[11px]" style={{ fontFamily: "Inter", color: source.length > MAX_CHARS ? "#B5483B" : palette.ash, letterSpacing: "0.1em" }}>
               {source.length.toLocaleString()} / {MAX_CHARS.toLocaleString()}
             </span>
           </div>
@@ -160,8 +160,8 @@ export default function DecoderPage() {
             placeholder='"Section 4.3 — Surrender Charges. The Owner may surrender this Contract for its Cash Surrender Value at any time prior to the Annuity Date..."'
             className="w-full h-64 p-5 text-[14px] leading-relaxed focus:outline-none resize-none"
             style={{ ...inputStyle, fontFamily: "Inter" }}
-            onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"; }}
-            onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
+            onFocus={(e) => { e.currentTarget.style.borderColor = palette.forest; }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = palette.borderMid; }}
           />
         </div>
 
@@ -169,7 +169,7 @@ export default function DecoderPage() {
           onClick={decode}
           disabled={loading || source.length > MAX_CHARS}
           className="w-full py-4 mb-8 flex items-center justify-center gap-2 disabled:opacity-50"
-          style={{ background: "#fff", color: "#000", borderRadius: "999px", fontFamily: "Inter", fontWeight: 500, fontSize: "12px", letterSpacing: "0.14em", textTransform: "uppercase", border: "1px solid #fff", cursor: loading ? "wait" : "pointer" }}
+          style={{ background: palette.ink, color: palette.cream, borderRadius: "999px", fontFamily: "Inter", fontWeight: 500, fontSize: "12px", letterSpacing: "0.14em", textTransform: "uppercase", border: `1px solid ${palette.ink}`, cursor: loading ? "wait" : "pointer" }}
         >
           {loading ? (
             <><Loader2 className="w-4 h-4 animate-spin" /> Decoding document…</>
@@ -177,18 +177,18 @@ export default function DecoderPage() {
             <>Decode document <span>→</span></>
           )}
         </button>
-        {error && <p className="mb-6 text-sm" style={{ color: "#f87171", fontFamily: "Inter" }}>{error}</p>}
+        {error && <p className="mb-6 text-sm" style={{ color: "#B5483B", fontFamily: "Inter" }}>{error}</p>}
 
-        <div style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "20px" }}>
-          <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
-            <span className="text-[11px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: "rgba(255,255,255,0.5)" }}>
+        <div style={{ background: palette.paper, border: `1px solid ${palette.borderSubtle}`, borderRadius: "20px", boxShadow: "0 1px 2px rgba(15,14,12,0.04), 0 8px 24px -16px rgba(15,14,12,0.12)" }}>
+          <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: `1px solid ${palette.borderSubtle}` }}>
+            <span className="text-[11px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: palette.ash }}>
               Decoded — for advisor review
             </span>
             {output && (
               <button
                 onClick={copyOutput}
                 className="text-[11px] uppercase flex items-center gap-1.5"
-                style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: "rgba(255,255,255,0.7)" }}
+                style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: palette.forest }}
               >
                 {copied ? (<><Check className="w-3.5 h-3.5" /> Copied</>) : (<><Copy className="w-3.5 h-3.5" /> Copy all</>)}
               </button>
@@ -196,24 +196,24 @@ export default function DecoderPage() {
           </div>
           <div className="min-h-[24rem] p-6">
             {!output && !loading && (
-              <div className="h-full min-h-[20rem] flex items-center justify-center text-center px-8" style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: "rgba(255,255,255,0.35)", fontSize: "18px" }}>
+              <div className="h-full min-h-[20rem] flex items-center justify-center text-center px-8" style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.dust, fontSize: "18px" }}>
                 Your decoded breakdown will appear here. Always verify against the full document before any client conversation.
               </div>
             )}
             {loading && (
-              <div className="h-full min-h-[20rem] flex items-center justify-center" style={{ color: "rgba(255,255,255,0.5)" }}>
+              <div className="h-full min-h-[20rem] flex items-center justify-center" style={{ color: palette.ash }}>
                 <Loader2 className="w-6 h-6 animate-spin" />
               </div>
             )}
             {output && (
-              <pre className="whitespace-pre-wrap text-[15px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.9)" }}>
+              <pre className="whitespace-pre-wrap text-[15px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ink }}>
                 {output}
               </pre>
             )}
           </div>
         </div>
 
-        <footer className="mt-16 pt-8 flex justify-between flex-wrap gap-3 text-[11px]" style={{ fontFamily: "Inter", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        <footer className="mt-16 pt-8 flex justify-between flex-wrap gap-3 text-[11px]" style={{ fontFamily: "Inter", letterSpacing: "0.18em", textTransform: "uppercase", color: palette.dust, borderTop: `1px solid ${palette.borderSubtle}` }}>
           <span>Advisor Stack — Prototype</span>
           <span>Not a substitute for compliance review · Not investment advice</span>
         </footer>

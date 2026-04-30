@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { StackNav, FloatingMark, PillCTA, SectionLabel, EditorialHeading, darkCard, indigoBlock, skyBadge } from "./StackHomePage.jsx";
+import { StackNav, FloatingMark, PillCTA, SectionLabel, EditorialHeading, darkCard, indigoBlock, skyBadge, palette } from "./StackHomePage.jsx";
 
 function useFadeIn() {
   const ref = useRef(null);
@@ -57,7 +57,7 @@ function FadeSection({ children, className = "", style = {}, id }) {
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen" style={{ background: "#000", color: "#fff" }}>
+    <div className="min-h-screen" style={{ background: palette.cream, color: palette.ink }}>
       <StackNav tool="AdvisorNotes" />
 
       <main className="max-w-6xl mx-auto px-6">
@@ -68,26 +68,28 @@ export default function LandingPage() {
             <span style={skyBadge}>The meeting notes tool</span>
           </div>
           <EditorialHeading italic="Drafted" rest={<>in seconds.<br/>Reviewed <span style={{ fontStyle: "italic" }}>by</span> you.</>} size="xl" className="mb-6 max-w-4xl mx-auto" />
-          <p className="max-w-xl mx-auto mb-10 text-lg" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.65)", lineHeight: 1.55 }}>
+          <p className="max-w-xl mx-auto mb-10 text-lg" style={{ fontFamily: "Inter", color: palette.ash, lineHeight: 1.55 }}>
             Paste your rough notes. Get a compliant follow-up email, CRM entry, suitability memo, or IPS update — drafted in the seconds it takes to review it.
           </p>
           <div className="flex gap-3 items-center justify-center flex-wrap">
             <PillCTA to="/app">Try it now</PillCTA>
-            <span className="text-sm" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.5)" }}>No sign-up · Free during preview</span>
+            <span className="text-sm" style={{ fontFamily: "Inter", color: palette.ash }}>No sign-up · Free during preview</span>
           </div>
-          <div className="mt-12 flex justify-center gap-8 flex-wrap text-[11px]" style={{ fontFamily: "Inter", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)" }}>
+          <div className="mt-12 flex justify-center gap-8 flex-wrap text-[11px]" style={{ fontFamily: "Inter", letterSpacing: "0.18em", textTransform: "uppercase", color: palette.dust }}>
             <span>Drafts only</span>
             <span>Always advisor-reviewed</span>
             <span>Never a recommendation</span>
           </div>
         </FadeSection>
 
-        {/* THE PROBLEM — INDIGO */}
+        {/* THE PROBLEM — FOREST */}
         <FadeSection className="py-16">
-          <div style={{ ...indigoBlock, padding: "56px 40px" }}>
-            <SectionLabel>The problem</SectionLabel>
-            <EditorialHeading italic="Forty-five" rest="minutes you'll never get back." size="md" className="mb-10 max-w-3xl" />
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl text-[15px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.85)" }}>
+          <div style={{ ...indigoBlock, padding: "56px 40px", color: palette.cream }}>
+            <div className="text-[11px] uppercase mb-4" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.22em", color: "rgba(247,243,236,0.6)" }}>
+              The problem
+            </div>
+            <EditorialHeading italic="Forty-five" rest="minutes you'll never get back." size="md" className="mb-10 max-w-3xl" color={palette.cream} />
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl text-[15px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(247,243,236,0.85)" }}>
               <div>The follow-up email. The CRM note. The suitability memo if you discussed a recommendation. The IPS update if anything material changed.</div>
               <div>By the time you sit down to write it, half the detail has faded. You write less than you should — or you write it three days later and feel guilty about it.</div>
             </div>
@@ -107,9 +109,9 @@ export default function LandingPage() {
               ["03", "Review, edit, send.", "Drafts are formatted for your CRM and pre-loaded with required disclosures. You sign off."],
             ].map(([num, title, body]) => (
               <div key={num} style={{ ...darkCard, padding: "28px" }}>
-                <div className="text-3xl mb-4 leading-none" style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: "rgba(255,255,255,0.55)", fontVariantNumeric: "tabular-nums" }}>{num}</div>
-                <div className="text-xl mb-2" style={{ fontFamily: "'Instrument Serif', serif", color: "#fff", letterSpacing: "-0.01em" }}>{title}</div>
-                <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.6)" }}>{body}</div>
+                <div className="text-3xl mb-4 leading-none" style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.dust, fontVariantNumeric: "tabular-nums" }}>{num}</div>
+                <div className="text-xl mb-2" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, letterSpacing: "-0.01em" }}>{title}</div>
+                <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ash }}>{body}</div>
               </div>
             ))}
           </div>
@@ -128,26 +130,26 @@ export default function LandingPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto">
             <div style={{ ...darkCard, padding: "32px", textAlign: "center" }}>
-              <div className="text-7xl mb-4 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: "#fff", fontVariantNumeric: "tabular-nums" }}>
+              <div className="text-7xl mb-4 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, fontVariantNumeric: "tabular-nums" }}>
                 <CountUp target={45} suffix=" min" />
               </div>
-              <div className="text-sm leading-relaxed max-w-[16rem] mx-auto" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.6)" }}>
+              <div className="text-sm leading-relaxed max-w-[16rem] mx-auto" style={{ fontFamily: "Inter", color: palette.ash }}>
                 average time to draft a follow-up email by hand after a typical client meeting
               </div>
             </div>
             <div style={{ ...darkCard, padding: "32px", textAlign: "center" }}>
-              <div className="text-7xl mb-4 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: "#fff", fontVariantNumeric: "tabular-nums" }}>
+              <div className="text-7xl mb-4 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, fontVariantNumeric: "tabular-nums" }}>
                 <CountUp target={60} suffix=" sec" />
               </div>
-              <div className="text-sm leading-relaxed max-w-[16rem] mx-auto" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.6)" }}>
+              <div className="text-sm leading-relaxed max-w-[16rem] mx-auto" style={{ fontFamily: "Inter", color: palette.ash }}>
                 average time to draft the same email with AdvisorNotes — including review
               </div>
             </div>
             <div style={{ ...darkCard, padding: "32px", textAlign: "center" }}>
-              <div className="text-7xl mb-4 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: "#fff", fontVariantNumeric: "tabular-nums" }}>
+              <div className="text-7xl mb-4 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, fontVariantNumeric: "tabular-nums" }}>
                 <CountUp target={6} />
               </div>
-              <div className="text-sm leading-relaxed max-w-[16rem] mx-auto" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.6)" }}>
+              <div className="text-sm leading-relaxed max-w-[16rem] mx-auto" style={{ fontFamily: "Inter", color: palette.ash }}>
                 output formats — from client recaps to internal task lists
               </div>
             </div>
@@ -166,9 +168,9 @@ export default function LandingPage() {
                 ["Does this satisfy SEC 17a-4 retention?", "Not by itself. AdvisorNotes generates drafts. Your firm's books-and-records system is where retention happens. Copy the output into your existing archived channel."],
                 ["Can I customize the disclosure language for my firm?", "Not yet — every client recap currently ships with a standard disclosure. Per-firm customization is on the roadmap."],
               ].map(([q, a]) => (
-                <div key={q} className="pt-5" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-                  <div className="text-xl mb-2" style={{ fontFamily: "'Instrument Serif', serif", color: "#fff" }}>{q}</div>
-                  <div className="text-[15px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.65)" }}>{a}</div>
+                <div key={q} className="pt-5" style={{ borderTop: `1px solid ${palette.borderSubtle}` }}>
+                  <div className="text-xl mb-2" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink }}>{q}</div>
+                  <div className="text-[15px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ash }}>{a}</div>
                 </div>
               ))}
             </div>
@@ -181,7 +183,7 @@ export default function LandingPage() {
           <PillCTA to="/app">Try it now</PillCTA>
         </FadeSection>
 
-        <footer className="py-10 flex justify-between flex-wrap gap-3 text-[11px]" style={{ fontFamily: "Inter", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        <footer className="py-10 flex justify-between flex-wrap gap-3 text-[11px]" style={{ fontFamily: "Inter", letterSpacing: "0.18em", textTransform: "uppercase", color: palette.dust, borderTop: `1px solid ${palette.borderSubtle}` }}>
           <span>Advisor Stack — Prototype</span>
           <span>Not a substitute for compliance review · Not investment advice</span>
         </footer>

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Mail, FileText, BarChart3, Compass, ShieldAlert, Heart, FileCog, FilePen, ArrowUpRight } from "lucide-react";
+import { Mail, FileText, BarChart3, Compass, ArrowUpRight } from "lucide-react";
 
 function useFadeIn() {
   const ref = useRef(null);
@@ -42,14 +42,25 @@ const TOOLS = [
   { id: "decoder", name: "Document Decoder", available: true, href: "/decoder", icon: FileText, description: "Paste an annuity contract, insurance policy, or trust section. Get a plain-English breakdown — what it says, what to watch for, what to ask before signing." },
   { id: "lead-analytics", name: "Inbound Lead Analytics", available: false, status: "In development", icon: BarChart3, description: "Connect your CRM. See where your best leads come from, which sources convert, and where to focus your prospecting." },
   { id: "prospect-brief", name: "Prospect Pre-Meeting Brief", available: false, icon: Compass, description: "A one-page brief on talking points and likely concerns before you sit down with a prospect." },
-  { id: "disclosure", name: "Disclosure Drafter", available: false, icon: ShieldAlert, description: "Pick a context — social, podcast, blog, marketing — get the right disclosure language to attach." },
-  { id: "thank-you", name: "Referral Thank-You Generator", available: false, icon: Heart, description: "A polished, personalized thank-you note for every referral, in 30 seconds." },
-  { id: "process", name: "Process Documentation Writer", available: false, icon: FileCog, description: "Describe a process in fragments, get a polished SOP your team can actually follow." },
-  { id: "adv", name: "ADV / Form CRS Helper", available: false, icon: FilePen, description: "A starter-draft assistant for annual ADV and Form CRS section updates." },
 ];
 
 const availableCount = TOOLS.filter((t) => t.available).length;
 const comingSoonCount = TOOLS.length - availableCount;
+
+// Palette
+export const palette = {
+  cream: "#F7F3EC",
+  paper: "#FFFFFF",
+  sand: "#EDE6D7",
+  ink: "#0F0E0C",
+  ash: "#5C564E",
+  dust: "#9B948A",
+  forest: "#1F3A2E",
+  sage: "#3D5A4A",
+  amber: "#D4A574",
+  borderSubtle: "rgba(15,14,12,0.06)",
+  borderMid: "rgba(15,14,12,0.12)",
+};
 
 // Kept for backwards-compat with existing imports; renders nothing.
 export function AnimatedBackground() {
@@ -62,33 +73,34 @@ export function StackNav({ tool }) {
       <div
         className="max-w-6xl mx-auto px-4 py-2.5 flex justify-between items-center"
         style={{
-          background: "rgba(15,15,17,0.72)",
+          background: "rgba(15,14,12,0.92)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
-          border: "1px solid rgba(255,255,255,0.07)",
+          border: "1px solid rgba(255,255,255,0.06)",
           borderRadius: "999px",
+          boxShadow: "0 10px 30px -12px rgba(15,14,12,0.25)",
         }}
       >
         <Link to="/" className="flex items-center gap-2.5 no-underline pl-1">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "#fff" }}>
-            <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: "#000", fontSize: "17px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
+          <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: palette.cream }}>
+            <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.ink, fontSize: "17px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
           </div>
-          <span style={{ fontFamily: "'Instrument Serif', serif", color: "#fff", fontSize: "20px", letterSpacing: "-0.01em", lineHeight: 1 }}>
+          <span style={{ fontFamily: "'Instrument Serif', serif", color: palette.cream, fontSize: "20px", letterSpacing: "-0.01em", lineHeight: 1 }}>
             Advisor<span style={{ fontStyle: "italic" }}>Stack</span>
           </span>
           {tool && (
             <>
-              <span className="opacity-30 mx-1" style={{ fontFamily: "'Instrument Serif', serif", fontSize: "18px" }}>/</span>
-              <span style={{ fontFamily: "Inter", fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>{tool}</span>
+              <span className="opacity-30 mx-1" style={{ fontFamily: "'Instrument Serif', serif", fontSize: "18px", color: palette.cream }}>/</span>
+              <span style={{ fontFamily: "Inter", fontSize: "13px", color: "rgba(247,243,236,0.7)" }}>{tool}</span>
             </>
           )}
         </Link>
         {tool ? (
-          <Link to="/" className="inline-flex items-center gap-2 px-4 py-2 no-underline" style={{ color: "rgba(255,255,255,0.85)", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}>
+          <Link to="/" className="inline-flex items-center gap-2 px-4 py-2 no-underline" style={{ color: "rgba(247,243,236,0.85)", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}>
             ← All tools
           </Link>
         ) : (
-          <Link to="/notes" className="inline-flex items-center gap-2 px-5 py-2.5 no-underline" style={{ background: "#fff", color: "#000", borderRadius: "999px", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}>
+          <Link to="/notes" className="inline-flex items-center gap-2 px-5 py-2.5 no-underline" style={{ background: palette.cream, color: palette.ink, borderRadius: "999px", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}>
             Get started <span style={{ marginLeft: 2 }}>→</span>
           </Link>
         )}
@@ -102,9 +114,9 @@ export function FloatingMark() {
     <Link
       to="/"
       className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full flex items-center justify-center no-underline"
-      style={{ background: "#000", border: "1px solid rgba(255,255,255,0.18)", boxShadow: "0 8px 24px rgba(0,0,0,0.4)" }}
+      style={{ background: palette.ink, border: `1px solid ${palette.borderMid}`, boxShadow: "0 12px 28px -10px rgba(15,14,12,0.35)" }}
     >
-      <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: "#fff", fontSize: "24px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
+      <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.cream, fontSize: "24px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
     </Link>
   );
 }
@@ -117,11 +129,12 @@ export function PillCTA({ to, children, dark = false, small = false }) {
     letterSpacing: "0.14em",
     textTransform: "uppercase",
     borderRadius: "999px",
-    transition: "transform 0.2s, box-shadow 0.2s",
+    transition: "transform 0.2s, box-shadow 0.2s, background 0.2s",
   };
+  // dark=true → outlined ghost variant; default → filled dark pill on light bg
   const style = dark
-    ? { ...base, background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.25)" }
-    : { ...base, background: "#fff", color: "#000", border: "1px solid #fff" };
+    ? { ...base, background: "transparent", color: palette.ink, border: `1px solid ${palette.borderMid}` }
+    : { ...base, background: palette.ink, color: palette.cream, border: `1px solid ${palette.ink}` };
   return (
     <Link
       to={to}
@@ -137,14 +150,14 @@ export function SectionLabel({ children }) {
   return (
     <div
       className="text-[11px] uppercase mb-4"
-      style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.22em", color: "rgba(255,255,255,0.5)" }}
+      style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.22em", color: palette.ash }}
     >
       {children}
     </div>
   );
 }
 
-export function EditorialHeading({ italic, rest, size = "lg", className = "" }) {
+export function EditorialHeading({ italic, rest, size = "lg", className = "", color }) {
   const sizes = {
     xl: "text-5xl md:text-7xl",
     lg: "text-4xl md:text-6xl",
@@ -154,27 +167,31 @@ export function EditorialHeading({ italic, rest, size = "lg", className = "" }) 
   return (
     <h2
       className={`${sizes[size]} ${className}`}
-      style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", color: "#fff" }}
+      style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", color: color || palette.ink }}
     >
       <span style={{ fontStyle: "italic" }}>{italic}</span> {rest}
     </h2>
   );
 }
 
+// White card on cream background — replaces the dark glass cards
 export const darkCard = {
-  background: "rgba(255,255,255,0.025)",
-  border: "1px solid rgba(255,255,255,0.07)",
+  background: palette.paper,
+  border: `1px solid ${palette.borderSubtle}`,
   borderRadius: "20px",
+  boxShadow: "0 1px 2px rgba(15,14,12,0.04), 0 8px 24px -16px rgba(15,14,12,0.12)",
 };
 
+// Forest gradient feature block — replaces the indigo gradient
 export const indigoBlock = {
-  background: "linear-gradient(180deg, #0f0a3d 0%, #2e1faa 45%, #5b4fe5 100%)",
+  background: "linear-gradient(180deg, #16271F 0%, #1F3A2E 45%, #2D5142 100%)",
   borderRadius: "28px",
 };
 
+// Sage badge — replaces the sky-blue badge
 export const skyBadge = {
-  background: "rgba(186,230,253,0.95)",
-  color: "#0c4a6e",
+  background: "rgba(31,58,46,0.08)",
+  color: palette.forest,
   fontFamily: "Inter",
   fontWeight: 500,
   fontSize: "11px",
@@ -183,11 +200,12 @@ export const skyBadge = {
   borderRadius: "999px",
   padding: "8px 18px",
   display: "inline-block",
+  border: `1px solid ${palette.borderSubtle}`,
 };
 
 export default function StackHomePage() {
   return (
-    <div className="min-h-screen" style={{ background: "#000", color: "#fff" }}>
+    <div className="min-h-screen" style={{ background: palette.cream, color: palette.ink }}>
       <StackNav />
 
       <main className="max-w-6xl mx-auto px-6">
@@ -198,14 +216,14 @@ export default function StackHomePage() {
             <span style={skyBadge}>Compliance-first AI for advisors</span>
           </div>
           <EditorialHeading italic="Less" rest={<>paperwork.<br/><span style={{ fontStyle: "italic" }}>More</span> advising.</>} size="xl" className="mb-6 max-w-4xl mx-auto" />
-          <p className="max-w-xl mx-auto mb-10 text-lg" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.65)", lineHeight: 1.55 }}>
+          <p className="max-w-xl mx-auto mb-10 text-lg" style={{ fontFamily: "Inter", color: palette.ash, lineHeight: 1.55 }}>
             A growing suite of focused AI tools that handle the writing, prep, and follow-up that fill an advisor's day — drafted in the time it takes to review them.
           </p>
           <div className="flex gap-3 items-center justify-center flex-wrap">
             <PillCTA to="/notes">Try AdvisorNotes</PillCTA>
             <PillCTA to="/decoder" dark>Decode a document</PillCTA>
           </div>
-          <div className="mt-12 flex justify-center gap-8 flex-wrap text-[11px]" style={{ fontFamily: "Inter", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)" }}>
+          <div className="mt-12 flex justify-center gap-8 flex-wrap text-[11px]" style={{ fontFamily: "Inter", letterSpacing: "0.18em", textTransform: "uppercase", color: palette.dust }}>
             <span>Drafts only</span>
             <span>Always advisor-reviewed</span>
             <span>Never a recommendation</span>
@@ -217,9 +235,9 @@ export default function StackHomePage() {
           <div className="flex justify-between items-end mb-10 flex-wrap gap-4">
             <div>
               <SectionLabel>The stack</SectionLabel>
-              <EditorialHeading italic="Eight" rest="tools. One discipline." size="md" />
+              <EditorialHeading italic="Two" rest="live. Two on the way." size="md" />
             </div>
-            <div className="text-[11px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: "rgba(255,255,255,0.5)" }}>
+            <div className="text-[11px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: palette.ash }}>
               {availableCount} available · {comingSoonCount} coming soon
             </div>
           </div>
@@ -233,35 +251,35 @@ export default function StackHomePage() {
                     key={tool.id}
                     to={tool.href}
                     className="block no-underline group"
-                    style={{ ...darkCard, padding: "26px", transition: "background 0.3s, transform 0.3s, border-color 0.3s" }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.025)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)"; e.currentTarget.style.transform = "translateY(0)"; }}
+                    style={{ ...darkCard, padding: "26px", transition: "transform 0.3s, box-shadow 0.3s, border-color 0.3s" }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = palette.borderMid; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 2px 4px rgba(15,14,12,0.06), 0 16px 32px -16px rgba(15,14,12,0.18)"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = palette.borderSubtle; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 1px 2px rgba(15,14,12,0.04), 0 8px 24px -16px rgba(15,14,12,0.12)"; }}
                   >
                     <div className="flex items-center justify-between mb-5">
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.06)" }}>
-                        <Icon className="w-4 h-4" style={{ color: "#fff" }} strokeWidth={1.6} />
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "rgba(31,58,46,0.06)" }}>
+                        <Icon className="w-4 h-4" style={{ color: palette.forest }} strokeWidth={1.6} />
                       </div>
-                      <ArrowUpRight className="w-4 h-4" style={{ color: "rgba(255,255,255,0.5)" }} strokeWidth={1.6} />
+                      <ArrowUpRight className="w-4 h-4" style={{ color: palette.ash }} strokeWidth={1.6} />
                     </div>
-                    <div className="text-2xl mb-2" style={{ fontFamily: "'Instrument Serif', serif", color: "#fff", letterSpacing: "-0.01em" }}>
+                    <div className="text-2xl mb-2" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, letterSpacing: "-0.01em" }}>
                       {tool.name === "AdvisorNotes" ? <>Advisor<span style={{ fontStyle: "italic" }}>Notes</span></> : tool.name}
                     </div>
-                    <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.6)" }}>{tool.description}</div>
+                    <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ash }}>{tool.description}</div>
                   </Link>
                 );
               }
               return (
-                <div key={tool.id} style={{ ...darkCard, padding: "26px", opacity: 0.55 }}>
+                <div key={tool.id} style={{ ...darkCard, padding: "26px", opacity: 0.7 }}>
                   <div className="flex items-center justify-between mb-5">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.04)" }}>
-                      <Icon className="w-4 h-4" style={{ color: "rgba(255,255,255,0.5)" }} strokeWidth={1.6} />
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "rgba(15,14,12,0.04)" }}>
+                      <Icon className="w-4 h-4" style={{ color: palette.dust }} strokeWidth={1.6} />
                     </div>
-                    <span className="text-[10px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: "rgba(255,255,255,0.4)" }}>
+                    <span className="text-[10px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: palette.dust }}>
                       {tool.status || "Coming soon"}
                     </span>
                   </div>
-                  <div className="text-2xl mb-2" style={{ fontFamily: "'Instrument Serif', serif", color: "rgba(255,255,255,0.85)", letterSpacing: "-0.01em" }}>{tool.name}</div>
-                  <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.45)" }}>{tool.description}</div>
+                  <div className="text-2xl mb-2" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, letterSpacing: "-0.01em", opacity: 0.85 }}>{tool.name}</div>
+                  <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ash }}>{tool.description}</div>
                 </div>
               );
             })}
@@ -270,24 +288,26 @@ export default function StackHomePage() {
 
         {/* INDIGO FEATURE BLOCK — SAVINGS */}
         <FadeSection id="savings" className="py-16">
-          <div style={{ ...indigoBlock, padding: "56px 40px" }}>
-            <SectionLabel>What it gives back</SectionLabel>
-            <EditorialHeading italic="Hours" rest="back. Real money saved." size="md" className="mb-12 max-w-2xl" />
+          <div style={{ ...indigoBlock, padding: "56px 40px", color: palette.cream }}>
+            <div className="text-[11px] uppercase mb-4" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.22em", color: "rgba(247,243,236,0.6)" }}>
+              What it gives back
+            </div>
+            <EditorialHeading italic="Hours" rest="back. Real money saved." size="md" className="mb-12 max-w-2xl" color={palette.cream} />
             <div className="grid md:grid-cols-3 gap-8 max-w-4xl">
               <div>
-                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: "#fff", fontVariantNumeric: "tabular-nums" }}>~5 hrs</div>
-                <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.75)" }}>saved per week on post-meeting paperwork</div>
+                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: palette.cream, fontVariantNumeric: "tabular-nums" }}>~5 hrs</div>
+                <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(247,243,236,0.75)" }}>saved per week on post-meeting paperwork</div>
               </div>
               <div>
-                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: "#fff", fontVariantNumeric: "tabular-nums" }}>~$15k</div>
-                <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.75)" }}>in advisor time recaptured per year, per seat</div>
+                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: palette.cream, fontVariantNumeric: "tabular-nums" }}>~$15k</div>
+                <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(247,243,236,0.75)" }}>in advisor time recaptured per year, per seat</div>
               </div>
               <div>
-                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: "#fff", fontVariantNumeric: "tabular-nums" }}>$0</div>
-                <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.75)" }}>extra spent on writing tools, transcription, or paraplanner overflow</div>
+                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: palette.cream, fontVariantNumeric: "tabular-nums" }}>$0</div>
+                <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(247,243,236,0.75)" }}>extra spent on writing tools, transcription, or paraplanner overflow</div>
               </div>
             </div>
-            <div className="mt-10 max-w-2xl text-xs" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.5)", fontStyle: "italic" }}>
+            <div className="mt-10 max-w-2xl text-xs" style={{ fontFamily: "Inter", color: "rgba(247,243,236,0.55)", fontStyle: "italic" }}>
               Estimates based on a 30-meeting/month practice at $200/hr advisor time. Your mileage will vary.
             </div>
           </div>
@@ -307,9 +327,9 @@ export default function StackHomePage() {
               ["04", "Your own data is the next frontier.", "The real value sits in your CRM, your meetings, your book."],
             ].map(([num, title, body]) => (
               <div key={num} style={{ ...darkCard, padding: "28px" }}>
-                <div className="text-3xl mb-4 leading-none" style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: "rgba(255,255,255,0.55)", fontVariantNumeric: "tabular-nums" }}>{num}</div>
-                <div className="text-xl mb-2" style={{ fontFamily: "'Instrument Serif', serif", color: "#fff", letterSpacing: "-0.01em" }}>{title}</div>
-                <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.6)" }}>{body}</div>
+                <div className="text-3xl mb-4 leading-none" style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.dust, fontVariantNumeric: "tabular-nums" }}>{num}</div>
+                <div className="text-xl mb-2" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, letterSpacing: "-0.01em" }}>{title}</div>
+                <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ash }}>{body}</div>
               </div>
             ))}
           </div>
@@ -328,19 +348,21 @@ export default function StackHomePage() {
                 ["Honest about limits", "We're not your CCO. We don't pretend to be."],
               ].map(([title, body]) => (
                 <div key={title}>
-                  <div className="text-lg mb-1.5" style={{ fontFamily: "'Instrument Serif', serif", color: "#fff" }}>{title}</div>
-                  <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.6)" }}>{body}</div>
+                  <div className="text-lg mb-1.5" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink }}>{title}</div>
+                  <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ash }}>{body}</div>
                 </div>
               ))}
             </div>
           </div>
         </FadeSection>
 
-        {/* COMPLIANCE — INDIGO */}
+        {/* COMPLIANCE — FOREST */}
         <FadeSection id="compliance" className="py-16">
-          <div style={{ ...indigoBlock, padding: "56px 40px" }}>
-            <SectionLabel>A shared discipline</SectionLabel>
-            <EditorialHeading italic="One" rest="discipline. Every tool." size="md" className="mb-10 max-w-2xl" />
+          <div style={{ ...indigoBlock, padding: "56px 40px", color: palette.cream }}>
+            <div className="text-[11px] uppercase mb-4" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.22em", color: "rgba(247,243,236,0.6)" }}>
+              A shared discipline
+            </div>
+            <EditorialHeading italic="One" rest="discipline. Every tool." size="md" className="mb-10 max-w-2xl" color={palette.cream} />
             <div className="grid md:grid-cols-2 gap-x-12 gap-y-8 max-w-5xl">
               {[
                 ["Drafts only, never sends", "Nothing is auto-sent, auto-filed, or auto-shared. Every output requires your review before it leaves the page."],
@@ -349,8 +371,8 @@ export default function StackHomePage() {
                 ["Subject to your firm's WSP", "All outputs are electronic communications under SEC 17a-4 and FINRA 4511. Run them through your supervisory process."],
               ].map(([label, body]) => (
                 <div key={label}>
-                  <div className="text-[11px] uppercase mb-2" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: "rgba(255,255,255,0.7)" }}>{label}</div>
-                  <div className="text-[15px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.85)" }}>{body}</div>
+                  <div className="text-[11px] uppercase mb-2" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: "rgba(247,243,236,0.7)" }}>{label}</div>
+                  <div className="text-[15px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(247,243,236,0.85)" }}>{body}</div>
                 </div>
               ))}
             </div>
@@ -363,7 +385,7 @@ export default function StackHomePage() {
           <PillCTA to="/notes">Try it now</PillCTA>
         </FadeSection>
 
-        <footer className="py-10 flex justify-between flex-wrap gap-3 text-[11px]" style={{ fontFamily: "Inter", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        <footer className="py-10 flex justify-between flex-wrap gap-3 text-[11px]" style={{ fontFamily: "Inter", letterSpacing: "0.18em", textTransform: "uppercase", color: palette.dust, borderTop: `1px solid ${palette.borderSubtle}` }}>
           <span>Advisor Stack — Prototype</span>
           <span>Not a substitute for compliance review · Not investment advice</span>
         </footer>

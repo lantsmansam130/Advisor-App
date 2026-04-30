@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 html, body, #root {
-  background: #000;
-  color: #fff;
+  background: #F7F3EC;
+  color: #0F0E0C;
 }
 
 body {
@@ -14,7 +14,7 @@ body {
 }
 
 ::selection {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(31, 58, 46, 0.18);
 }
 
 textarea, input, button {

@@ -40,25 +40,29 @@ When a planned tool ships, it gets its own route + page component. The suite hom
 
 - `StackNav` — floating dark pill nav (top of every page)
 - `FloatingMark` — circular "A" logo fixed bottom-right
-- `PillCTA` — white pill button (primary) or outlined (`dark={true}`)
-- `EditorialHeading` — Instrument Serif italic + upright pair (`<EditorialHeading italic="Drafted" rest="in seconds." />`)
+- `PillCTA` — filled dark pill (primary) or outlined ghost (`dark={true}`)
+- `EditorialHeading` — Instrument Serif italic + upright pair (`<EditorialHeading italic="Drafted" rest="in seconds." />`); accepts a `color` prop for inverted use on dark feature blocks
 - `SectionLabel` — tracked-out uppercase eyebrow
-- `darkCard`, `indigoBlock`, `skyBadge` — style objects for the three card/section flavors
+- `palette` — single source of truth for all colors (`palette.cream`, `palette.ink`, `palette.forest`, etc.). Import this in any new page rather than hardcoding hex values.
+- `darkCard`, `indigoBlock`, `skyBadge` — style objects for the three card/section flavors. Names are legacy — see "Design system" below for what they actually look like now.
 
-`AnimatedBackground` is also exported but is a no-op stub (kept for backwards-compat with any leftover imports). Do not bring back the particle/gradient background — the design has moved to flat black + indigo gradient feature blocks.
+`AnimatedBackground` is also exported but is a no-op stub (kept for backwards-compat with any leftover imports). Do not bring back the particle/gradient background.
 
-**Design system (Origin-inspired, dark editorial):**
+**Design system (warm editorial — financial advisory brand):**
 
-- Background: pure black (`#000`) everywhere
-- Display type: Instrument Serif (italic word + upright word in headings)
+- Background: warm cream (`#F7F3EC`) everywhere — explicitly NOT pure black, NOT pure white
+- Cards: white (`#FFFFFF`) on cream, with subtle warm border (`rgba(15,14,12,0.06)`) and a faint shadow
+- Feature/contrast blocks: deep forest green gradient (`#16271F → #2D5142`), with cream-colored text inside — `indigoBlock` is the export name even though it's now green
+- Eyebrow badge: muted sage (`rgba(31,58,46,0.08)` on forest text) — `skyBadge` is the export name even though it's no longer sky blue
+- Display type: Instrument Serif (italic word + upright word pairing in headings)
 - Body type: Inter
 - Both fonts loaded via Google Fonts in `index.html` (do not bundle)
-- Primary CTA: white rounded-full pill, all-caps tracked Inter, arrow → suffix
-- Cards: subtle dark (`rgba(255,255,255,0.025)` on `rgba(255,255,255,0.07)` border)
-- Feature blocks: indigo→violet gradient (`#0f0a3d → #5b4fe5`)
-- Section rhythm: black → indigo gradient → black → dark card → indigo gradient → closing CTA
+- Primary CTA: filled ink-black rounded-full pill with cream text, all-caps tracked Inter, arrow → suffix
+- Section rhythm: cream → forest gradient → cream → white card → forest gradient → closing CTA on cream
 
-When adding a new page, import `StackNav`, `FloatingMark`, and the heading/CTA primitives from `StackHomePage.jsx` — don't reimplement them.
+The palette is intentionally warm and editorial (think high-end financial advisory firm, not fintech dashboard). When extending, pull colors from the exported `palette` object — don't hand-pick hex values that drift from the system.
+
+When adding a new page, import `StackNav`, `FloatingMark`, `palette`, and the heading/CTA primitives from `StackHomePage.jsx` — don't reimplement them.
 
 ## Compliance posture (shapes prompts and copy)
 

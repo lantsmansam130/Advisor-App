@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Copy, Check, Sparkles, Mail, ClipboardList, ShieldCheck, FileSignature, Loader2, AlertTriangle, Compass, ListChecks } from "lucide-react";
-import StackHomePage, { StackNav, FloatingMark, SectionLabel } from "./StackHomePage.jsx";
+import StackHomePage, { StackNav, FloatingMark, SectionLabel, palette } from "./StackHomePage.jsx";
 import LandingPage from "./LandingPage.jsx";
 import DecoderPage from "./DecoderPage.jsx";
 
@@ -17,16 +17,17 @@ const OUTPUT_TYPES = [
 const TONES = ["Formal", "Warm", "Concise"];
 
 const panelStyle = {
-  background: "rgba(255,255,255,0.025)",
-  border: "1px solid rgba(255,255,255,0.07)",
+  background: palette.paper,
+  border: `1px solid ${palette.borderSubtle}`,
   borderRadius: "20px",
+  boxShadow: "0 1px 2px rgba(15,14,12,0.04), 0 8px 24px -16px rgba(15,14,12,0.12)",
 };
 
 const inputBase = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.1)",
+  background: palette.cream,
+  border: `1px solid ${palette.borderMid}`,
   borderRadius: "14px",
-  color: "#fff",
+  color: palette.ink,
   fontFamily: "Inter",
 };
 
@@ -68,14 +69,14 @@ function ToolPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#000", color: "#fff" }}>
+    <div className="min-h-screen" style={{ background: palette.cream, color: palette.ink }}>
       <StackNav tool="AdvisorNotes" />
 
       <main className="max-w-6xl mx-auto px-6 pt-10 pb-16">
 
-        <div className="mb-8 p-5 flex gap-3 items-start" style={{ background: "rgba(252,211,77,0.08)", border: "1px solid rgba(252,211,77,0.25)", borderRadius: "16px" }}>
-          <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#fbbf24" }} />
-          <p className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(254,243,199,0.95)" }}>
+        <div className="mb-8 p-5 flex gap-3 items-start" style={{ background: "rgba(212,165,116,0.12)", border: "1px solid rgba(212,165,116,0.4)", borderRadius: "16px" }}>
+          <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#9F6F3D" }} />
+          <p className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: "#5C3F1E" }}>
             <strong style={{ fontWeight: 600 }}>Compliance reminder:</strong> AI-generated drafts must be reviewed by a qualified person before sending to clients or filing in books and records. This tool does not replace your firm's WSP, CCO review, or supervisory procedures. Output may be considered an electronic communication subject to retention rules (SEC 17a-4 / FINRA 4511).
           </p>
         </div>
@@ -90,8 +91,8 @@ function ToolPage() {
               placeholder="Annual review w/ Robert & Linda Chen 4/28 — Robert retiring Dec 2027 (was 2030), wants to derisk gradually, Linda inherited $180k from mother..."
               className="w-full h-72 p-4 text-[14px] leading-relaxed focus:outline-none resize-none"
               style={inputBase}
-              onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"; }}
-              onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
+              onFocus={(e) => { e.currentTarget.style.borderColor = palette.forest; }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = palette.borderMid; }}
             />
 
             <div className="mt-7">
@@ -106,15 +107,15 @@ function ToolPage() {
                       onClick={() => setOutputType(t.id)}
                       className="w-full text-left p-3.5 transition-all flex items-start gap-3"
                       style={{
-                        background: active ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.025)",
-                        border: `1px solid ${active ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.07)"}`,
+                        background: active ? "rgba(31,58,46,0.06)" : palette.cream,
+                        border: `1px solid ${active ? palette.forest : palette.borderSubtle}`,
                         borderRadius: "14px",
                       }}
                     >
-                      <Icon className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: active ? "#fff" : "rgba(255,255,255,0.55)" }} strokeWidth={1.6} />
+                      <Icon className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: active ? palette.forest : palette.ash }} strokeWidth={1.6} />
                       <div>
-                        <div style={{ fontFamily: "'Instrument Serif', serif", color: "#fff", fontSize: "17px" }}>{t.label}</div>
-                        <div className="text-[13px] mt-0.5" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.55)" }}>{t.description}</div>
+                        <div style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, fontSize: "17px" }}>{t.label}</div>
+                        <div className="text-[13px] mt-0.5" style={{ fontFamily: "Inter", color: palette.ash }}>{t.description}</div>
                       </div>
                     </button>
                   );
@@ -133,9 +134,9 @@ function ToolPage() {
                       onClick={() => setTone(t)}
                       className="px-5 py-2.5 transition-all"
                       style={{
-                        background: active ? "#fff" : "rgba(255,255,255,0.04)",
-                        color: active ? "#000" : "rgba(255,255,255,0.85)",
-                        border: `1px solid ${active ? "#fff" : "rgba(255,255,255,0.12)"}`,
+                        background: active ? palette.ink : palette.cream,
+                        color: active ? palette.cream : palette.ink,
+                        border: `1px solid ${active ? palette.ink : palette.borderMid}`,
                         borderRadius: "999px",
                         fontFamily: "Inter",
                         fontSize: "13px",
@@ -152,7 +153,7 @@ function ToolPage() {
               onClick={generate}
               disabled={loading}
               className="mt-8 w-full py-4 flex items-center justify-center gap-2 disabled:opacity-50"
-              style={{ background: "#fff", color: "#000", borderRadius: "999px", fontFamily: "Inter", fontWeight: 500, fontSize: "12px", letterSpacing: "0.14em", textTransform: "uppercase", border: "1px solid #fff", cursor: loading ? "wait" : "pointer" }}
+              style={{ background: palette.ink, color: palette.cream, borderRadius: "999px", fontFamily: "Inter", fontWeight: 500, fontSize: "12px", letterSpacing: "0.14em", textTransform: "uppercase", border: `1px solid ${palette.ink}`, cursor: loading ? "wait" : "pointer" }}
             >
               {loading ? (
                 <><Loader2 className="w-4 h-4 animate-spin" /> Generating…</>
@@ -160,34 +161,34 @@ function ToolPage() {
                 <><Sparkles className="w-4 h-4" /> Generate draft <span>→</span></>
               )}
             </button>
-            {error && <p className="mt-3 text-sm" style={{ color: "#f87171", fontFamily: "Inter" }}>{error}</p>}
+            {error && <p className="mt-3 text-sm" style={{ color: "#B5483B", fontFamily: "Inter" }}>{error}</p>}
           </section>
 
           {/* OUTPUT PANEL */}
           <section style={{ ...panelStyle, padding: "28px" }}>
             <div className="flex items-center justify-between mb-4">
-              <span className="text-[11px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.22em", color: "rgba(255,255,255,0.5)" }}>
+              <span className="text-[11px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.22em", color: palette.ash }}>
                 Draft — for advisor review
               </span>
               {output && (
-                <button onClick={copyOutput} className="text-[11px] uppercase flex items-center gap-1.5" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: "rgba(255,255,255,0.7)" }}>
+                <button onClick={copyOutput} className="text-[11px] uppercase flex items-center gap-1.5" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: palette.forest }}>
                   {copied ? (<><Check className="w-3.5 h-3.5" /> Copied</>) : (<><Copy className="w-3.5 h-3.5" /> Copy</>)}
                 </button>
               )}
             </div>
-            <div className="min-h-[32rem] p-6" style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "14px" }}>
+            <div className="min-h-[32rem] p-6" style={{ background: palette.cream, border: `1px solid ${palette.borderSubtle}`, borderRadius: "14px" }}>
               {!output && !loading && (
-                <div className="h-full min-h-[28rem] flex items-center justify-center text-center px-8" style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: "rgba(255,255,255,0.35)", fontSize: "18px" }}>
+                <div className="h-full min-h-[28rem] flex items-center justify-center text-center px-8" style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.dust, fontSize: "18px" }}>
                   Your draft will appear here. Always review before sending or filing.
                 </div>
               )}
               {loading && (
-                <div className="h-full min-h-[28rem] flex items-center justify-center" style={{ color: "rgba(255,255,255,0.5)" }}>
+                <div className="h-full min-h-[28rem] flex items-center justify-center" style={{ color: palette.ash }}>
                   <Loader2 className="w-6 h-6 animate-spin" />
                 </div>
               )}
               {output && (
-                <pre className="whitespace-pre-wrap text-[15px] leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(255,255,255,0.9)" }}>
+                <pre className="whitespace-pre-wrap text-[15px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ink }}>
                   {output}
                 </pre>
               )}
@@ -195,7 +196,7 @@ function ToolPage() {
           </section>
         </div>
 
-        <footer className="mt-16 pt-8 flex justify-between flex-wrap gap-3 text-[11px]" style={{ fontFamily: "Inter", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        <footer className="mt-16 pt-8 flex justify-between flex-wrap gap-3 text-[11px]" style={{ fontFamily: "Inter", letterSpacing: "0.18em", textTransform: "uppercase", color: palette.dust, borderTop: `1px solid ${palette.borderSubtle}` }}>
           <span>Advisor Stack — Prototype</span>
           <span>Not a substitute for compliance review · Not investment advice</span>
         </footer>
