@@ -8,6 +8,7 @@ import { MessageSquare, FileText, ArrowUpRight, CalendarDays, Mail, BarChart3 } 
 import AppShell from "./components/AppShell.jsx";
 import { useAuth } from "./contexts/AuthContext.jsx";
 import { palette } from "./StackHomePage.jsx";
+import { roleLabel } from "./lib/roleLabel.js";
 
 const QUICK_TOOLS = [
   {
@@ -46,7 +47,7 @@ export default function DashboardPage() {
         {/* Welcome */}
         <div className="mb-10">
           <div className="text-[11px] uppercase mb-3" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.22em", color: palette.ash }}>
-            {firm?.name ? `${firm.name} · ${profile?.role}` : "Advisor Stack"}
+            {firm?.name ? `${firm.name} · ${roleLabel(profile?.role)}` : "Advisor Stack"}
           </div>
           <h1
             className="text-4xl md:text-5xl mb-3"

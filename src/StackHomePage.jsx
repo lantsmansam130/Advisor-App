@@ -124,7 +124,7 @@ export function StackNav({ tool }) {
               </Link>
               {!tool && (
                 <Link
-                  to="/notes"
+                  to="/signup"
                   className="inline-flex items-center gap-2 px-5 py-2.5 no-underline"
                   style={{ background: palette.cream, color: palette.ink, borderRadius: "999px", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}
                 >
