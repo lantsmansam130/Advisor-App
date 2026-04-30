@@ -188,4 +188,35 @@ function ToolPage() {
                 </div>
               )}
               {loading && (
-                <div className="h-full flex items-center justify-center text-
+                <div className="h-full flex items-center justify-center text-slate-500">
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                </div>
+              )}
+              {output && (
+                <pre className="whitespace-pre-wrap text-slate-800 text-[15px] leading-relaxed" style={{ fontFamily: "Georgia, serif" }}>
+                  {output}
+                </pre>
+              )}
+            </div>
+          </section>
+        </div>
+
+        <footer className="mt-16 pt-8 border-t border-slate-300 text-xs uppercase tracking-[0.2em] text-slate-500 flex justify-between flex-wrap gap-3" style={{ fontFamily: "system-ui" }}>
+          <span>AdvisorNotes — Prototype</span>
+          <span>Not a substitute for compliance review · Not investment advice</span>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/app" element={<ToolPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
