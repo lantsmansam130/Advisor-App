@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { Copy, Check, Loader2, AlertTriangle, Upload, FileText, X, Eye, HelpCircle, FileText as FileTextIcon } from "lucide-react";
 import { StackNav, FloatingMark, SectionLabel, EditorialHeading, palette } from "./StackHomePage.jsx";
 import { MarkdownContent } from "./MarkdownArtifact.jsx";
+import { extractTextFromFile } from "./extractText.js";
 
 // Parse the decoder output (sections A/B/C as defined in the document_decoder prompt)
 // into structured pieces. Falls back to a single "Decoded section" if the model deviates.
@@ -159,36 +160,6 @@ const optionBase = {
   transition: "all 0.2s",
   cursor: "pointer",
 };
-
-// Lazily extract text from a PDF using pdfjs-dist.
-// Imported dynamically so the chunk only loads when a user actually uploads a PDF.
-async function extractPdfText(file) {
-  const pdfjs = await import("pdfjs-dist/build/pdf.mjs");
-  const workerUrl = (await import("pdfjs-dist/build/pdf.worker.min.mjs?url")).default;
-  pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
-
-  const buf = await file.arrayBuffer();
-  const pdf = await pdfjs.getDocument({ data: buf }).promise;
-  const parts = [];
-  for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i);
-    const content = await page.getTextContent();
-    const strings = content.items.map((it) => ("str" in it ? it.str : "")).join(" ");
-    parts.push(strings);
-  }
-  return parts.join("\n\n").replace(/\s+\n/g, "\n").trim();
-}
-
-async function extractTextFromFile(file) {
-  const name = (file.name || "").toLowerCase();
-  if (name.endsWith(".pdf") || file.type === "application/pdf") {
-    return extractPdfText(file);
-  }
-  if (name.endsWith(".txt") || name.endsWith(".md") || file.type.startsWith("text/")) {
-    return await file.text();
-  }
-  throw new Error("Unsupported file type. Upload a PDF or .txt file, or paste text directly.");
-}
 
 export default function DecoderPage() {
   const [docType, setDocType] = useState(DOC_TYPES[0]);

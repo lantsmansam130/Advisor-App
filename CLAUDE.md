@@ -41,6 +41,14 @@ The function caps inputs per tool (`document_decoder` gets 15000 chars / 3000 ma
 
 **`AdvisorChatPage` is a full chat UI:** left sidebar with new-chat button, curated example prompts, and recent-chat history (persisted to localStorage at key `advisornotes.chats.v1`, capped at 50 chats); main pane with empty-state example-prompt cards or the streaming message thread; composer with auto-grow textarea (Enter sends, Shift+Enter newline). The SSE parser is in the same file (`streamChatResponse`) — it reads `content_block_delta` text deltas and ignores other event types.
 
+The chat page also has:
+
+- **File attachments.** Paperclip button in the composer + page-level drag-and-drop. Files are extracted to text **client-side** via the shared `src/extractText.js` helper (PDF.js for PDFs, `file.text()` for `.txt`/`.md`). Up to 3 attachments per turn, 25 MB per file, 30K chars per file (truncated). Attachments live on the user-message object as `attachments: [{name, sizeBytes, text}]`; on send, `buildApiContent()` wraps each attachment in a `<file name="..." size="...">…</file>` block before the typed text so the model can clearly distinguish source documents from instructions.
+- **Per-chat settings.** Collapsible bar above the composer with: tone (Warm / Formal / Concise), length (Brief / Standard / Detailed), audience (Client-facing / Internal / Compliance), advisor name, firm name, and **custom disclosure** (used verbatim on client-facing drafts). Workspace defaults persist at localStorage key `advisornotes.settings.v1` and are snapshotted into each new chat at creation; the active chat's settings are stored on `chat.settings` and passed to the backend on every request as `body.settings`.
+- **Quick-action chips + Regenerate** on the last completed assistant message. Quick actions ("Shorter", "Warmer", "More formal", "Add full disclosure", "Convert to CRM note") send canned follow-up user messages. Regenerate drops the last assistant turn and re-runs the prior user message.
+
+**Backend settings contract.** When `body.settings` is present on a chat request, `generate.js` builds a `settingsBlock` Markdown string and appends it to `system` as a **second (uncached) text block** — kept separate from the cached `ADVISOR_SYSTEM_PROMPT` so per-chat tuning doesn't invalidate the prompt cache. Empty / default settings produce a `null` block which is dropped. The block tells the model how to apply tone/length/audience and, critically, instructs it to use any custom disclosure verbatim in place of the default closing line on client-facing drafts.
+
 When a planned tool ships, it gets its own route + page component. The suite homepage's `TOOLS` array (top of `StackHomePage.jsx`) drives the grid — flip `available: true` and add `href` to surface a tool there.
 
 **`StackHomePage.jsx` is the design-system module.** Beyond rendering `/`, it exports the shared visual primitives that every page imports:

@@ -67,6 +67,48 @@ If asked to do any of these, you decline clearly, explain why, and offer the clo
 
 You are a tool for drafting and thinking, not a substitute for the advisor's professional judgment, the firm's WSP, the CCO's approval, or the client's right to a clear-eyed conversation with a fiduciary. You make the advisor faster at the work they already own. You don't try to do the work for them.`;
 
+// Per-chat settings → second system block (NOT cached). Kept separate from
+// ADVISOR_SYSTEM_PROMPT so changing settings doesn't invalidate the prompt cache.
+const TONE_GUIDANCE = {
+  warm: "Lean warm and personable. Acknowledge the relationship. Use the client's first name where context allows. Avoid stiff openers like \"Per our conversation\".",
+  formal: "Lean formal and professional. Use the client's full name and title where appropriate. No casual contractions in client-facing output. Tight, precise prose.",
+  concise: "Lean concise. Cut anything that isn't load-bearing. Default to bullet points over paragraphs when the substance allows. Skip pleasantries beyond a one-line opener.",
+};
+const LENGTH_GUIDANCE = {
+  brief: "Keep responses short. A recap email is ~120 words; a CRM note is the structured fields only; an explainer is 2-3 short paragraphs.",
+  standard: "Match length to the artifact. A recap email is 200-300 words; a CRM note hits all the standard fields; an explainer is 4-6 short paragraphs.",
+  detailed: "Be thorough. A recap email is 350-500 words; a CRM note covers every field with full context; an explainer can run 8+ paragraphs and use sub-headings.",
+};
+const AUDIENCE_GUIDANCE = {
+  client: "The output is going to a client. Use plain language. Avoid technical jargon unless you define it. Include appropriate disclosure language at the end of any client-facing draft.",
+  internal: "The output is for the advisor's own files (CRM, paraplanner, internal task list). Skip client-facing pleasantries. No disclosure language is needed. Use shorthand the advisor would recognize.",
+  compliance: "The output is for a compliance file or supervisory review. Be precise about what was said vs. assumed, document the rationale, cite the rule landscape (Reg BI, marketing rule, 17a-4, 4511, etc.) when relevant, and flag any spots that need CCO attention.",
+};
+
+function buildSettingsBlock(settings) {
+  if (!settings || typeof settings !== "object") return null;
+  const tone = TONE_GUIDANCE[settings.tone];
+  const length = LENGTH_GUIDANCE[settings.length];
+  const audience = AUDIENCE_GUIDANCE[settings.audience];
+  const advisorName = typeof settings.advisorName === "string" ? settings.advisorName.trim().slice(0, 120) : "";
+  const firmName = typeof settings.firmName === "string" ? settings.firmName.trim().slice(0, 200) : "";
+  const customDisclosure = typeof settings.customDisclosure === "string" ? settings.customDisclosure.trim().slice(0, 2000) : "";
+
+  // Skip the block entirely if everything is empty/default
+  if (!tone && !length && !audience && !advisorName && !firmName && !customDisclosure) return null;
+
+  const lines = ["# Session preferences", "", "The advisor has set the following preferences for this conversation. Apply them to every response unless they explicitly override in a specific message."];
+  if (tone) lines.push("", `**Tone.** ${tone}`);
+  if (length) lines.push("", `**Length.** ${length}`);
+  if (audience) lines.push("", `**Audience.** ${audience}`);
+  if (advisorName) lines.push("", `**Advisor name (for signatures).** ${advisorName}`);
+  if (firmName) lines.push("", `**Firm name (for signatures and disclosure context).** ${firmName}`);
+  if (customDisclosure) {
+    lines.push("", "**Custom disclosure language.** When producing any client-facing draft (recap emails, plan summaries, follow-ups, discovery summaries — anything intended for a client to read), use the following disclosure text VERBATIM as the closing line, in place of any default disclosure you would otherwise include:", "", `> ${customDisclosure.replace(/\n/g, "\n> ")}`);
+  }
+  return lines.join("\n");
+}
+
 const PROMPTS = {
   client_recap: (notes, tone) => `You are an executive assistant for a registered financial advisor. Convert the rough meeting notes below into a polished, ${tone.toLowerCase()}-toned client recap email.
 
@@ -304,7 +346,7 @@ export default async (req) => {
   }
 
   // Chat endpoint — multi-turn streaming for the AdvisorNotes chat tool.
-  // Expects { outputType: "advisor_chat", messages: [{role, content}, ...] }
+  // Expects { outputType: "advisor_chat", messages: [{role, content}, ...], settings? }
   if (body.outputType === "advisor_chat") {
     const messages = Array.isArray(body.messages) ? body.messages : null;
     if (!messages || messages.length === 0) {
@@ -315,10 +357,19 @@ export default async (req) => {
     }
 
     // Cap conversation size — last ~30 turns is plenty and keeps cost predictable.
+    // Larger per-turn cap (40K) to accommodate inlined attachments.
     const trimmed = messages.slice(-30).map((m) => ({
       role: m.role === "assistant" ? "assistant" : "user",
-      content: typeof m.content === "string" ? m.content.slice(0, 16000) : "",
+      content: typeof m.content === "string" ? m.content.slice(0, 40000) : "",
     }));
+
+    // Build the per-chat settings system block. Kept SEPARATE from the cached main
+    // prompt so changing settings doesn't invalidate the prompt cache.
+    const settingsBlock = buildSettingsBlock(body.settings);
+    const systemBlocks = [
+      { type: "text", text: ADVISOR_SYSTEM_PROMPT, cache_control: { type: "ephemeral" } },
+    ];
+    if (settingsBlock) systemBlocks.push({ type: "text", text: settingsBlock });
 
     try {
       const upstream = await fetch("https://api.anthropic.com/v1/messages", {
@@ -332,13 +383,7 @@ export default async (req) => {
           model: "claude-sonnet-4-6",
           max_tokens: 4000,
           stream: true,
-          system: [
-            {
-              type: "text",
-              text: ADVISOR_SYSTEM_PROMPT,
-              cache_control: { type: "ephemeral" },
-            },
-          ],
+          system: systemBlocks,
           messages: trimmed,
         }),
       });
