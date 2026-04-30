@@ -7,12 +7,14 @@
 //
 // Auth model: caller passes their Supabase JWT in Authorization: Bearer <jwt>.
 // We verify the JWT via supabase.auth.getUser(jwt). If valid, we:
-//   1. Look up an existing public.users row by id. If found, return it.
-//   2. Otherwise, parse the email domain. If a firm already exists with
+//   1. Reject if email_confirmed_at is null (email/password signups must
+//      verify their email before a firm row is created).
+//   2. Look up an existing public.users row by id. If found, return it.
+//   3. Otherwise, parse the email domain. If a firm already exists with
 //      that primary_domain, link the user to it as 'advisor'. If not,
 //      create the firm and the user becomes its 'admin'.
-//   3. Write a 'user_signup' row to audit_log.
-//   4. Return the joined profile.
+//   4. Write a 'user_signup' row to audit_log.
+//   5. Return the joined profile.
 //
 // The browser receives back { profile } where profile.firms is the firm.
 
@@ -41,6 +43,7 @@ function deriveDisplayName(user) {
   return (
     md.full_name ||
     md.name ||
+    md.display_name ||
     [md.given_name, md.family_name].filter(Boolean).join(" ") ||
     (user.email ? user.email.split("@")[0] : "Advisor")
   );
@@ -76,10 +79,20 @@ export default async (req) => {
     return jsonResponse({ error: "Account has no email — cannot bootstrap firm membership" }, 400);
   }
 
+  // Email/password signups must confirm their email before we create a
+  // firm. OAuth providers (Google) auto-confirm, so this gate only fires
+  // for unverified password signups.
+  if (!u.email_confirmed_at) {
+    return jsonResponse({
+      error: "Please confirm your email before continuing.",
+      code: "email_unconfirmed",
+    }, 403);
+  }
+
   // Already bootstrapped? Return the existing joined profile.
   const { data: existing, error: existingErr } = await admin
     .from("users")
-    .select("id, firm_id, email, display_name, role, created_at, firms(id, name, primary_domain, created_at)")
+    .select("id, firm_id, email, display_name, role, created_at, onboarded_at, firms(id, name, primary_domain, created_at)")
     .eq("id", u.id)
     .maybeSingle();
   if (existingErr) {
@@ -116,11 +129,12 @@ export default async (req) => {
       return jsonResponse({ error: `Firm create failed: ${firmInsertErr.message}` }, 500);
     }
     firm = firmInserted;
-    role = "admin"; // first user from a new domain becomes the firm admin
+    role = "admin"; // first user from a new domain becomes the firm owner
     createdFirm = true;
   }
 
-  // Create the user profile
+  // Create the user profile (onboarded_at intentionally null — the
+  // /onboarding flow will set it).
   const { data: userInserted, error: userInsertErr } = await admin
     .from("users")
     .insert({
@@ -130,7 +144,7 @@ export default async (req) => {
       display_name: deriveDisplayName(u),
       role,
     })
-    .select("id, firm_id, email, display_name, role, created_at, firms(id, name, primary_domain, created_at)")
+    .select("id, firm_id, email, display_name, role, created_at, onboarded_at, firms(id, name, primary_domain, created_at)")
     .single();
   if (userInsertErr) {
     return jsonResponse({ error: `User profile create failed: ${userInsertErr.message}` }, 500);

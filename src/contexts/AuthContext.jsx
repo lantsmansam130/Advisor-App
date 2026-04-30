@@ -1,16 +1,23 @@
 // AuthContext — single source of truth for auth state across the app.
 //
 // Responsibilities:
-//   1. Subscribe to Supabase auth changes and expose { user, profile, firm, loading }.
-//      - user    = the auth.users row (Supabase) — id, email, etc.
-//      - profile = the public.users row — display_name, role, firm_id
+//   1. Subscribe to Supabase auth changes and expose:
+//        { user, profile, firm, loading, error, configured,
+//          emailConfirmed, needsOnboarding,
+//          signInWithGoogle, signInWithEmail, signUpWithEmail,
+//          requestPasswordReset, updatePassword,
+//          resendVerificationEmail, completeOnboarding, signOut }
+//      - user    = the auth.users row (Supabase) — id, email, email_confirmed_at, etc.
+//      - profile = the public.users row — display_name, role, firm_id, onboarded_at
 //      - firm    = the public.firms row joined onto the profile
-//   2. On first sign-in, call /.netlify/functions/auth-bootstrap to create
-//      the firm + profile and write the first audit-log entry.
-//   3. Expose signInWithGoogle() and signOut() helpers.
+//   2. On first verified sign-in, call /.netlify/functions/auth-bootstrap
+//      to create the firm + profile and write the first audit-log entry.
+//      Email/password signups: bootstrap is skipped until the user confirms
+//      their email (we read user.email_confirmed_at).
+//   3. Expose the auth helper methods listed above.
 //
-// The browser never writes to firms/users/audit_log directly. The bootstrap
-// function uses the service-role key server-side to do that.
+// The browser never writes to firms/users/audit_log directly. The
+// service-role key inside Netlify Functions does that.
 
 import { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
 import { supabase, supabaseConfigured } from "../lib/supabase.js";
@@ -26,7 +33,7 @@ export function useAuth() {
 async function fetchProfile(userId) {
   const { data, error } = await supabase
     .from("users")
-    .select("id, firm_id, email, display_name, role, created_at, firms(id, name, primary_domain, created_at)")
+    .select("id, firm_id, email, display_name, role, created_at, onboarded_at, firms(id, name, primary_domain, created_at)")
     .eq("id", userId)
     .maybeSingle();
   if (error) throw error;
@@ -43,7 +50,28 @@ async function bootstrapProfile(accessToken) {
   });
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    throw new Error(`auth-bootstrap failed (${res.status}): ${text || "unknown error"}`);
+    let parsed = null;
+    try { parsed = JSON.parse(text); } catch { /* not json */ }
+    const err = new Error(parsed?.error || text || `auth-bootstrap failed (${res.status})`);
+    err.code = parsed?.code;
+    err.status = res.status;
+    throw err;
+  }
+  return res.json();
+}
+
+async function postCompleteOnboarding(accessToken, skipped) {
+  const res = await fetch("/.netlify/functions/auth-complete-onboarding", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ skipped: !!skipped }),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(text || `auth-complete-onboarding failed (${res.status})`);
   }
   return res.json();
 }
@@ -59,16 +87,27 @@ export function AuthProvider({ children }) {
       setProfile(null);
       return;
     }
+
+    // Don't try to bootstrap or fetch a profile until the email is
+    // confirmed. Email/password signups land here without a confirmed
+    // email; they should sit on /verify-email until they click the link.
+    if (!sess.user.email_confirmed_at) {
+      setProfile(null);
+      setError("");
+      return;
+    }
+
     try {
       let prof = await fetchProfile(sess.user.id);
       if (!prof) {
-        // First sign-in for this user — create firm + profile via bootstrap.
+        // First confirmed sign-in for this user — create firm + profile.
         const { profile: bootstrapped } = await bootstrapProfile(sess.access_token);
         prof = bootstrapped;
       }
       setProfile(prof);
       setError("");
     } catch (e) {
+      // Surface but don't blow up — user can retry by reloading.
       setError(e.message || "Could not load profile");
       setProfile(null);
     }
@@ -93,8 +132,6 @@ export function AuthProvider({ children }) {
     const { data: sub } = supabase.auth.onAuthStateChange(async (event, sess) => {
       if (!mounted) return;
       setSession(sess);
-      // SIGNED_IN, TOKEN_REFRESHED, USER_UPDATED — refetch profile.
-      // SIGNED_OUT — clear profile.
       if (event === "SIGNED_OUT") {
         setProfile(null);
         setError("");
@@ -112,17 +149,91 @@ export function AuthProvider({ children }) {
   const signInWithGoogle = useCallback(async () => {
     if (!supabaseConfigured) {
       setError("Auth is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.");
-      return;
+      return { error: "not_configured" };
     }
     setError("");
     const { error: err } = await supabase.auth.signInWithOAuth({
       provider: "google",
+      options: { redirectTo: `${window.location.origin}/dashboard` },
+    });
+    if (err) {
+      setError(err.message);
+      return { error: err.message };
+    }
+    return {};
+  }, []);
+
+  const signInWithEmail = useCallback(async (email, password) => {
+    if (!supabaseConfigured) {
+      setError("Auth is not configured.");
+      return { error: "not_configured" };
+    }
+    setError("");
+    const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+    if (err) {
+      // Don't push the password-style error into the global banner;
+      // pages render it inline next to the form.
+      return { error: err.message };
+    }
+    return {};
+  }, []);
+
+  const signUpWithEmail = useCallback(async (email, password, displayName) => {
+    if (!supabaseConfigured) {
+      return { error: "Auth is not configured." };
+    }
+    setError("");
+    const { data, error: err } = await supabase.auth.signUp({
+      email,
+      password,
       options: {
-        redirectTo: `${window.location.origin}/dashboard`,
+        data: displayName ? { display_name: displayName, full_name: displayName } : {},
+        emailRedirectTo: `${window.location.origin}/dashboard`,
       },
     });
-    if (err) setError(err.message);
+    if (err) return { error: err.message };
+    // If email confirmation is required (default in Supabase), data.user
+    // exists but data.session is null until they click the link.
+    return { user: data.user, session: data.session, needsConfirmation: !data.session };
   }, []);
+
+  const requestPasswordReset = useCallback(async (email) => {
+    if (!supabaseConfigured) return { error: "Auth is not configured." };
+    const { error: err } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (err) return { error: err.message };
+    return {};
+  }, []);
+
+  const updatePassword = useCallback(async (newPassword) => {
+    if (!supabaseConfigured) return { error: "Auth is not configured." };
+    const { error: err } = await supabase.auth.updateUser({ password: newPassword });
+    if (err) return { error: err.message };
+    return {};
+  }, []);
+
+  const resendVerificationEmail = useCallback(async (email) => {
+    if (!supabaseConfigured) return { error: "Auth is not configured." };
+    const { error: err } = await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: { emailRedirectTo: `${window.location.origin}/dashboard` },
+    });
+    if (err) return { error: err.message };
+    return {};
+  }, []);
+
+  const completeOnboarding = useCallback(async ({ skipped } = {}) => {
+    if (!session?.access_token) return { error: "Not signed in." };
+    try {
+      const { profile: updated } = await postCompleteOnboarding(session.access_token, skipped);
+      setProfile(updated);
+      return { profile: updated };
+    } catch (e) {
+      return { error: e.message };
+    }
+  }, [session]);
 
   const signOut = useCallback(async () => {
     setError("");
@@ -131,20 +242,33 @@ export function AuthProvider({ children }) {
     setSession(null);
   }, []);
 
-  const value = useMemo(
-    () => ({
+  const value = useMemo(() => {
+    const user = session?.user || null;
+    const emailConfirmed = Boolean(user?.email_confirmed_at);
+    const needsOnboarding = Boolean(user && emailConfirmed && profile && !profile.onboarded_at);
+    return {
       session,
-      user: session?.user || null,
+      user,
       profile,
       firm: profile?.firms || null,
       loading,
       error,
       configured: supabaseConfigured,
+      emailConfirmed,
+      needsOnboarding,
       signInWithGoogle,
+      signInWithEmail,
+      signUpWithEmail,
+      requestPasswordReset,
+      updatePassword,
+      resendVerificationEmail,
+      completeOnboarding,
       signOut,
-    }),
-    [session, profile, loading, error, signInWithGoogle, signOut]
-  );
+    };
+  }, [session, profile, loading, error,
+      signInWithGoogle, signInWithEmail, signUpWithEmail,
+      requestPasswordReset, updatePassword, resendVerificationEmail,
+      completeOnboarding, signOut]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

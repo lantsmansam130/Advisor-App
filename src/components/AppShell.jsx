@@ -7,17 +7,18 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import {
-  LayoutDashboard, MessageSquare, FileText, Settings, LogOut,
+  LayoutDashboard, MessageSquare, FileText, Plug, LogOut,
   ChevronDown,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import { palette } from "../StackHomePage.jsx";
+import { roleLabel } from "../lib/roleLabel.js";
 
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/app", label: "AdvisorNotes", icon: MessageSquare },
   { to: "/decoder", label: "Document Decoder", icon: FileText },
-  { to: "/settings", label: "Settings", icon: Settings, disabled: true, comingSoon: true },
+  { to: "/settings/integrations", label: "Integrations", icon: Plug },
 ];
 
 function SidebarNavItem({ to, label, icon: Icon, disabled, comingSoon }) {
@@ -114,7 +115,7 @@ function UserMenu() {
             </div>
             {firm?.name && (
               <div className="mt-1 text-[10px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: palette.dust }}>
-                {firm.name} · {profile?.role}
+                {firm.name} · {roleLabel(profile?.role)}
               </div>
             )}
           </div>
