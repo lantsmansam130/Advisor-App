@@ -44,9 +44,9 @@ function ChatPreview() {
       <div className="flex items-center justify-between px-4 py-3" style={{ background: palette.cream, borderBottom: `1px solid ${palette.borderSubtle}` }}>
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: palette.ink }}>
-            <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.cream, fontSize: "13px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
+            <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: "italic", color: palette.cream, fontSize: "13px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
           </div>
-          <span style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, fontSize: "16px", letterSpacing: "-0.01em", lineHeight: 1 }}>
+          <span style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, fontSize: "16px", letterSpacing: "-0.01em", lineHeight: 1 }}>
             Advisor<span style={{ fontStyle: "italic" }}>Notes</span>
           </span>
         </div>
@@ -77,7 +77,7 @@ function ChatPreview() {
         <div className="mb-2">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: palette.ink }}>
-              <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.cream, fontSize: "11px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
+              <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: "italic", color: palette.cream, fontSize: "11px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
             </div>
             <span className="text-[10px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.16em", color: palette.ash }}>
               AdvisorNotes
@@ -176,7 +176,7 @@ export default function LandingPage() {
                     <Icon className="w-4 h-4" style={{ color: palette.forest }} strokeWidth={1.6} />
                   </div>
                   <div>
-                    <div className="text-base mb-1" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, letterSpacing: "-0.005em" }}>{title}</div>
+                    <div className="text-base mb-1" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, letterSpacing: "-0.005em" }}>{title}</div>
                     <div className="text-[13px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ash }}>{body}</div>
                   </div>
                 </div>
@@ -194,15 +194,15 @@ export default function LandingPage() {
             <EditorialHeading italic="Forty-five" rest="minutes becomes sixty seconds." size="md" className="mb-12 max-w-3xl" color={palette.cream} />
             <div className="grid md:grid-cols-3 gap-x-8 gap-y-10 max-w-5xl">
               <div>
-                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: palette.cream, fontVariantNumeric: "tabular-nums" }}>45 min</div>
+                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.cream, fontVariantNumeric: "tabular-nums" }}>45 min</div>
                 <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(250,246,238,0.65)" }}>typical time to draft a follow-up email by hand after a client meeting</div>
               </div>
               <div>
-                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: palette.cream, fontVariantNumeric: "tabular-nums" }}>60 sec</div>
+                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.cream, fontVariantNumeric: "tabular-nums" }}>60 sec</div>
                 <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(250,246,238,0.65)" }}>average to draft the same email with AdvisorNotes — including review</div>
               </div>
               <div>
-                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: palette.cream, fontVariantNumeric: "tabular-nums" }}>~5 hrs</div>
+                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.cream, fontVariantNumeric: "tabular-nums" }}>~5 hrs</div>
                 <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(250,246,238,0.65)" }}>recovered per advisor per week across the post-meeting workflow</div>
               </div>
             </div>

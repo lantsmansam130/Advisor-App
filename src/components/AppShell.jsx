@@ -1,8 +1,8 @@
 // AppShell — layout chrome for every authenticated page.
 // Persistent left sidebar (240px) + top bar with breadcrumb + user dropdown.
 // Light, calm professional-services dashboard feel — extends the existing
-// Advisor Stack design system (warm cream bg, Instrument Serif italic display,
-// forest green accent, white surfaces with subtle borders).
+// AdvisorSuite design system (warm cream bg, Fraunces serif display,
+// green accent, dark sidebar with cream content surfaces).
 
 import { useState, useRef, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
@@ -160,9 +160,9 @@ export default function AppShell({ children, breadcrumb }) {
         <div className="px-4 pt-5 pb-3">
           <Link to="/dashboard" className="flex items-center gap-2 no-underline">
             <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: palette.ink }}>
-              <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.cream, fontSize: "17px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
+              <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: "italic", color: palette.cream, fontSize: "17px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
             </div>
-            <span style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, fontSize: "20px", letterSpacing: "-0.01em", lineHeight: 1 }}>
+            <span style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, fontSize: "20px", letterSpacing: "-0.01em", lineHeight: 1 }}>
               Advisor<span style={{ fontStyle: "italic" }}>Stack</span>
             </span>
           </Link>

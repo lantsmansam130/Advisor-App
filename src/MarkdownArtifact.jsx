@@ -8,12 +8,12 @@ import { palette } from "./StackHomePage.jsx";
 
 const mdComponents = {
   h1: ({ children }) => (
-    <h1 className="text-2xl mt-6 mb-3 first:mt-0" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, letterSpacing: "-0.01em", fontWeight: 400 }}>
+    <h1 className="text-2xl mt-6 mb-3 first:mt-0" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, letterSpacing: "-0.01em", fontWeight: 400 }}>
       {children}
     </h1>
   ),
   h2: ({ children }) => (
-    <h2 className="text-xl mt-5 mb-3 first:mt-0" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, letterSpacing: "-0.01em", fontWeight: 400 }}>
+    <h2 className="text-xl mt-5 mb-3 first:mt-0" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, letterSpacing: "-0.01em", fontWeight: 400 }}>
       {children}
     </h2>
   ),
@@ -62,7 +62,7 @@ const mdComponents = {
   blockquote: ({ children }) => (
     <blockquote
       className="my-4 pl-4 italic text-[15px] leading-relaxed"
-      style={{ fontFamily: "'Instrument Serif', serif", color: palette.ash, borderLeft: `2px solid ${palette.borderMid}` }}
+      style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ash, borderLeft: `2px solid ${palette.borderMid}` }}
     >
       {children}
     </blockquote>
@@ -282,7 +282,7 @@ export function MarkdownArtifact({ content, streaming = false, label }) {
           <div className="text-[11px] uppercase mb-1" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.18em", color: palette.ash }}>
             Subject
           </div>
-          <div className="text-[16px] mb-3" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, letterSpacing: "-0.005em" }}>
+          <div className="text-[16px] mb-3" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, letterSpacing: "-0.005em" }}>
             {detection.subject}
           </div>
           <div style={{ borderTop: `1px solid ${palette.borderSubtle}` }} />

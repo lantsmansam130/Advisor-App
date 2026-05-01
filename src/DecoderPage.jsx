@@ -37,7 +37,7 @@ function DecodedOutput({ output, loading, onCopyAll, copied }) {
           background: palette.paper,
           border: `1px dashed ${palette.borderMid}`,
           borderRadius: "20px",
-          fontFamily: "'Instrument Serif', serif",
+          fontFamily: "'Fraunces', Georgia, serif",
           fontStyle: "italic",
           color: palette.dust,
           fontSize: "18px",
@@ -103,7 +103,7 @@ function DecodedOutput({ output, loading, onCopyAll, copied }) {
                   <div className="text-[10px] uppercase" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.18em", color: palette.ash }}>
                     Section {key}
                   </div>
-                  <div className="text-[16px]" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, letterSpacing: "-0.005em" }}>
+                  <div className="text-[16px]" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, letterSpacing: "-0.005em" }}>
                     {meta.label}
                   </div>
                 </div>

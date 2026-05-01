@@ -48,21 +48,61 @@ const TOOLS = [
 const availableCount = TOOLS.filter((t) => t.available).length;
 const comingSoonCount = TOOLS.length - availableCount;
 
-// Palette
+// AdvisorSuite palette — single source of truth.
+// Mirrors Folio's tokens so both products share one visual system.
+// Mirrors src/index.css :root variables; keep in sync.
+//
+// Legacy keys (paper, sand, charcoal, ash, dust, forest, sage, borderSubtle,
+// borderMid, borderInk) are aliased to the new tokens so existing files
+// resolve without per-file changes. Prefer the new keys in new code.
 export const palette = {
-  cream: "#FAF6EE",
-  paper: "#FFFFFF",
-  sand: "#EDE6D7",
-  ink: "#0F0E0C",
-  charcoal: "#1A1815",
-  ash: "#46423B",
-  dust: "#8A8579",
-  forest: "#1F3A2E",
-  sage: "#3D5A4A",
-  amber: "#D4A574",
-  borderSubtle: "rgba(15,14,12,0.06)",
-  borderMid: "rgba(15,14,12,0.12)",
-  borderInk: "rgba(250,246,238,0.10)",
+  // Surfaces
+  surface: "#faf5ee",       // primary page background
+  surface2: "#f2eadd",      // recessed surface (e.g., segmented-control track)
+  cream: "#faf5ee",         // alias of surface — kept so legacy `palette.cream` works
+  paper: "#fbf7f0",         // card/panel surface (slightly lighter than surface)
+  white: "#ffffff",         // pure white reserved for emphasized cards
+  sand: "#f2eadd",          // alias of surface2
+
+  // Ink ladder
+  ink: "#2b231d",           // primary text + dark sidebar background
+  charcoal: "#2b231d",      // alias of ink
+  ink80: "rgba(43,35,29,0.82)",
+  ink60: "rgba(43,35,29,0.62)",
+  ink40: "rgba(43,35,29,0.46)",
+  ink10: "rgba(43,35,29,0.08)",
+  ash: "rgba(43,35,29,0.62)",   // alias of ink60 (legacy "secondary text")
+  dust: "rgba(43,35,29,0.46)",  // alias of ink40 (legacy "tertiary text")
+
+  // Accents
+  green: "#2f8a5f",
+  greenLight: "#e6f1ea",
+  greenDark: "#236a49",
+  forest: "#2f8a5f",        // alias of green (legacy primary CTA color)
+  sage: "#236a49",          // alias of greenDark
+  indigo: "#5b6cc9",
+  indigoLight: "#ecedfb",
+  amber: "#e69b34",
+  amberLight: "#fdf2dd",
+  red: "#d96c5b",
+  redLight: "#fbe8e4",
+  blue: "#4f8cc6",
+  blueLight: "#e8f2fb",
+  terracotta: "#d77a5a",
+  terracottaLight: "#fbe7dd",
+
+  // Borders
+  border: "rgba(43,35,29,0.10)",
+  borderStrong: "rgba(43,35,29,0.18)",
+  borderSubtle: "rgba(43,35,29,0.10)",  // alias of border
+  borderMid: "rgba(43,35,29,0.18)",     // alias of borderStrong
+  borderInk: "rgba(251,247,240,0.10)",  // for use ON dark surfaces (cream-tinted)
+
+  // Shadows (string values — drop straight into a `boxShadow` style)
+  shadowSm: "0 2px 6px rgba(43,35,29,0.05)",
+  shadowMd: "0 6px 22px rgba(43,35,29,0.07), 0 2px 8px rgba(43,35,29,0.04)",
+  shadowLg: "0 22px 60px rgba(43,35,29,0.10), 0 6px 18px rgba(43,35,29,0.05)",
+  shadowXl: "0 38px 90px rgba(43,35,29,0.14)",
 };
 
 // Kept for backwards-compat with existing imports; renders nothing.
@@ -87,14 +127,14 @@ export function StackNav({ tool }) {
       >
         <Link to="/" className="flex items-center gap-2.5 no-underline pl-1 min-w-0">
           <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: palette.cream }}>
-            <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.ink, fontSize: "17px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
+            <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: "italic", color: palette.ink, fontSize: "17px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
           </div>
-          <span className="flex-shrink-0" style={{ fontFamily: "'Instrument Serif', serif", color: palette.cream, fontSize: "20px", letterSpacing: "-0.01em", lineHeight: 1 }}>
+          <span className="flex-shrink-0" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.cream, fontSize: "20px", letterSpacing: "-0.01em", lineHeight: 1 }}>
             Advisor<span style={{ fontStyle: "italic" }}>Stack</span>
           </span>
           {tool && (
             <>
-              <span className="opacity-30 mx-1 flex-shrink-0" style={{ fontFamily: "'Instrument Serif', serif", fontSize: "18px", color: palette.cream }}>/</span>
+              <span className="opacity-30 mx-1 flex-shrink-0" style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "18px", color: palette.cream }}>/</span>
               <span className="truncate" style={{ fontFamily: "Inter", fontSize: "13px", color: "rgba(250,246,238,0.7)" }}>{tool}</span>
             </>
           )}
@@ -146,7 +186,7 @@ export function FloatingMark() {
       className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full flex items-center justify-center no-underline"
       style={{ background: palette.ink, border: `1px solid ${palette.borderMid}`, boxShadow: "0 12px 28px -10px rgba(15,14,12,0.35)" }}
     >
-      <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.cream, fontSize: "24px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
+      <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: "italic", color: palette.cream, fontSize: "24px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
     </Link>
   );
 }
@@ -197,7 +237,7 @@ export function EditorialHeading({ italic, rest, size = "lg", className = "", co
   return (
     <h2
       className={`${sizes[size]} ${className}`}
-      style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", color: color || palette.ink }}
+      style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", color: color || palette.ink }}
     >
       <span style={{ fontStyle: "italic" }}>{italic}</span> {rest}
     </h2>
@@ -298,7 +338,7 @@ export default function StackHomePage() {
                       </div>
                       <ArrowUpRight className="w-4 h-4" style={{ color: palette.ash }} strokeWidth={1.6} />
                     </div>
-                    <div className="text-2xl mb-2" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, letterSpacing: "-0.01em" }}>
+                    <div className="text-2xl mb-2" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, letterSpacing: "-0.01em" }}>
                       {tool.name === "AdvisorNotes" ? <>Advisor<span style={{ fontStyle: "italic" }}>Notes</span></> : tool.name}
                     </div>
                     <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ash }}>{tool.description}</div>
@@ -315,7 +355,7 @@ export default function StackHomePage() {
                       {tool.status || "Coming soon"}
                     </span>
                   </div>
-                  <div className="text-2xl mb-2" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, letterSpacing: "-0.01em", opacity: 0.85 }}>{tool.name}</div>
+                  <div className="text-2xl mb-2" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, letterSpacing: "-0.01em", opacity: 0.85 }}>{tool.name}</div>
                   <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ash }}>{tool.description}</div>
                 </div>
               );
@@ -332,15 +372,15 @@ export default function StackHomePage() {
             <EditorialHeading italic="Hours" rest="back. Real money saved." size="md" className="mb-12 max-w-2xl" color={palette.cream} />
             <div className="grid md:grid-cols-3 gap-8 max-w-4xl">
               <div>
-                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: palette.cream, fontVariantNumeric: "tabular-nums" }}>~5 hrs</div>
+                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.cream, fontVariantNumeric: "tabular-nums" }}>~5 hrs</div>
                 <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(250,246,238,0.65)" }}>saved per week on post-meeting paperwork</div>
               </div>
               <div>
-                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: palette.cream, fontVariantNumeric: "tabular-nums" }}>~$15k</div>
+                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.cream, fontVariantNumeric: "tabular-nums" }}>~$15k</div>
                 <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(250,246,238,0.65)" }}>in advisor time recaptured per year, per seat</div>
               </div>
               <div>
-                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Instrument Serif', serif", color: palette.cream, fontVariantNumeric: "tabular-nums" }}>$0</div>
+                <div className="text-6xl mb-3 leading-none" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.cream, fontVariantNumeric: "tabular-nums" }}>$0</div>
                 <div className="text-sm leading-relaxed" style={{ fontFamily: "Inter", color: "rgba(250,246,238,0.65)" }}>extra spent on writing tools, transcription, or paraplanner overflow</div>
               </div>
             </div>
@@ -364,8 +404,8 @@ export default function StackHomePage() {
               ["04", "Your own data is the next frontier.", "The real value sits in your CRM, your meetings, your book."],
             ].map(([num, title, body]) => (
               <div key={num} style={{ ...darkCard, padding: "28px" }}>
-                <div className="text-3xl mb-4 leading-none" style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.dust, fontVariantNumeric: "tabular-nums" }}>{num}</div>
-                <div className="text-xl mb-2" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, letterSpacing: "-0.01em" }}>{title}</div>
+                <div className="text-3xl mb-4 leading-none" style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: "italic", color: palette.dust, fontVariantNumeric: "tabular-nums" }}>{num}</div>
+                <div className="text-xl mb-2" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, letterSpacing: "-0.01em" }}>{title}</div>
                 <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ash }}>{body}</div>
               </div>
             ))}
@@ -385,7 +425,7 @@ export default function StackHomePage() {
                 ["Honest about limits", "We're not your CCO. We don't pretend to be."],
               ].map(([title, body]) => (
                 <div key={title}>
-                  <div className="text-lg mb-1.5" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink }}>{title}</div>
+                  <div className="text-lg mb-1.5" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink }}>{title}</div>
                   <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ash }}>{body}</div>
                 </div>
               ))}

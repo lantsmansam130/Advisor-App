@@ -62,7 +62,7 @@ export function IntegrationCard({ integration, dense = false }) {
           {isPlaceholder ? integration.phase : "Connect"}
         </span>
       </div>
-      <div className="text-xl mb-2" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, letterSpacing: "-0.005em" }}>
+      <div className="text-xl mb-2" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, letterSpacing: "-0.005em" }}>
         {integration.title}
       </div>
       <div className="text-[13px] leading-relaxed mb-4 flex-1" style={{ fontFamily: "Inter", color: palette.ash }}>

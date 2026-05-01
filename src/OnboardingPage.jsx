@@ -44,9 +44,9 @@ export default function OnboardingPage() {
       <header className="px-8 pt-7">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: palette.ink }}>
-            <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.cream, fontSize: "17px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
+            <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: "italic", color: palette.cream, fontSize: "17px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
           </div>
-          <span style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, fontSize: "20px", letterSpacing: "-0.01em", lineHeight: 1 }}>
+          <span style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, fontSize: "20px", letterSpacing: "-0.01em", lineHeight: 1 }}>
             Advisor<span style={{ fontStyle: "italic" }}>Stack</span>
           </span>
         </div>
@@ -59,7 +59,7 @@ export default function OnboardingPage() {
           </div>
           <h1
             className="text-4xl md:text-5xl mb-4"
-            style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", color: palette.ink }}
+            style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", color: palette.ink }}
           >
             <span style={{ fontStyle: "italic" }}>One step</span> before you start, {firstName}.
           </h1>

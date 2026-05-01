@@ -23,7 +23,7 @@ export default function AuthGate({ children }) {
     return (
       <div className="min-h-screen flex items-center justify-center px-6" style={{ background: palette.cream, color: palette.ink }}>
         <div className="max-w-md text-center">
-          <h1 className="text-3xl mb-3" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, lineHeight: 1.1 }}>
+          <h1 className="text-3xl mb-3" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, lineHeight: 1.1 }}>
             <span style={{ fontStyle: "italic" }}>Auth</span> not configured
           </h1>
           <p className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ash }}>
@@ -43,7 +43,7 @@ export default function AuthGate({ children }) {
     return (
       <div className="min-h-screen flex items-center justify-center px-6" style={{ background: palette.cream }}>
         <div className="max-w-md text-center">
-          <h1 className="text-3xl mb-3" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, lineHeight: 1.1 }}>
+          <h1 className="text-3xl mb-3" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, lineHeight: 1.1 }}>
             Couldn't load your profile.
           </h1>
           <p className="text-[14px] leading-relaxed mb-6" style={{ fontFamily: "Inter", color: palette.ash }}>

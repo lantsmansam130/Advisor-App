@@ -2,21 +2,90 @@
 @tailwind components;
 @tailwind utilities;
 
+/* AdvisorSuite design tokens — single source of truth.
+   These mirror Folio's tokens so both products share one visual system.
+   When something here changes, update tailwind.config.js too. */
+:root {
+  /* Warm ink palette */
+  --ink: #2b231d;
+  --ink-80: rgba(43, 35, 29, 0.82);
+  --ink-60: rgba(43, 35, 29, 0.62);
+  --ink-40: rgba(43, 35, 29, 0.46);
+  --ink-10: rgba(43, 35, 29, 0.08);
+
+  /* Warm surfaces */
+  --surface: #faf5ee;
+  --surface-2: #f2eadd;
+  --cream: #fbf7f0;
+  --white: #ffffff;
+
+  /* Accents */
+  --green: #2f8a5f;
+  --green-light: #e6f1ea;
+  --green-dark: #236a49;
+  --indigo: #5b6cc9;
+  --indigo-light: #ecedfb;
+  --amber: #e69b34;
+  --amber-light: #fdf2dd;
+  --red: #d96c5b;
+  --red-light: #fbe8e4;
+  --blue: #4f8cc6;
+  --blue-light: #e8f2fb;
+  --terracotta: #d77a5a;
+  --terracotta-light: #fbe7dd;
+
+  --border: rgba(43, 35, 29, 0.10);
+  --border-strong: rgba(43, 35, 29, 0.18);
+
+  /* Soft warm shadows */
+  --shadow-sm: 0 2px 6px rgba(43, 35, 29, 0.05);
+  --shadow-md: 0 6px 22px rgba(43, 35, 29, 0.07), 0 2px 8px rgba(43, 35, 29, 0.04);
+  --shadow-lg: 0 22px 60px rgba(43, 35, 29, 0.10), 0 6px 18px rgba(43, 35, 29, 0.05);
+  --shadow-xl: 0 38px 90px rgba(43, 35, 29, 0.14);
+
+  /* Rounded corners */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+
+  --font-d: 'Fraunces', Georgia, serif;
+  --font-b: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
 html, body, #root {
-  background: #FAF6EE;
-  color: #0F0E0C;
+  background: var(--surface);
+  color: var(--ink);
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-b);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
-  background: rgba(31, 58, 46, 0.18);
+  background: rgba(47, 138, 95, 0.20);
 }
 
 textarea, input, button {
   font-family: inherit;
+}
+
+/* Display + heading utility classes — use anywhere a Fraunces serif heading
+   needs the right line-height + tracking. Sized via Tailwind text-* on the
+   element itself; these classes own the font. */
+.display {
+  font-family: var(--font-d);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.018em;
+  font-variation-settings: "opsz" 96;
+}
+.heading {
+  font-family: var(--font-d);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.012em;
+  font-variation-settings: "opsz" 32;
 }

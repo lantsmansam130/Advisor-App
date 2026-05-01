@@ -336,7 +336,7 @@ function MessageBubble({ role, content, attachments, streaming, isLast, onRegene
       <div className="group w-full mb-6">
         <div className="flex items-center gap-2 mb-2">
           <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: palette.ink }}>
-            <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.cream, fontSize: "13px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
+            <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: "italic", color: palette.cream, fontSize: "13px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
           </div>
           <span className="text-[11px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.16em", color: palette.ash }}>
             AdvisorNotes
@@ -422,7 +422,7 @@ function ExamplePromptCard({ icon: Icon, title, prompt, onClick }) {
           <Icon className="w-4 h-4" style={{ color: palette.forest }} strokeWidth={1.6} />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-[15px] mb-1" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, letterSpacing: "-0.005em" }}>
+          <div className="text-[15px] mb-1" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, letterSpacing: "-0.005em" }}>
             {title}
           </div>
           <div className="text-[13px] leading-snug line-clamp-2" style={{ fontFamily: "Inter", color: palette.ash }}>
@@ -924,7 +924,7 @@ export default function AdvisorChatPage() {
         >
           <div className="text-center px-6 py-8" style={{ background: palette.paper, border: `1px solid ${palette.borderSubtle}`, borderRadius: "20px", boxShadow: "0 12px 30px -10px rgba(15,14,12,0.18)" }}>
             <Upload className="w-8 h-8 mx-auto mb-3" style={{ color: palette.forest }} strokeWidth={1.6} />
-            <div className="text-[18px] mb-1" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink }}>
+            <div className="text-[18px] mb-1" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink }}>
               Drop to attach
             </div>
             <div className="text-[12px]" style={{ fontFamily: "Inter", color: palette.ash }}>
@@ -947,9 +947,9 @@ export default function AdvisorChatPage() {
         <div className="p-4">
           <Link to="/" className="flex items-center gap-2 no-underline mb-4">
             <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: palette.ink }}>
-              <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.cream, fontSize: "17px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
+              <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: "italic", color: palette.cream, fontSize: "17px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
             </div>
-            <span style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, fontSize: "20px", letterSpacing: "-0.01em", lineHeight: 1 }}>
+            <span style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, fontSize: "20px", letterSpacing: "-0.01em", lineHeight: 1 }}>
               Advisor<span style={{ fontStyle: "italic" }}>Notes</span>
             </span>
           </Link>
@@ -1063,9 +1063,9 @@ export default function AdvisorChatPage() {
         <div className="md:hidden flex items-center justify-between px-4 py-3" style={{ borderBottom: `1px solid ${palette.borderSubtle}`, background: palette.paper }}>
           <Link to="/" className="flex items-center gap-2 no-underline">
             <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: palette.ink }}>
-              <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.cream, fontSize: "15px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
+              <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: "italic", color: palette.cream, fontSize: "15px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
             </div>
-            <span style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, fontSize: "18px", letterSpacing: "-0.01em", lineHeight: 1 }}>
+            <span style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, fontSize: "18px", letterSpacing: "-0.01em", lineHeight: 1 }}>
               Advisor<span style={{ fontStyle: "italic" }}>Notes</span>
             </span>
           </Link>
@@ -1086,7 +1086,7 @@ export default function AdvisorChatPage() {
                 <div className="inline-block mb-5" style={{ background: "rgba(31,58,46,0.08)", color: palette.forest, fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.18em", textTransform: "uppercase", borderRadius: "999px", padding: "8px 18px", border: `1px solid ${palette.borderSubtle}` }}>
                   Compliance-first AI for advisors
                 </div>
-                <h1 className="text-4xl md:text-6xl mb-4" style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", color: palette.ink }}>
+                <h1 className="text-4xl md:text-6xl mb-4" style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", color: palette.ink }}>
                   <span style={{ fontStyle: "italic" }}>How</span> can I help today?
                 </h1>
                 <p className="max-w-xl mx-auto text-[15px]" style={{ fontFamily: "Inter", color: palette.ash, lineHeight: 1.55 }}>

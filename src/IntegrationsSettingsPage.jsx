@@ -16,7 +16,7 @@ export default function IntegrationsSettingsPage() {
           </div>
           <h1
             className="text-4xl mb-3"
-            style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", color: palette.ink }}
+            style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", color: palette.ink }}
           >
             <span style={{ fontStyle: "italic" }}>Connect</span> your tools.
           </h1>

@@ -135,9 +135,9 @@ export default function AuthShell({ eyebrow, headlineItalic, headlineRest, intro
       <header className="px-6 pt-6">
         <Link to="/" className="inline-flex items-center gap-2 no-underline">
           <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: palette.ink }}>
-            <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: "italic", color: palette.cream, fontSize: "17px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
+            <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: "italic", color: palette.cream, fontSize: "17px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
           </div>
-          <span style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, fontSize: "20px", letterSpacing: "-0.01em", lineHeight: 1 }}>
+          <span style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, fontSize: "20px", letterSpacing: "-0.01em", lineHeight: 1 }}>
             Advisor<span style={{ fontStyle: "italic" }}>Stack</span>
           </span>
         </Link>
@@ -162,7 +162,7 @@ export default function AuthShell({ eyebrow, headlineItalic, headlineRest, intro
             {(headlineItalic || headlineRest) && (
               <h1
                 className="text-4xl mb-3 text-center"
-                style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, lineHeight: 1.1, letterSpacing: "-0.02em", color: palette.ink }}
+                style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, lineHeight: 1.1, letterSpacing: "-0.02em", color: palette.ink }}
               >
                 {headlineItalic && <span style={{ fontStyle: "italic" }}>{headlineItalic}</span>}
                 {headlineItalic && headlineRest && " "}

@@ -51,7 +51,7 @@ export default function DashboardPage() {
           </div>
           <h1
             className="text-4xl md:text-5xl mb-3"
-            style={{ fontFamily: "'Instrument Serif', serif", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", color: palette.ink }}
+            style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", color: palette.ink }}
           >
             <span style={{ fontStyle: "italic" }}>Welcome</span> back, {firstName}.
           </h1>
@@ -90,7 +90,7 @@ export default function DashboardPage() {
                     </div>
                     <ArrowUpRight className="w-4 h-4" style={{ color: palette.ash }} strokeWidth={1.6} />
                   </div>
-                  <div className="text-2xl mb-2" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, letterSpacing: "-0.01em" }}>
+                  <div className="text-2xl mb-2" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, letterSpacing: "-0.01em" }}>
                     <span style={{ fontStyle: "italic" }}>{tool.italic}</span>{tool.rest}
                   </div>
                   <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ash }}>
@@ -129,7 +129,7 @@ export default function DashboardPage() {
                       Planned
                     </span>
                   </div>
-                  <div className="text-lg mb-1" style={{ fontFamily: "'Instrument Serif', serif", color: palette.ink, letterSpacing: "-0.005em" }}>
+                  <div className="text-lg mb-1" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, letterSpacing: "-0.005em" }}>
                     {item.title}
                   </div>
                   <div className="text-[13px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ash }}>
