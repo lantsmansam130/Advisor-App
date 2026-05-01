@@ -1,61 +1,93 @@
-// AppShell — layout chrome for every authenticated page.
-// Persistent left sidebar (240px) + top bar with breadcrumb + user dropdown.
-// Light, calm professional-services dashboard feel — extends the existing
-// AdvisorSuite design system (warm cream bg, Fraunces serif display,
-// green accent, dark sidebar with cream content surfaces).
+// AppShell — layout chrome for every authenticated page (AdvisorSuite/Folio language).
+//
+// Folio dashboard pattern:
+//   - DARK sidebar (220px, `palette.ink` background) on the left, fixed.
+//     Brand wordmark up top with a green dot. Nav buttons use opacity-white
+//     text; active item highlights with cream text + green accent on the icon.
+//     User menu lives at the bottom of the sidebar (avatar + name + sign-out).
+//   - LIGHT cream main column on the right with a 60px sticky topbar.
+//     Topbar shows just the page title in Fraunces serif (no "Workspace / X"
+//     breadcrumb anymore — the active sidebar item already tells the user
+//     where they are).
 
 import { useState, useRef, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, MessageSquare, FileText, Plug, LogOut,
-  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext.jsx";
-import { palette } from "../StackHomePage.jsx";
+import { palette, BrandMark } from "../StackHomePage.jsx";
 import { roleLabel } from "../lib/roleLabel.js";
 
-const NAV = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/app", label: "AdvisorNotes", icon: MessageSquare },
-  { to: "/decoder", label: "Document Decoder", icon: FileText },
-  { to: "/settings/integrations", label: "Integrations", icon: Plug },
+const SIDEBAR_W = 220;
+
+const NAV_SECTIONS = [
+  {
+    label: "Workspace",
+    items: [
+      { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    ],
+  },
+  {
+    label: "Tools",
+    items: [
+      { to: "/app",     label: "AdvisorNotes",     icon: MessageSquare },
+      { to: "/decoder", label: "Document Decoder", icon: FileText },
+    ],
+  },
+  {
+    label: "Account",
+    items: [
+      { to: "/settings/integrations", label: "Integrations", icon: Plug },
+    ],
+  },
 ];
 
-function SidebarNavItem({ to, label, icon: Icon, disabled, comingSoon }) {
-  const inner = (active) => (
-    <div
-      className="flex items-center gap-2.5 px-3 py-2 mx-2 mb-0.5 transition-colors"
-      style={{
-        borderRadius: "10px",
-        background: active ? palette.cream : "transparent",
-        color: active ? palette.forest : (disabled ? palette.dust : palette.ink),
-        cursor: disabled ? "default" : "pointer",
-        opacity: disabled ? 0.55 : 1,
-      }}
-    >
-      <Icon className="w-4 h-4 flex-shrink-0" strokeWidth={1.6} />
-      <span className="text-[14px] flex-1" style={{ fontFamily: "Inter", fontWeight: active ? 500 : 400 }}>
-        {label}
-      </span>
-      {comingSoon && (
-        <span className="text-[9px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.16em", color: palette.dust }}>
-          Soon
-        </span>
-      )}
-    </div>
-  );
-
-  if (disabled) {
-    return inner(false);
-  }
+function SidebarNavItem({ to, label, icon: Icon }) {
   return (
     <NavLink to={to} className="block no-underline">
-      {({ isActive }) => inner(isActive)}
+      {({ isActive }) => (
+        <div
+          className="flex items-center gap-2.5 px-2.5 py-2 mb-px transition-all"
+          style={{
+            borderRadius: "10px",
+            background: isActive ? "rgba(255,255,255,0.11)" : "transparent",
+            color: isActive ? palette.paper : "rgba(255,255,255,0.5)",
+          }}
+          onMouseEnter={(e) => {
+            if (!isActive) {
+              e.currentTarget.style.background = "rgba(255,255,255,0.07)";
+              e.currentTarget.style.color = "rgba(255,255,255,0.8)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isActive) {
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.color = "rgba(255,255,255,0.5)";
+            }
+          }}
+        >
+          <Icon
+            className="w-4 h-4 flex-shrink-0"
+            strokeWidth={1.6}
+            style={{ color: isActive ? palette.green : "currentColor" }}
+          />
+          <span style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "13px",
+            fontWeight: isActive ? 600 : 500,
+            letterSpacing: "-0.005em",
+          }}>
+            {label}
+          </span>
+        </div>
+      )}
     </NavLink>
   );
 }
 
-function UserMenu() {
+function SidebarUserMenu() {
   const { profile, firm, signOut } = useAuth();
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -69,142 +101,208 @@ function UserMenu() {
   }, [open]);
 
   const initials = (profile?.display_name || "?")
-    .split(" ")
-    .map((s) => s[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
+    .split(" ").map((s) => s[0]).filter(Boolean).slice(0, 2).join("").toUpperCase();
 
   return (
     <div ref={ref} className="relative">
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 px-2 py-1.5 transition-colors"
-        style={{ borderRadius: "999px" }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = palette.cream; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-      >
-        <div
-          className="w-7 h-7 rounded-full flex items-center justify-center text-[11px]"
-          style={{ background: palette.ink, color: palette.cream, fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.05em" }}
-        >
-          {initials}
-        </div>
-        <span className="text-[13px] hidden md:inline" style={{ fontFamily: "Inter", color: palette.ink, fontWeight: 500 }}>
-          {profile?.display_name || "Advisor"}
-        </span>
-        <ChevronDown className="w-3.5 h-3.5" style={{ color: palette.ash }} />
-      </button>
       {open && (
         <div
-          className="absolute right-0 mt-2 w-64 z-30 py-2"
+          className="absolute bottom-full left-0 right-0 mb-2 py-1.5"
           style={{
             background: palette.paper,
-            border: `1px solid ${palette.borderSubtle}`,
+            border: `1px solid ${palette.border}`,
             borderRadius: "12px",
-            boxShadow: "0 8px 24px -8px rgba(15,14,12,0.18)",
+            boxShadow: palette.shadowMd,
           }}
         >
-          <div className="px-3 py-2 mb-1">
-            <div className="text-[14px]" style={{ fontFamily: "Inter", color: palette.ink, fontWeight: 500 }}>
-              {profile?.display_name}
-            </div>
-            <div className="text-[12px] truncate" style={{ fontFamily: "Inter", color: palette.ash }}>
-              {profile?.email}
-            </div>
-            {firm?.name && (
-              <div className="mt-1 text-[10px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: palette.dust }}>
-                {firm.name} · {roleLabel(profile?.role)}
-              </div>
-            )}
-          </div>
-          <div style={{ borderTop: `1px solid ${palette.borderSubtle}` }} />
           <button
             onClick={signOut}
-            className="w-full flex items-center gap-2 px-3 py-2 mt-1 text-left transition-colors"
-            style={{ color: palette.ink, fontFamily: "Inter", fontSize: "13px" }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = palette.cream; }}
+            className="w-full flex items-center gap-2 px-3 py-2 text-left transition-colors"
+            style={{
+              color: palette.ink,
+              fontFamily: "'Inter', sans-serif",
+              fontSize: "13px",
+              fontWeight: 500,
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = palette.surface; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
           >
-            <LogOut className="w-3.5 h-3.5" style={{ color: palette.ash }} strokeWidth={1.6} />
+            <LogOut className="w-3.5 h-3.5" strokeWidth={1.7} />
             Sign out
           </button>
         </div>
       )}
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center gap-2.5 px-2 py-2 transition-colors"
+        style={{ borderRadius: "10px" }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+      >
+        <div
+          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+          style={{
+            background: palette.indigo,
+            color: "#fff",
+            fontFamily: "'Fraunces', Georgia, serif",
+            fontWeight: 600,
+            fontSize: "13px",
+          }}
+        >
+          {initials}
+        </div>
+        <div className="flex-1 min-w-0 text-left">
+          <div className="truncate" style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "12.5px",
+            fontWeight: 600,
+            color: "rgba(255,255,255,0.85)",
+            lineHeight: 1.3,
+          }}>
+            {profile?.display_name || "Advisor"}
+          </div>
+          <div className="truncate" style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "10.5px",
+            color: "rgba(255,255,255,0.4)",
+            lineHeight: 1.3,
+            marginTop: "1px",
+          }}>
+            {firm?.name ? `${firm.name} · ${roleLabel(profile?.role)}` : profile?.email}
+          </div>
+        </div>
+        <ChevronUp
+          className="w-3.5 h-3.5 flex-shrink-0"
+          strokeWidth={1.6}
+          style={{
+            color: "rgba(255,255,255,0.4)",
+            transform: open ? "rotate(180deg)" : "rotate(0deg)",
+            transition: "transform 0.15s",
+          }}
+        />
+      </button>
     </div>
   );
 }
 
-export default function AppShell({ children, breadcrumb }) {
+export default function AppShell({ children, breadcrumb, breadcrumbSub }) {
   const location = useLocation();
 
-  // Default breadcrumb: best-effort from the route name.
-  const inferred = breadcrumb || (() => {
+  // Default page title — best-effort from the route. Pages can override.
+  const title = breadcrumb || (() => {
     const seg = location.pathname.split("/").filter(Boolean);
     if (seg.length === 0) return "Dashboard";
-    return seg[0].charAt(0).toUpperCase() + seg[0].slice(1);
+    const first = seg[seg.length - 1];
+    return first.charAt(0).toUpperCase() + first.slice(1);
   })();
 
   return (
-    <div className="min-h-screen flex" style={{ background: palette.cream, color: palette.ink }}>
-      {/* Sidebar */}
+    <div className="min-h-screen flex" style={{ background: palette.surface, color: palette.ink }}>
+      {/* Sidebar — DARK (Folio dashboard pattern) */}
       <aside
-        className="hidden md:flex flex-col flex-shrink-0"
+        className="hidden md:flex flex-col flex-shrink-0 fixed top-0 left-0 bottom-0 z-30"
         style={{
-          width: "240px",
-          background: palette.paper,
-          borderRight: `1px solid ${palette.borderSubtle}`,
+          width: `${SIDEBAR_W}px`,
+          background: palette.ink,
         }}
       >
-        <div className="px-4 pt-5 pb-3">
-          <Link to="/dashboard" className="flex items-center gap-2 no-underline">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: palette.ink }}>
-              <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: "italic", color: palette.cream, fontSize: "17px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
-            </div>
-            <span style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, fontSize: "20px", letterSpacing: "-0.01em", lineHeight: 1 }}>
-              Advisor<span style={{ fontStyle: "italic" }}>Stack</span>
-            </span>
+        {/* Brand */}
+        <div
+          className="flex items-center gap-2.5 px-5 pt-5 pb-4"
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+        >
+          <Link to="/dashboard" className="no-underline">
+            <BrandMark inverted size="sm" />
           </Link>
         </div>
 
-        <nav className="flex-1 mt-2">
-          <div className="text-[10px] uppercase mb-1 px-5" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.2em", color: palette.dust }}>
-            Workspace
-          </div>
-          {NAV.slice(0, 1).map((item) => <SidebarNavItem key={item.to} {...item} />)}
-          <div className="text-[10px] uppercase mb-1 mt-4 px-5" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.2em", color: palette.dust }}>
-            Tools
-          </div>
-          {NAV.slice(1, 3).map((item) => <SidebarNavItem key={item.to} {...item} />)}
-          <div className="text-[10px] uppercase mb-1 mt-4 px-5" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.2em", color: palette.dust }}>
-            Account
-          </div>
-          {NAV.slice(3).map((item) => <SidebarNavItem key={item.to} {...item} />)}
+        {/* Nav */}
+        <nav className="flex-1 px-3 py-3 overflow-y-auto">
+          {NAV_SECTIONS.map((section, i) => (
+            <div key={section.label} className={i === 0 ? "" : "mt-4"}>
+              <div
+                className="px-2.5 pb-1.5"
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: "10px",
+                  fontWeight: 700,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  color: "rgba(255,255,255,0.25)",
+                }}
+              >
+                {section.label}
+              </div>
+              {section.items.map((item) => (
+                <SidebarNavItem key={item.to} {...item} />
+              ))}
+            </div>
+          ))}
         </nav>
 
-        <div className="px-5 py-4 text-[10px] leading-snug" style={{ fontFamily: "Inter", letterSpacing: "0.06em", color: palette.dust, borderTop: `1px solid ${palette.borderSubtle}` }}>
+        {/* Compliance footer */}
+        <div
+          className="px-5 py-3"
+          style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "10.5px",
+            lineHeight: 1.4,
+            letterSpacing: "0.02em",
+            color: "rgba(255,255,255,0.30)",
+          }}
+        >
           Drafts only · Always advisor-reviewed · Never a recommendation
+        </div>
+
+        {/* User menu */}
+        <div
+          className="px-3 py-3"
+          style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
+        >
+          <SidebarUserMenu />
         </div>
       </aside>
 
       {/* Main column */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top bar */}
+      <div
+        className="flex-1 flex flex-col min-w-0"
+        style={{ marginLeft: `${SIDEBAR_W}px` }}
+      >
+        {/* Topbar — 60px, cream, sticky, page title in Fraunces */}
         <header
-          className="flex items-center justify-between px-6 py-3"
-          style={{ background: palette.paper, borderBottom: `1px solid ${palette.borderSubtle}` }}
+          className="sticky top-0 z-20 flex items-center px-7"
+          style={{
+            height: "60px",
+            background: palette.paper,
+            borderBottom: `1px solid ${palette.border}`,
+          }}
         >
-          <div className="flex items-center gap-2 min-w-0">
-            <Link to="/dashboard" className="text-[12px] no-underline" style={{ fontFamily: "Inter", color: palette.ash }}>
-              Workspace
-            </Link>
-            <span style={{ color: palette.dust }}>/</span>
-            <span className="text-[12px] truncate" style={{ fontFamily: "Inter", color: palette.ink, fontWeight: 500 }}>
-              {inferred}
-            </span>
+          <div className="min-w-0">
+            <div className="flex items-baseline gap-3">
+              <h1
+                className="truncate"
+                style={{
+                  fontFamily: "'Fraunces', Georgia, serif",
+                  fontWeight: 600,
+                  fontSize: "17px",
+                  letterSpacing: "-0.01em",
+                  color: palette.ink,
+                  lineHeight: 1.1,
+                }}
+              >
+                {title}
+              </h1>
+              {breadcrumbSub && (
+                <span style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: "13px",
+                  color: palette.ink60,
+                }}>
+                  {breadcrumbSub}
+                </span>
+              )}
+            </div>
           </div>
-          <UserMenu />
         </header>
 
         {/* Content */}

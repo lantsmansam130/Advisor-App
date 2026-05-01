@@ -1,7 +1,6 @@
-// DashboardPage — first authenticated landing. Phase 1 ships an empty-shell
-// dashboard: a personalized welcome and tile shortcuts to the existing tools.
-// Phase 2 will populate this with calendar widgets ("Today's meetings",
-// "This week").
+// DashboardPage — first authenticated landing.
+// Folio dashboard pattern: page-title in Fraunces, page-sub in soft ink-40,
+// then card grids on the cream surface with cream-paper card surfaces.
 
 import { Link } from "react-router-dom";
 import { MessageSquare, FileText, ArrowUpRight, CalendarDays, Mail, BarChart3 } from "lucide-react";
@@ -14,28 +13,31 @@ const QUICK_TOOLS = [
   {
     to: "/app",
     title: "AdvisorNotes",
-    italic: "AdvisorNotes",
-    rest: "",
     description: "Drafts, summaries, and explanations tailored to RIA workflows. Streaming chat with file upload.",
     icon: MessageSquare,
-    available: true,
   },
   {
     to: "/decoder",
     title: "Document Decoder",
-    italic: "Decode",
-    rest: " the fine print.",
     description: "Upload an annuity, insurance, trust, or benefits doc — get a structured plain-English breakdown.",
     icon: FileText,
-    available: true,
   },
 ];
 
 const PLANNED = [
-  { title: "Meetings", description: "Connect Google Calendar to see today's meetings + the next 14 days.", icon: CalendarDays },
+  { title: "Meetings",      description: "Connect Google Calendar to see today's meetings + the next 14 days.", icon: CalendarDays },
   { title: "Email history", description: "Connect Gmail to summarize threads with a contact and draft (never send) replies.", icon: Mail },
-  { title: "Insights", description: "Meeting cadence, top contacts, and duration trends — pulled from your synced data.", icon: BarChart3 },
+  { title: "Insights",      description: "Meeting cadence, top contacts, and duration trends — pulled from your synced data.", icon: BarChart3 },
 ];
+
+const SECTION_LABEL = {
+  fontFamily: "'Inter', sans-serif",
+  fontSize: "11px",
+  fontWeight: 700,
+  letterSpacing: "0.07em",
+  textTransform: "uppercase",
+  color: palette.ink40,
+};
 
 export default function DashboardPage() {
   const { profile, firm } = useAuth();
@@ -43,28 +45,40 @@ export default function DashboardPage() {
 
   return (
     <AppShell breadcrumb="Dashboard">
-      <div className="max-w-6xl mx-auto px-8 py-10">
+      <div className="max-w-6xl mx-auto px-7 py-8">
         {/* Welcome */}
-        <div className="mb-10">
-          <div className="text-[11px] uppercase mb-3" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.22em", color: palette.ash }}>
+        <div className="mb-9">
+          <div className="mb-2.5" style={SECTION_LABEL}>
             {firm?.name ? `${firm.name} · ${roleLabel(profile?.role)}` : "Advisor Stack"}
           </div>
           <h1
-            className="text-4xl md:text-5xl mb-3"
-            style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", color: palette.ink }}
+            className="text-3xl md:text-4xl mb-3"
+            style={{
+              fontFamily: "'Fraunces', Georgia, serif",
+              fontWeight: 600,
+              lineHeight: 1.1,
+              letterSpacing: "-0.018em",
+              color: palette.ink,
+            }}
           >
-            <span style={{ fontStyle: "italic" }}>Welcome</span> back, {firstName}.
+            Welcome back, {firstName}.
           </h1>
-          <p className="text-lg max-w-xl" style={{ fontFamily: "Inter", color: palette.ash, lineHeight: 1.55 }}>
-            Your tools below. Calendar, email, and Drive integrations are landing in the next phases — they'll fill the rest of this page.
+          <p
+            className="max-w-xl"
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: "15px",
+              lineHeight: 1.6,
+              color: palette.ink60,
+            }}
+          >
+            Your tools below. Calendar, email, and Drive integrations are coming — they'll fill the rest of this page once Phase 3 ships.
           </p>
         </div>
 
         {/* Available tools */}
-        <div className="mb-12">
-          <div className="text-[11px] uppercase mb-4" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.22em", color: palette.ash }}>
-            Tools
-          </div>
+        <div className="mb-10">
+          <div className="mb-4" style={SECTION_LABEL}>Tools</div>
           <div className="grid md:grid-cols-2 gap-4">
             {QUICK_TOOLS.map((tool) => {
               const Icon = tool.icon;
@@ -72,28 +86,60 @@ export default function DashboardPage() {
                 <Link
                   key={tool.to}
                   to={tool.to}
-                  className="block no-underline group"
+                  className="block no-underline"
                   style={{
                     background: palette.paper,
-                    border: `1px solid ${palette.borderSubtle}`,
+                    border: `1px solid ${palette.border}`,
                     borderRadius: "20px",
-                    padding: "28px",
-                    boxShadow: "0 1px 2px rgba(15,14,12,0.04), 0 8px 24px -16px rgba(15,14,12,0.12)",
-                    transition: "border-color 0.2s, transform 0.2s, box-shadow 0.2s",
+                    padding: "26px",
+                    transition: "transform 0.25s ease, box-shadow 0.25s ease, border-color 0.2s",
                   }}
-                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = palette.borderMid; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 2px 4px rgba(15,14,12,0.06), 0 16px 32px -16px rgba(15,14,12,0.18)"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = palette.borderSubtle; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 1px 2px rgba(15,14,12,0.04), 0 8px 24px -16px rgba(15,14,12,0.12)"; }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-3px)";
+                    e.currentTarget.style.boxShadow = palette.shadowMd;
+                    e.currentTarget.style.borderColor = palette.borderStrong;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.borderColor = palette.border;
+                  }}
                 >
                   <div className="flex items-start justify-between mb-4">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "rgba(31,58,46,0.06)" }}>
-                      <Icon className="w-4 h-4" style={{ color: palette.forest }} strokeWidth={1.6} />
+                    <div
+                      className="flex items-center justify-center"
+                      style={{
+                        width: "44px",
+                        height: "44px",
+                        borderRadius: "14px",
+                        background: palette.greenLight,
+                      }}
+                    >
+                      <Icon className="w-4.5 h-4.5" style={{ color: palette.greenDark }} strokeWidth={1.7} />
                     </div>
-                    <ArrowUpRight className="w-4 h-4" style={{ color: palette.ash }} strokeWidth={1.6} />
+                    <ArrowUpRight className="w-4 h-4" style={{ color: palette.ink40 }} strokeWidth={1.7} />
                   </div>
-                  <div className="text-2xl mb-2" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, letterSpacing: "-0.01em" }}>
-                    <span style={{ fontStyle: "italic" }}>{tool.italic}</span>{tool.rest}
+                  <div
+                    style={{
+                      fontFamily: "'Fraunces', Georgia, serif",
+                      fontWeight: 600,
+                      fontSize: "21px",
+                      letterSpacing: "-0.01em",
+                      color: palette.ink,
+                      marginBottom: "8px",
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {tool.title}
                   </div>
-                  <div className="text-[14px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ash }}>
+                  <div
+                    style={{
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: "14px",
+                      lineHeight: 1.6,
+                      color: palette.ink60,
+                    }}
+                  >
                     {tool.description}
                   </div>
                 </Link>
@@ -104,9 +150,7 @@ export default function DashboardPage() {
 
         {/* Coming next */}
         <div>
-          <div className="text-[11px] uppercase mb-4" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.22em", color: palette.ash }}>
-            Coming next
-          </div>
+          <div className="mb-4" style={SECTION_LABEL}>Coming next</div>
           <div className="grid md:grid-cols-3 gap-4">
             {PLANNED.map((item) => {
               const Icon = item.icon;
@@ -115,24 +159,57 @@ export default function DashboardPage() {
                   key={item.title}
                   style={{
                     background: palette.paper,
-                    border: `1px dashed ${palette.borderMid}`,
+                    border: `1px dashed ${palette.borderStrong}`,
                     borderRadius: "20px",
                     padding: "22px",
-                    opacity: 0.85,
                   }}
                 >
                   <div className="flex items-start justify-between mb-3">
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(15,14,12,0.04)" }}>
-                      <Icon className="w-4 h-4" style={{ color: palette.dust }} strokeWidth={1.6} />
+                    <div
+                      className="flex items-center justify-center"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "12px",
+                        background: palette.ink10,
+                      }}
+                    >
+                      <Icon className="w-4 h-4" style={{ color: palette.ink40 }} strokeWidth={1.7} />
                     </div>
-                    <span className="text-[10px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: palette.dust }}>
+                    <span
+                      style={{
+                        fontFamily: "'Inter', sans-serif",
+                        fontSize: "10.5px",
+                        fontWeight: 700,
+                        letterSpacing: "0.08em",
+                        textTransform: "uppercase",
+                        color: palette.ink40,
+                      }}
+                    >
                       Planned
                     </span>
                   </div>
-                  <div className="text-lg mb-1" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, letterSpacing: "-0.005em" }}>
+                  <div
+                    style={{
+                      fontFamily: "'Fraunces', Georgia, serif",
+                      fontWeight: 600,
+                      fontSize: "17px",
+                      letterSpacing: "-0.005em",
+                      color: palette.ink,
+                      marginBottom: "6px",
+                      lineHeight: 1.25,
+                    }}
+                  >
                     {item.title}
                   </div>
-                  <div className="text-[13px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ash }}>
+                  <div
+                    style={{
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: "13px",
+                      lineHeight: 1.6,
+                      color: palette.ink60,
+                    }}
+                  >
                     {item.description}
                   </div>
                 </div>

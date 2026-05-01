@@ -6,21 +6,42 @@ import AppShell from "./components/AppShell.jsx";
 import { palette } from "./StackHomePage.jsx";
 import { IntegrationGrid } from "./components/IntegrationCards.jsx";
 
+const SECTION_LABEL = {
+  fontFamily: "'Inter', sans-serif",
+  fontSize: "11px",
+  fontWeight: 700,
+  letterSpacing: "0.07em",
+  textTransform: "uppercase",
+  color: palette.ink40,
+};
+
 export default function IntegrationsSettingsPage() {
   return (
     <AppShell breadcrumb="Integrations">
-      <div className="max-w-5xl mx-auto px-8 py-10">
+      <div className="max-w-5xl mx-auto px-7 py-8">
         <div className="mb-8">
-          <div className="text-[11px] uppercase mb-3" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.22em", color: palette.ash }}>
-            Settings · Integrations
-          </div>
+          <div className="mb-2.5" style={SECTION_LABEL}>Settings · Integrations</div>
           <h1
-            className="text-4xl mb-3"
-            style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", color: palette.ink }}
+            className="text-3xl md:text-4xl mb-3"
+            style={{
+              fontFamily: "'Fraunces', Georgia, serif",
+              fontWeight: 600,
+              lineHeight: 1.1,
+              letterSpacing: "-0.018em",
+              color: palette.ink,
+            }}
           >
-            <span style={{ fontStyle: "italic" }}>Connect</span> your tools.
+            Connect your tools.
           </h1>
-          <p className="text-lg max-w-2xl" style={{ fontFamily: "Inter", color: palette.ash, lineHeight: 1.55 }}>
+          <p
+            className="max-w-2xl"
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: "15px",
+              lineHeight: 1.6,
+              color: palette.ink60,
+            }}
+          >
             Read-only by default. Drafts only. Refresh tokens encrypted at rest. Every connect, sync, and draft is audit-logged for your firm.
           </p>
         </div>
@@ -29,12 +50,21 @@ export default function IntegrationsSettingsPage() {
 
         <div
           className="mt-8 px-5 py-4 max-w-3xl"
-          style={{ background: palette.paper, border: `1px solid ${palette.borderSubtle}`, borderRadius: "14px" }}
+          style={{
+            background: palette.paper,
+            border: `1px solid ${palette.border}`,
+            borderRadius: "14px",
+          }}
         >
-          <div className="text-[11px] uppercase mb-1.5" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.18em", color: palette.dust }}>
-            Coming soon
-          </div>
-          <p className="text-[13px] leading-relaxed" style={{ fontFamily: "Inter", color: palette.ash }}>
+          <div className="mb-1.5" style={SECTION_LABEL}>Coming soon</div>
+          <p
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: "13px",
+              lineHeight: 1.6,
+              color: palette.ink60,
+            }}
+          >
             Connections roll out one phase at a time so each one ships with a complete audit trail and clear consent UX. You'll see them flip from "Available soon" to "Connect" as they go live.
           </p>
         </div>

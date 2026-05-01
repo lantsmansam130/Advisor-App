@@ -110,67 +110,93 @@ export function AnimatedBackground() {
   return null;
 }
 
+// Brand wordmark — small green dot + Fraunces serif "AdvisorStack".
+// Used in StackNav and AppShell sidebar (pass `inverted` for the dark sidebar).
+export function BrandMark({ inverted = false, size = "md" }) {
+  const fontSize = size === "sm" ? "18px" : "22px";
+  const dotSize = size === "sm" ? "8px" : "9px";
+  return (
+    <span className="flex items-center gap-2.5 no-underline">
+      <span
+        style={{
+          width: dotSize,
+          height: dotSize,
+          borderRadius: "50%",
+          background: palette.green,
+          flexShrink: 0,
+        }}
+      />
+      <span style={{
+        fontFamily: "'Fraunces', Georgia, serif",
+        fontWeight: 700,
+        color: inverted ? palette.paper : palette.ink,
+        fontSize,
+        letterSpacing: "-0.02em",
+        lineHeight: 1,
+      }}>
+        Advisor<span style={{ fontStyle: "italic" }}>Stack</span>
+      </span>
+    </span>
+  );
+}
+
+// StackNav — sticky translucent cream nav with backdrop-blur (Folio pattern).
+// Sits flush at the top of marketing pages. NOT a floating dark pill anymore.
 export function StackNav({ tool }) {
   const { user } = useAuth();
   return (
-    <nav className="sticky top-4 z-50 mx-4 mt-4">
-      <div
-        className="max-w-6xl mx-auto px-4 py-2.5 flex justify-between items-center gap-3"
-        style={{
-          background: "rgba(15,14,12,0.92)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          border: "1px solid rgba(255,255,255,0.06)",
-          borderRadius: "999px",
-          boxShadow: "0 10px 30px -12px rgba(15,14,12,0.25)",
-        }}
-      >
-        <Link to="/" className="flex items-center gap-2.5 no-underline pl-1 min-w-0">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: palette.cream }}>
-            <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: "italic", color: palette.ink, fontSize: "17px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
-          </div>
-          <span className="flex-shrink-0" style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.cream, fontSize: "20px", letterSpacing: "-0.01em", lineHeight: 1 }}>
-            Advisor<span style={{ fontStyle: "italic" }}>Stack</span>
-          </span>
+    <nav
+      className="sticky top-0 z-50 px-6 md:px-8"
+      style={{
+        height: "68px",
+        background: "rgba(250,245,238,0.85)",
+        backdropFilter: "blur(14px)",
+        WebkitBackdropFilter: "blur(14px)",
+        borderBottom: `1px solid ${palette.border}`,
+        display: "flex",
+        alignItems: "center",
+      }}
+    >
+      <div className="max-w-6xl mx-auto w-full flex items-center justify-between gap-4">
+        {/* TODO: swap to AdvisorSuite portal URL when portal launches */}
+        <Link to="/" className="no-underline flex items-center gap-3 min-w-0">
+          <BrandMark />
           {tool && (
-            <>
-              <span className="opacity-30 mx-1 flex-shrink-0" style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "18px", color: palette.cream }}>/</span>
-              <span className="truncate" style={{ fontFamily: "Inter", fontSize: "13px", color: "rgba(250,246,238,0.7)" }}>{tool}</span>
-            </>
+            <span
+              className="hidden sm:inline-flex items-center gap-2.5 truncate"
+              style={{ fontFamily: "Inter", fontSize: "14px", color: palette.ink60 }}
+            >
+              <span style={{ color: palette.ink40 }}>/</span>
+              <span className="truncate">{tool}</span>
+            </span>
           )}
         </Link>
+
         <div className="flex items-center gap-2 flex-shrink-0">
-          {tool && (
-            <Link to="/" className="hidden sm:inline-flex items-center gap-2 px-3 py-2 no-underline" style={{ color: "rgba(250,246,238,0.7)", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}>
-              ← All tools
-            </Link>
-          )}
           {user ? (
-            <Link
-              to="/dashboard"
-              className="inline-flex items-center gap-2 px-5 py-2.5 no-underline"
-              style={{ background: palette.cream, color: palette.ink, borderRadius: "999px", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}
-            >
-              Dashboard <span style={{ marginLeft: 2 }}>→</span>
-            </Link>
+            <PillCTA to="/dashboard" variant="primary" small>
+              Dashboard
+            </PillCTA>
           ) : (
             <>
               <Link
                 to="/login"
-                className="px-3 py-2 no-underline"
-                style={{ color: "rgba(250,246,238,0.85)", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}
+                className="hidden sm:inline-flex items-center px-3 py-2 no-underline transition-colors"
+                style={{
+                  color: palette.ink60,
+                  fontFamily: "Inter",
+                  fontWeight: 500,
+                  fontSize: "14.5px",
+                  borderRadius: "10px",
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = palette.ink; e.currentTarget.style.background = palette.ink10; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = palette.ink60; e.currentTarget.style.background = "transparent"; }}
               >
-                Sign in
+                Advisor login
               </Link>
-              {!tool && (
-                <Link
-                  to="/signup"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 no-underline"
-                  style={{ background: palette.cream, color: palette.ink, borderRadius: "999px", fontFamily: "Inter", fontWeight: 500, fontSize: "11px", letterSpacing: "0.14em", textTransform: "uppercase" }}
-                >
-                  Get started <span style={{ marginLeft: 2 }}>→</span>
-                </Link>
-              )}
+              <PillCTA to="/signup" variant="primary" small>
+                Start free
+              </PillCTA>
             </>
           )}
         </div>
@@ -179,55 +205,150 @@ export function StackNav({ tool }) {
   );
 }
 
+// FloatingMark — circular green-dotted "A" anchor in the bottom-right corner.
+// Bounces back to home (eventually the AdvisorSuite portal).
 export function FloatingMark() {
   return (
+    /* TODO: swap to AdvisorSuite portal URL when portal launches */
     <Link
       to="/"
-      className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full flex items-center justify-center no-underline"
-      style={{ background: palette.ink, border: `1px solid ${palette.borderMid}`, boxShadow: "0 12px 28px -10px rgba(15,14,12,0.35)" }}
+      className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full flex items-center justify-center no-underline transition-transform"
+      style={{
+        background: palette.ink,
+        boxShadow: palette.shadowMd,
+      }}
+      onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.05)"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
     >
-      <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: "italic", color: palette.cream, fontSize: "24px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
+      <span style={{
+        fontFamily: "'Fraunces', Georgia, serif",
+        fontWeight: 700,
+        fontStyle: "italic",
+        color: palette.paper,
+        fontSize: "22px",
+        lineHeight: 1,
+        transform: "translateY(-1px)",
+      }}>A</span>
     </Link>
   );
 }
 
-export function PillCTA({ to, children, dark = false, small = false }) {
+// PillCTA — Folio button language. Variants:
+//   "primary" → filled green pill, white text, soft green shadow (DEFAULT)
+//   "ghost"   → transparent, ink-80 text, border-strong border
+//   "outline" → white bg, ink text, border-strong border
+//
+// Backwards-compat: `dark={true}` (legacy) still works → maps to "outline".
+// `small` keeps the smaller marketing-page sizing.
+export function PillCTA({ to, children, variant, dark = false, small = false, type, onClick }) {
+  // Resolve variant (variant prop wins; legacy `dark` falls through)
+  const v = variant || (dark ? "outline" : "primary");
+
   const base = {
-    fontFamily: "Inter",
-    fontWeight: 500,
-    fontSize: small ? "11px" : "12px",
-    letterSpacing: "0.14em",
-    textTransform: "uppercase",
+    fontFamily: "'Inter', sans-serif",
+    fontWeight: 600,
+    fontSize: small ? "13.5px" : "14.5px",
+    letterSpacing: "-0.005em",
     borderRadius: "999px",
-    transition: "transform 0.2s, box-shadow 0.2s, background 0.2s",
+    border: "1.5px solid transparent",
+    transition: "all 0.2s ease",
+    whiteSpace: "nowrap",
+    cursor: "pointer",
+    textDecoration: "none",
   };
-  // dark=true → outlined ghost variant; default → filled dark pill on light bg
-  const style = dark
-    ? { ...base, background: "transparent", color: palette.ink, border: `1px solid ${palette.borderMid}` }
-    : { ...base, background: palette.ink, color: palette.cream, border: `1px solid ${palette.ink}` };
+
+  const styles = {
+    primary: {
+      ...base,
+      background: palette.green,
+      color: "#fff",
+      borderColor: palette.green,
+      boxShadow: "0 4px 14px rgba(47,138,95,0.22)",
+    },
+    ghost: {
+      ...base,
+      background: "transparent",
+      color: palette.ink80,
+      borderColor: palette.borderStrong,
+    },
+    outline: {
+      ...base,
+      background: palette.paper,
+      color: palette.ink,
+      borderColor: palette.borderStrong,
+    },
+  };
+
+  const hover = {
+    primary: (e) => { e.currentTarget.style.background = palette.greenDark; e.currentTarget.style.borderColor = palette.greenDark; e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 8px 22px rgba(47,138,95,0.32)"; },
+    ghost:   (e) => { e.currentTarget.style.color = palette.ink; e.currentTarget.style.borderColor = palette.ink; e.currentTarget.style.background = palette.paper; },
+    outline: (e) => { e.currentTarget.style.borderColor = palette.ink; e.currentTarget.style.background = palette.ink; e.currentTarget.style.color = palette.paper; },
+  };
+  const unhover = {
+    primary: (e) => { e.currentTarget.style.background = palette.green; e.currentTarget.style.borderColor = palette.green; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 14px rgba(47,138,95,0.22)"; },
+    ghost:   (e) => { e.currentTarget.style.color = palette.ink80; e.currentTarget.style.borderColor = palette.borderStrong; e.currentTarget.style.background = "transparent"; },
+    outline: (e) => { e.currentTarget.style.borderColor = palette.borderStrong; e.currentTarget.style.background = palette.paper; e.currentTarget.style.color = palette.ink; },
+  };
+
+  const className = `inline-flex items-center justify-center gap-2 ${small ? "px-5 py-2.5" : "px-7 py-3.5"}`;
+
+  // Render as Link if `to` provided, else as button
+  if (to) {
+    return (
+      <Link
+        to={to}
+        className={`${className} no-underline`}
+        style={styles[v]}
+        onMouseEnter={hover[v]}
+        onMouseLeave={unhover[v]}
+      >
+        {children} <span style={{ marginLeft: 2 }}>→</span>
+      </Link>
+    );
+  }
   return (
-    <Link
-      to={to}
-      className={`inline-flex items-center gap-2 no-underline ${small ? "px-5 py-2.5" : "px-7 py-3.5"}`}
-      style={style}
+    <button
+      type={type || "button"}
+      onClick={onClick}
+      className={className}
+      style={styles[v]}
+      onMouseEnter={hover[v]}
+      onMouseLeave={unhover[v]}
     >
-      {children} <span>→</span>
-    </Link>
+      {children} <span style={{ marginLeft: 2 }}>→</span>
+    </button>
   );
 }
 
+// SectionLabel — Folio-style green pill chip eyebrow ("S-EYE" in their CSS).
+// Replaces the legacy ash-colored tracked-uppercase text.
 export function SectionLabel({ children }) {
   return (
-    <div
-      className="text-[11px] uppercase mb-4"
-      style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.22em", color: palette.ash }}
+    <span
+      className="inline-flex items-center"
+      style={{
+        fontFamily: "'Inter', sans-serif",
+        fontSize: "12px",
+        fontWeight: 600,
+        letterSpacing: "0.06em",
+        textTransform: "uppercase",
+        color: palette.greenDark,
+        background: palette.greenLight,
+        padding: "5px 14px",
+        borderRadius: "100px",
+        marginBottom: "16px",
+      }}
     >
       {children}
-    </div>
+    </span>
   );
 }
 
-export function EditorialHeading({ italic, rest, size = "lg", className = "", color }) {
+// EditorialHeading — Folio hero pattern: regular Fraunces 500 + italic word
+// rendered in green at weight 600, with `opsz: 144` for a tighter optical size.
+// `italic` is the green-italicized lead word; `rest` is the rest of the headline.
+// `italicColor` lets dark sections override (e.g., a lighter accent on dark bg).
+export function EditorialHeading({ italic, rest, size = "lg", className = "", color, italicColor }) {
   const sizes = {
     xl: "text-5xl md:text-7xl",
     lg: "text-4xl md:text-6xl",
@@ -237,47 +358,61 @@ export function EditorialHeading({ italic, rest, size = "lg", className = "", co
   return (
     <h2
       className={`${sizes[size]} ${className}`}
-      style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.02em", color: color || palette.ink }}
+      style={{
+        fontFamily: "'Fraunces', Georgia, serif",
+        fontWeight: 500,
+        lineHeight: 1.08,
+        letterSpacing: "-0.018em",
+        color: color || palette.ink,
+        fontVariationSettings: '"opsz" 96',
+      }}
     >
-      <span style={{ fontStyle: "italic" }}>{italic}</span> {rest}
+      <span style={{
+        fontStyle: "italic",
+        fontWeight: 600,
+        color: italicColor || palette.green,
+        fontVariationSettings: '"opsz" 144',
+      }}>{italic}</span>{" "}{rest}
     </h2>
   );
 }
 
-// White card on cream background — replaces the dark glass cards
+// Cream card on surface background — Folio's standard panel surface.
+// Legacy export name `darkCard` retained for backwards-compat with imports.
 export const darkCard = {
   background: palette.paper,
-  border: `1px solid ${palette.borderSubtle}`,
+  border: `1px solid ${palette.border}`,
   borderRadius: "20px",
-  boxShadow: "0 1px 2px rgba(15,14,12,0.04), 0 8px 24px -16px rgba(15,14,12,0.12)",
+  boxShadow: palette.shadowSm,
 };
 
-// Deep ink section — warm charcoal (NOT pure black) for cream→ink rhythm
+// Deep ink section — warm charcoal for the dark feature block rhythm.
 export const inkBlock = {
-  background: palette.charcoal,
+  background: "linear-gradient(160deg, #3d342d 0%, #2b231d 100%)",
   borderRadius: "28px",
-  color: palette.cream,
+  color: palette.paper,
 };
 
-// Forest gradient feature block — used sparingly as the deepest accent
+// Indigo gradient feature block (legacy name) — now uses the same warm
+// dark gradient as Folio's CTA blocks.
 export const indigoBlock = {
-  background: "linear-gradient(180deg, #16271F 0%, #1F3A2E 45%, #2D5142 100%)",
+  background: "linear-gradient(160deg, #3d342d 0%, #2b231d 100%)",
   borderRadius: "28px",
 };
 
-// Sage badge — replaces the sky-blue badge
+// Sky badge (legacy name) — now Folio's green-light pill chip.
+// Prefer <SectionLabel> for new code; this object is kept for direct-spread uses.
 export const skyBadge = {
-  background: "rgba(31,58,46,0.08)",
-  color: palette.forest,
-  fontFamily: "Inter",
-  fontWeight: 500,
-  fontSize: "11px",
-  letterSpacing: "0.18em",
+  background: palette.greenLight,
+  color: palette.greenDark,
+  fontFamily: "'Inter', sans-serif",
+  fontWeight: 600,
+  fontSize: "12px",
+  letterSpacing: "0.06em",
   textTransform: "uppercase",
-  borderRadius: "999px",
-  padding: "8px 18px",
+  borderRadius: "100px",
+  padding: "5px 14px",
   display: "inline-block",
-  border: `1px solid ${palette.borderSubtle}`,
 };
 
 export default function StackHomePage() {

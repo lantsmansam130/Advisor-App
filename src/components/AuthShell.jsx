@@ -1,10 +1,16 @@
 // AuthShell — shared chrome for unauthenticated auth pages
 // (/login, /signup, /forgot-password, /reset-password, /verify-email).
-// Cream page + wordmark header + centered card + back-to-home link.
-// Each page renders its own form/copy as children.
+//
+// Folio auth-card pattern (port of folio-ref/login.html):
+//   - Cream surface page with a translucent sticky brand bar at the top
+//   - White card centered, 440px max-width, 48px padding, 28px radius
+//   - Centered Fraunces 600 title (sentence-case, NOT italic+upright pair)
+//   - Centered green-dot wordmark above the title
+//   - Sentence-case form labels (Inter 600 13.5px), green focus glow
+//   - Primary CTA: full-width green pill with green-tinted shadow
 
 import { Link } from "react-router-dom";
-import { palette } from "../StackHomePage.jsx";
+import { palette, BrandMark } from "../StackHomePage.jsx";
 
 export function GoogleG({ className = "w-4 h-4" }) {
   return (
@@ -20,7 +26,14 @@ export function GoogleG({ className = "w-4 h-4" }) {
 export function AuthInput({ label, type = "text", value, onChange, autoComplete, required, placeholder, autoFocus, name }) {
   return (
     <label className="block text-left">
-      <span className="text-[11px] uppercase block mb-1.5" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.18em", color: palette.ash }}>
+      <span style={{
+        display: "block",
+        fontFamily: "'Inter', sans-serif",
+        fontSize: "13.5px",
+        fontWeight: 600,
+        color: palette.ink80,
+        marginBottom: "7px",
+      }}>
         {label}
       </span>
       <input
@@ -32,41 +45,66 @@ export function AuthInput({ label, type = "text", value, onChange, autoComplete,
         required={required}
         placeholder={placeholder}
         autoFocus={autoFocus}
-        className="w-full outline-none transition-colors"
+        className="w-full outline-none transition-all"
         style={{
-          background: palette.cream,
+          background: palette.surface,
           color: palette.ink,
-          border: `1px solid ${palette.borderMid}`,
+          border: `1.5px solid ${palette.border}`,
           borderRadius: "10px",
-          padding: "10px 12px",
-          fontFamily: "Inter",
+          padding: "12px 14px",
+          fontFamily: "'Inter', sans-serif",
           fontSize: "14px",
+          fontWeight: 500,
         }}
-        onFocus={(e) => { e.currentTarget.style.borderColor = palette.forest; e.currentTarget.style.background = palette.paper; }}
-        onBlur={(e) => { e.currentTarget.style.borderColor = palette.borderMid; e.currentTarget.style.background = palette.cream; }}
+        onFocus={(e) => {
+          e.currentTarget.style.borderColor = palette.green;
+          e.currentTarget.style.background = palette.paper;
+          e.currentTarget.style.boxShadow = "0 0 0 3px rgba(47,138,95,0.10)";
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.borderColor = palette.border;
+          e.currentTarget.style.background = palette.surface;
+          e.currentTarget.style.boxShadow = "none";
+        }}
       />
     </label>
   );
 }
 
 export function AuthPrimaryButton({ children, type = "submit", onClick, disabled, loading }) {
+  const isDisabled = disabled || loading;
   return (
     <button
       type={type}
       onClick={onClick}
-      disabled={disabled || loading}
-      className="w-full inline-flex items-center justify-center gap-2 py-3 disabled:opacity-50 transition-all"
+      disabled={isDisabled}
+      className="w-full inline-flex items-center justify-center gap-2 transition-all"
       style={{
-        background: palette.ink,
-        color: palette.cream,
-        border: `1px solid ${palette.ink}`,
+        background: palette.green,
+        color: "#fff",
+        border: `1.5px solid ${palette.green}`,
         borderRadius: "999px",
-        fontFamily: "Inter",
-        fontWeight: 500,
-        fontSize: "13px",
-        letterSpacing: "0.12em",
-        textTransform: "uppercase",
-        cursor: disabled || loading ? "not-allowed" : "pointer",
+        padding: "13px 18px",
+        fontFamily: "'Inter', sans-serif",
+        fontWeight: 600,
+        fontSize: "14.5px",
+        letterSpacing: "-0.005em",
+        boxShadow: "0 4px 14px rgba(47,138,95,0.22)",
+        cursor: isDisabled ? "not-allowed" : "pointer",
+        opacity: isDisabled ? 0.55 : 1,
+      }}
+      onMouseEnter={(e) => {
+        if (e.currentTarget.disabled) return;
+        e.currentTarget.style.background = palette.greenDark;
+        e.currentTarget.style.borderColor = palette.greenDark;
+        e.currentTarget.style.transform = "translateY(-1px)";
+        e.currentTarget.style.boxShadow = "0 8px 22px rgba(47,138,95,0.32)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = palette.green;
+        e.currentTarget.style.borderColor = palette.green;
+        e.currentTarget.style.transform = "translateY(0)";
+        e.currentTarget.style.boxShadow = "0 4px 14px rgba(47,138,95,0.22)";
       }}
     >
       {loading ? "Working…" : children}
@@ -75,24 +113,35 @@ export function AuthPrimaryButton({ children, type = "submit", onClick, disabled
 }
 
 export function AuthGhostButton({ children, type = "button", onClick, disabled, loading }) {
+  const isDisabled = disabled || loading;
   return (
     <button
       type={type}
       onClick={onClick}
-      disabled={disabled || loading}
-      className="w-full inline-flex items-center justify-center gap-3 py-3 disabled:opacity-50 transition-all"
+      disabled={isDisabled}
+      className="w-full inline-flex items-center justify-center gap-3 transition-all"
       style={{
         background: palette.paper,
         color: palette.ink,
-        border: `1px solid ${palette.borderMid}`,
+        border: `1.5px solid ${palette.borderStrong}`,
         borderRadius: "999px",
-        fontFamily: "Inter",
-        fontWeight: 500,
-        fontSize: "14px",
-        cursor: disabled || loading ? "not-allowed" : "pointer",
+        padding: "12px 18px",
+        fontFamily: "'Inter', sans-serif",
+        fontWeight: 600,
+        fontSize: "14.5px",
+        letterSpacing: "-0.005em",
+        cursor: isDisabled ? "not-allowed" : "pointer",
+        opacity: isDisabled ? 0.55 : 1,
       }}
-      onMouseEnter={(e) => { if (!e.currentTarget.disabled) { e.currentTarget.style.background = palette.cream; } }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = palette.paper; }}
+      onMouseEnter={(e) => {
+        if (e.currentTarget.disabled) return;
+        e.currentTarget.style.borderColor = palette.ink;
+        e.currentTarget.style.background = palette.surface;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = palette.borderStrong;
+        e.currentTarget.style.background = palette.paper;
+      }}
     >
       {children}
     </button>
@@ -102,11 +151,18 @@ export function AuthGhostButton({ children, type = "button", onClick, disabled, 
 export function AuthDivider({ label = "or" }) {
   return (
     <div className="my-5 flex items-center gap-3">
-      <div className="flex-1" style={{ height: 1, background: palette.borderSubtle }} />
-      <span className="text-[10px] uppercase" style={{ fontFamily: "Inter", letterSpacing: "0.18em", color: palette.dust }}>
+      <div className="flex-1" style={{ height: 1, background: palette.border }} />
+      <span style={{
+        fontFamily: "'Inter', sans-serif",
+        fontSize: "11px",
+        fontWeight: 600,
+        letterSpacing: "0.08em",
+        textTransform: "uppercase",
+        color: palette.ink40,
+      }}>
         {label}
       </span>
-      <div className="flex-1" style={{ height: 1, background: palette.borderSubtle }} />
+      <div className="flex-1" style={{ height: 1, background: palette.border }} />
     </div>
   );
 }
@@ -114,7 +170,15 @@ export function AuthDivider({ label = "or" }) {
 export function AuthError({ children }) {
   if (!children) return null;
   return (
-    <p className="mt-4 text-[12px] leading-snug text-left" style={{ fontFamily: "Inter", color: "#B5483B" }}>
+    <p
+      className="mt-4 text-left"
+      style={{
+        fontFamily: "'Inter', sans-serif",
+        fontSize: "12.5px",
+        lineHeight: 1.5,
+        color: palette.red,
+      }}
+    >
       {children}
     </p>
   );
@@ -123,68 +187,145 @@ export function AuthError({ children }) {
 export function AuthInfo({ children }) {
   if (!children) return null;
   return (
-    <p className="mt-4 text-[12px] leading-snug text-left" style={{ fontFamily: "Inter", color: palette.forest }}>
+    <div
+      className="mt-4 px-4 py-3 text-left"
+      style={{
+        background: palette.greenLight,
+        border: `1px solid rgba(47,138,95,0.18)`,
+        borderRadius: "12px",
+        fontFamily: "'Inter', sans-serif",
+        fontSize: "13px",
+        lineHeight: 1.55,
+        color: palette.greenDark,
+      }}
+    >
       {children}
-    </p>
+    </div>
   );
 }
 
 export default function AuthShell({ eyebrow, headlineItalic, headlineRest, intro, children, footer }) {
+  // For backwards-compat with the old italic+upright pairing API:
+  // we now render the headline as a single Fraunces 600 string.
+  // If a caller passes both `headlineItalic` and `headlineRest`, we join
+  // them with a space and treat the whole thing as the title.
+  const titleText = [headlineItalic, headlineRest].filter(Boolean).join(" ");
+
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: palette.cream, color: palette.ink }}>
-      <header className="px-6 pt-6">
-        <Link to="/" className="inline-flex items-center gap-2 no-underline">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: palette.ink }}>
-            <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontStyle: "italic", color: palette.cream, fontSize: "17px", lineHeight: 1, transform: "translateY(-1px)" }}>A</span>
-          </div>
-          <span style={{ fontFamily: "'Fraunces', Georgia, serif", color: palette.ink, fontSize: "20px", letterSpacing: "-0.01em", lineHeight: 1 }}>
-            Advisor<span style={{ fontStyle: "italic" }}>Stack</span>
-          </span>
+    <div className="min-h-screen flex flex-col" style={{ background: palette.surface, color: palette.ink }}>
+      {/* Sticky translucent brand bar */}
+      <header
+        className="sticky top-0 z-50 px-6 md:px-8"
+        style={{
+          height: "68px",
+          background: "rgba(250,245,238,0.85)",
+          backdropFilter: "blur(14px)",
+          WebkitBackdropFilter: "blur(14px)",
+          borderBottom: `1px solid ${palette.border}`,
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        {/* TODO: swap to AdvisorSuite portal URL when portal launches */}
+        <Link to="/" className="no-underline">
+          <BrandMark />
         </Link>
       </header>
 
-      <div className="flex-1 flex items-center justify-center px-6 py-10">
-        <div className="w-full max-w-md">
+      <div className="flex-1 flex items-center justify-center px-6 py-16">
+        <div className="w-full" style={{ maxWidth: "440px" }}>
           <div
-            className="px-8 py-9"
             style={{
-              background: palette.paper,
-              border: `1px solid ${palette.borderSubtle}`,
-              borderRadius: "20px",
-              boxShadow: "0 1px 2px rgba(15,14,12,0.04), 0 8px 24px -16px rgba(15,14,12,0.12)",
+              background: "#fff",
+              border: `1px solid ${palette.border}`,
+              borderRadius: "28px",
+              padding: "48px",
+              boxShadow: palette.shadowLg,
             }}
           >
+            {/* Centered green-dot wordmark above the title */}
+            <div className="flex justify-center mb-5">
+              <BrandMark size="sm" />
+            </div>
+
             {eyebrow && (
-              <div className="text-[11px] uppercase mb-4 text-center" style={{ fontFamily: "Inter", fontWeight: 500, letterSpacing: "0.22em", color: palette.ash }}>
+              <div
+                className="text-center"
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: "11.5px",
+                  fontWeight: 600,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  color: palette.green,
+                  marginBottom: "10px",
+                }}
+              >
                 {eyebrow}
               </div>
             )}
-            {(headlineItalic || headlineRest) && (
+
+            {titleText && (
               <h1
-                className="text-4xl mb-3 text-center"
-                style={{ fontFamily: "'Fraunces', Georgia, serif", fontWeight: 400, lineHeight: 1.1, letterSpacing: "-0.02em", color: palette.ink }}
+                className="text-center"
+                style={{
+                  fontFamily: "'Fraunces', Georgia, serif",
+                  fontWeight: 600,
+                  fontSize: "26px",
+                  letterSpacing: "-0.012em",
+                  lineHeight: 1.2,
+                  color: palette.ink,
+                  marginBottom: "8px",
+                }}
               >
-                {headlineItalic && <span style={{ fontStyle: "italic" }}>{headlineItalic}</span>}
-                {headlineItalic && headlineRest && " "}
-                {headlineRest}
+                {titleText}
               </h1>
             )}
+
             {intro && (
-              <p className="text-[14px] leading-relaxed mb-7 max-w-xs mx-auto text-center" style={{ fontFamily: "Inter", color: palette.ash }}>
+              <p
+                className="text-center mx-auto"
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: "14px",
+                  lineHeight: 1.55,
+                  color: palette.ink60,
+                  marginBottom: "28px",
+                  maxWidth: "320px",
+                }}
+              >
                 {intro}
               </p>
             )}
+
             {children}
           </div>
 
           {footer && (
-            <div className="mt-6 text-center text-[12px]" style={{ fontFamily: "Inter", color: palette.ash }}>
+            <div
+              className="mt-6 text-center"
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: "13px",
+                color: palette.ink60,
+              }}
+            >
               {footer}
             </div>
           )}
 
-          <div className="mt-3 text-center text-[11px]" style={{ fontFamily: "Inter", letterSpacing: "0.14em", textTransform: "uppercase", color: palette.dust }}>
-            <Link to="/" className="no-underline" style={{ color: palette.ash }}>← Back to home</Link>
+          <div
+            className="mt-3 text-center"
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: "11.5px",
+              fontWeight: 500,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: palette.ink40,
+            }}
+          >
+            <Link to="/" className="no-underline" style={{ color: "inherit" }}>← Back to home</Link>
           </div>
         </div>
       </div>
